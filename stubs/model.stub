@@ -1,0 +1,27 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @property int $id
+ * @property string $created_at
+ */
+class {{ class }} extends Model
+{
+	use HasFactory;
+
+	const UPDATED_AT = null;
+
+	// public $timestamps = false;
+
+	protected $table = '';
+
+	protected static $unguarded = true;
+
+	protected $casts = [
+		'created_at' => 'timestamp'
+	];
+}
