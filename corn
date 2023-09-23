@@ -66,7 +66,7 @@ runOrExec() {
 	service=$1
 	result="exec"
 
-	if [ -z `docker-compose ps -q $service` ] || [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q $service)` ]; then
+	if [ -z `docker compose ps -q $service` ] || [ -z `docker ps -q --no-trunc | grep $(docker compose ps -q $service)` ]; then
 		result="run --rm"
 	fi
 
