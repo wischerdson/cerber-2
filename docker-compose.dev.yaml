@@ -1,0 +1,46 @@
+version: "3"
+
+# Only for development purposes
+
+services:
+  php:
+    depends_on:
+      - mariadb
+
+  # queue:
+    # depends_on:
+      # - mariadb
+    # command: sh -c "php artisan queue:work"
+
+  nginx:
+    volumes:
+      - ./.docker/nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 80:80
+      - 443:443
+      - 24678:24678
+
+  nodejs:
+    command: sh -c "yarn run dev --host"
+
+  mariadb:
+    image: mariadb:10.10.2
+    volumes:
+      - ./.runtime/mariadb:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+      MARIADB_DATABASE: ${DB_DATABASE}
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    ports:
+      - 8080:80
+    depends_on:
+      - mariadb
