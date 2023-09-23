@@ -2,12 +2,14 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
-		"build": "vite build"
+		"build": "nuxt build client",
+		"dev": "nuxt dev client",
+		"generate": "nuxt generate client",
+		"preview": "nuxt preview client",
+		"postinstall": "nuxt prepare client"
 	},
 	"devDependencies": {
-		"axios": "^1.1.2",
-		"laravel-vite-plugin": "^0.8.0",
-		"vite": "^4.0.0"
+		"@nuxt/devtools": "latest",
+		"nuxt": "^3.7.3"
 	}
 }

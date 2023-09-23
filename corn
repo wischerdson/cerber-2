@@ -96,6 +96,8 @@ case $command in
 		payload="$(runOrExec php) php composer $@" ;;
 	"yarn")
 		payload="$(runOrExec nodejs) nodejs yarn $@" ;;
+	"npx")
+		payload="$(runOrExec nodejs) nodejs npx $@" ;;
 	"nuxi")
 		payload="$(runOrExec nodejs) nodejs npx nuxi $@" ;;
 	"ngrok")
