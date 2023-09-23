@@ -44,15 +44,16 @@ return [
 
 		'database' => [
 			'driver' => 'database',
-			'table' => 'cache',
+			'table' => '_cache',
+			'lock_table' => '_cache_locks',
 			'connection' => null,
 			'lock_connection' => null,
 		],
 
 		'file' => [
 			'driver' => 'file',
-			'path' => storage_path('framework/cache/data'),
-			'lock_path' => storage_path('framework/cache/data'),
+			'path' => base_path('.runtime/cache/data'),
+			'lock_path' => base_path('.runtime/cache/data'),
 		],
 
 		'memcached' => [
