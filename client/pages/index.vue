@@ -1,5 +1,5 @@
 <template>
-	<div class="text-sky-500">
+	<div class="text-rose-300/40">
 		Hello world
 	</div>
 </template>

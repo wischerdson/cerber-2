@@ -1,0 +1,25 @@
+$fonts: (
+	("weight": 100, "style": "normal", "file": "/fonts/Roboto/Roboto-Thin.ttf"),
+	("weight": 300, "style": "normal", "file": "/fonts/Roboto/Roboto-Light.ttf"),
+	("weight": 400, "style": "normal", "file": "/fonts/Roboto/Roboto-Regular.ttf"),
+	("weight": 500, "style": "normal", "file": "/fonts/Roboto/Roboto-Medium.ttf"),
+	("weight": 700, "style": "normal", "file": "/fonts/Roboto/Roboto-Bold.ttf"),
+	("weight": 900, "style": "normal", "file": "/fonts/Roboto/Roboto-Black.ttf"),
+
+	("weight": 100, "style": "normal", "file": "/fonts/Roboto/Roboto-ThinItalic.ttf"),
+	("weight": 300, "style": "italic", "file": "/fonts/Roboto/Roboto-LightItalic.ttf"),
+	("weight": 400, "style": "italic", "file": "/fonts/Roboto/Roboto-Italic.ttf"),
+	("weight": 500, "style": "italic", "file": "/fonts/Roboto/Roboto-MediumItalic.ttf"),
+	("weight": 700, "style": "italic", "file": "/fonts/Roboto/Roboto-BoldItalic.ttf"),
+	("weight": 900, "style": "italic", "file": "/fonts/Roboto/Roboto-BlackItalic.ttf")
+);
+
+@each $font in $fonts {
+	@font-face {
+		font-family: 'Roboto';
+		src: url('#{map-get($font, "file")}') format('truetype');
+		font-weight: #{map-get($font, "weight")};
+		font-style: #{map-get($font, "style")};
+		font-display: block;
+	}
+}

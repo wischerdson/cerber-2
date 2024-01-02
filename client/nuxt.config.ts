@@ -7,7 +7,8 @@ export default defineNuxtConfig({
 	components: false,
 
 	app: {
-		rootId: 'app'
+		rootId: 'app',
+		buildAssetsDir: process.env.NODE_ENV === 'production' ? '/assets/' : void 0,
 	},
 
 	imports: {
@@ -28,10 +29,18 @@ export default defineNuxtConfig({
 	],
 
 	tailwindcss: {
-		cssPath: '~/assets/sass/tailwind.scss',
 		exposeConfig: false,
 		injectPosition: 'last'
 	},
+
+	features: {
+		inlineStyles: false
+	},
+
+	css: [
+		'~/assets/sass/fonts.scss',
+		'~/assets/sass/reset.scss',
+	],
 
 	vite: {
 		plugins: [svgLoader({ defaultImport: 'component' })]
