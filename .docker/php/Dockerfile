@@ -7,7 +7,3 @@ RUN chmod +x /usr/local/bin/install-php-extensions \
 	&& docker-php-ext-install pdo_mysql
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-
-RUN mkdir -p /.composer \
-	&& chmod -R ug+w /.composer \
-	&& chown -R www-data /.composer

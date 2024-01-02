@@ -1,6 +1,5 @@
 {
 	"private": true,
-	"type": "module",
 	"scripts": {
 		"build": "nuxt build client",
 		"dev": "nuxt dev client",
@@ -9,7 +8,15 @@
 		"postinstall": "nuxt prepare client"
 	},
 	"devDependencies": {
-		"@nuxt/devtools": "latest",
-		"nuxt": "^3.7.3"
+		"@nuxt/devtools": "^1.0.6",
+		"@nuxtjs/tailwindcss": "^6.8.0",
+		"@types/node": "^20.6.3",
+		"nuxt": "^3.7.3",
+		"nuxt-icon": "^0.6.8",
+		"sass": "^1.68.0",
+		"vite-svg-loader": "^5.1.0"
+	},
+	"dependencies": {
+		"yup": "^1.2.0"
 	}
 }

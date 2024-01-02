@@ -31,26 +31,30 @@ return [
 	'disks' => [
 
 		'local' => [
+			'name' => 'local',
 			'driver' => 'local',
-			'root' => storage_path('app'),
+			'root' => storage_path(),
 			'throw' => false,
 		],
 
 		'public' => [
+			'name' => 'public',
 			'driver' => 'local',
-			'root' => storage_path('app/public'),
+			'root' => storage_path('public'),
 			'url' => env('APP_URL').'/storage',
 			'visibility' => 'public',
 			'throw' => false,
 		],
 
 		'temp' => [
+			'name' => 'temp',
 			'driver' => 'local',
 			'root' => base_path('.runtime/temp'),
 			'throw' => false
 		],
 
 		's3' => [
+			'name' => 's3',
 			'driver' => 's3',
 			'key' => env('AWS_ACCESS_KEY_ID'),
 			'secret' => env('AWS_SECRET_ACCESS_KEY'),

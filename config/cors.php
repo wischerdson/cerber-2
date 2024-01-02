@@ -15,11 +15,11 @@ return [
 	|
 	*/
 
-	'paths' => ['*'],
+	'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
 	'allowed_methods' => ['*'],
 
-	'allowed_origins' => [config('app.url'), config('app.api_url')],
+	'allowed_origins' => [config('app.url')],
 
 	'allowed_origins_patterns' => [],
 
@@ -27,7 +27,7 @@ return [
 
 	'exposed_headers' => [],
 
-	'max_age' => 86400, // 24 hours
+	'max_age' => 0,
 
 	'supports_credentials' => false,
 

@@ -5,6 +5,7 @@ services:
     build: ./.docker/php
     volumes:
       - .:/app
+      - ./.runtime/cache/composer:/.composer/cache
     working_dir: /app
     user: $USER_ID:$GROUP_ID
     depends_on:
@@ -18,11 +19,11 @@ services:
     depends_on:
       - redis
 
-  # queue:
-  #   build: ./.docker/php
-  #   volumes:
-  #     - .:/app
-  #   working_dir: /app
+  queue:
+    build: ./.docker/php
+    volumes:
+      - .:/app
+    working_dir: /app
 
   nginx:
     image: nginx:alpine
@@ -35,12 +36,6 @@ services:
       default:
         aliases:
           - api.nginx
-
-  nodejs:
-    build: ./.docker/nodejs
-    volumes:
-      - .:/app
-    working_dir: /app
 
   redis:
     image: redis:7.0.9-alpine3.17
