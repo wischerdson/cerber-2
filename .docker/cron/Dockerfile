@@ -10,7 +10,12 @@ RUN chmod +x /usr/local/bin/install-php-extensions \
 
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.26/supercronic-linux-amd64 \
     SUPERCRONIC=supercronic-linux-amd64 \
-    SUPERCRONIC_SHA1SUM=7a79496cf8ad899b99a719355d4db27422396735
+    SUPERCRONIC_SHA1SUM=7a79496cf8ad899b99a719355d4db27422396735 \
+	APP_SERVICES_CACHE=.runtime/cache/services.php \
+	APP_PACKAGES_CACHE=.runtime/cache/packages.php \
+	APP_CONFIG_CACHE=.runtime/cache/config.php \
+	APP_ROUTES_CACHE=.runtime/cache/routes-v7.php \
+	APP_EVENTS_CACHE=.runtime/cache/events.php
 
 RUN curl -fsSLO "$SUPERCRONIC_URL" \
 	&& echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \

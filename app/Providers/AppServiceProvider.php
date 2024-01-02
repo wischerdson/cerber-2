@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Mixins\Str as StrMixin;
+use App\Mixins\FilesystemAdapter as FilesystemAdapterMixin;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +29,14 @@ class AppServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+		$this->registerMixins();
+
 		JsonResource::withoutWrapping();
+	}
+
+	protected function registerMixins()
+	{
+		Str::mixin(new StrMixin());
+		FilesystemAdapter::mixin(new FilesystemAdapterMixin());
 	}
 }
