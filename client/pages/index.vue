@@ -1,5 +1,5 @@
 <template>
-	<div class="text-rose-300/40">
+	<div class="text-3xl font-mono">
 		Hello world
 	</div>
 </template>

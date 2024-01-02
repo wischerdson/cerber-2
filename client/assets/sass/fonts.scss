@@ -23,3 +23,10 @@ $fonts: (
 		font-display: block;
 	}
 }
+
+@font-face {
+	font-family: 'JetBrainsMono';
+	src: url('/fonts/JetBrainsMono.ttf') format('truetype');
+	font-style: 'normal';
+	font-display: block;
+}
