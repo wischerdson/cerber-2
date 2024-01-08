@@ -9,9 +9,12 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
-				telegram: '#0088cc',
-				whatsapp: '#43d854',
-				primary: colors.violet['500']
+				primary: '#933131',
+				dark: {
+					'gray-1': '#a3a3a3',
+					'gray-2': '#0c0c0c',
+					'gray-3': '#1d1d1d',
+				}
 			},
 			padding: {
 				'1/3': '33.333333%',
@@ -39,6 +42,7 @@ module.exports = {
 				'9/12': '75%',
 				'10/12': '83.333333%',
 				'11/12': '91.666667%',
+				'full': '100%'
 			},
 			maxWidth: {
 				macbook13: '1470px',
