@@ -27,3 +27,13 @@ useHead({
 })
 
 </script>
+
+<style lang="scss">
+
+body {
+	background-color: #000;
+	color: #fff;
+	font-family: theme('fontFamily.sans');
+}
+
+</style>
