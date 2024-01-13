@@ -18,9 +18,9 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			storageBaseUrl: process.env.STORAGE_URL,
-			apiBase: process.env.BROWSER_API_URL
+			apiBaseUrl: process.env.CLIENT_API_URL
 		},
-		apiBase: process.env.SERVER_API_URL
+		apiBaseUrl: process.env.SERVER_API_URL
 	},
 
 	modules: [

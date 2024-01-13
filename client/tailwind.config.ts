@@ -14,7 +14,8 @@ module.exports = {
 					'gray-1': '#a3a3a3',
 					'gray-2': '#0c0c0c',
 					'gray-3': '#1d1d1d',
-				}
+				},
+				'red-1': '#933131'
 			},
 			padding: {
 				'1/3': '33.333333%',

@@ -1,18 +1,18 @@
-import type { ComputedRef, WritableComputedRef } from 'vue'
 import type { Schema, InferType, ValidationError, ObjectSchema, AnyObject } from 'yup'
 import { set, get } from 'lodash-es'
-import { computed, useNuxtApp, useState, watch } from '#imports'
+import { useState, watch } from '#imports'
+import { uid } from '~/utils/helpers'
 
 export interface FieldContext<T> {
-	model: WritableComputedRef<T>,
-	error: ComputedRef<string | null>
-	allErrors: ComputedRef<string[]>
 	isDirty: () => boolean
 	hasErrors: () => boolean
+	getError: () => string | null
 	touch(): void
 	clear(): void
 	appendError(value: string): void
 	clearErrors(): void
+	setValue(value: T): void
+	getValue(): T
 }
 
 interface FieldState<T> {
@@ -23,7 +23,6 @@ interface FieldState<T> {
 
 export interface ValidationContext<T extends ObjectSchema<AnyObject>> {
 	defineRules<R extends ObjectSchema<AnyObject>>(rules: R): ValidationContext<R>
-	getObject(): InferType<T>
 	useField(path: string): FieldContext<any>
 	getYupSchemaInstance(): T
 	touchAll(): void
@@ -38,9 +37,7 @@ interface ValidationState<T extends Schema<object> = Schema<object>, I = InferTy
 }
 
 const makeField = <T>(initial: T): FieldContext<T> => {
-	const stateKey = `validation-field-${useNuxtApp().$uid()}`
-
-	const state = useState<FieldState<T>>(stateKey, () => {
+	const state = useState<FieldState<T>>(uid(), () => {
 		return {
 			isDirty: false,
 			model: initial,
@@ -50,23 +47,16 @@ const makeField = <T>(initial: T): FieldContext<T> => {
 
 	const touch = () => state.value.isDirty = true
 	const clear = () => state.value.isDirty = false
-
 	const isDirty = () => state.value.isDirty
 	const hasErrors = () => state.value.isDirty && state.value.errors.length > 0
-
-	const error = computed(() => hasErrors() ? state.value.errors[0] : null)
-	const allErrors = computed(() => hasErrors() ? state.value.errors : [])
-	const model = computed({
-		set: value => state.value.model = value,
-		get: () => state.value.model
-	})
-
+	const getError = () => hasErrors() ? state.value.errors[0] : null
+	const setValue = (value: T) => state.value.model = value
+	const getValue = () => state.value.model
 	const clearErrors = () => state.value.errors = []
 	const appendError = (value: string) => state.value.errors.push(value)
 
 	return {
-		touch, clear, appendError, clearErrors, isDirty, hasErrors,
-		model, error, allErrors,
+		touch, clear, appendError, clearErrors, isDirty, hasErrors, getError, setValue, getValue
 	}
 }
 
@@ -85,7 +75,7 @@ export const useValidation = (): ValidationContext<any> => {
 
 			const field = makeField(get(state.model, path) || '')
 
-			watch(field.model, value => {
+			watch(() => field.getValue(), value => {
 				set(state.model, path, value)
 				field.isDirty() && context.validate()
 			})
@@ -118,9 +108,6 @@ export const useValidation = (): ValidationContext<any> => {
 		},
 		getYupSchemaInstance() {
 			return state.rules
-		},
-		getObject() {
-			return state.model
 		},
 		touchAll() {
 			Object.values(state.fields).forEach(field => field.touch())

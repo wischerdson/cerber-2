@@ -15,19 +15,13 @@
 				<div class="text-center">
 					<h1 class="text-2xl font-medium">Войти</h1>
 				</div>
-				<form class="px-8 mt-10 space-y-8" @submit.prevent="sendForm">
-					<TextField v-model="login.model.value" @change="login.touch()">
+				<form class="px-8 mt-10 space-y-8" @submit.prevent="sendForm" autocomplete="off">
+					<TextField :validation-field="useField('login')">
 						<template #label>Логин</template>
 					</TextField>
-					<div v-if="login.hasErrors()">
-						<span class="text-red-300">{{ login.error }}</span>
-					</div>
-					<TextField type="password" v-model="password.model.value" @change="password.touch()">
+					<TextField type="password" :validation-field="useField('password')">
 						<template #label>Пароль</template>
 					</TextField>
-					<div v-if="password.hasErrors()">
-						<span class="text-red-300">{{ password.error }}</span>
-					</div>
 
 					<div class="flex justify-center">
 						<TheButton
@@ -40,7 +34,6 @@
 							<icon name="material-symbols:arrow-forward-rounded" size="32px" />
 						</TheButton>
 					</div>
-					{{ getObject() }}
 				</form>
 			</div>
 		</div>
@@ -59,13 +52,10 @@ import { object, string } from 'yup'
 
 const pending = ref(false)
 
-const { useField, getObject, validate, touchAll } = useValidation().defineRules(object({
+const { useField, validate, touchAll } = useValidation().defineRules(object({
 	login: string().required('Требуется ввести логин').min(4, 'Логин должен состоять минимум из 4 символов'),
 	password: string().required('Требуется ввести пароль')
 }))
-
-const login = useField('login')
-const password = useField('password')
 
 const sendForm = async () => {
 	const form = await validate()
