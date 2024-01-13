@@ -33,7 +33,7 @@
 <script setup lang="ts">
 
 import type { InputHTMLAttributes } from 'vue'
-import type { FieldContext } from '~/composables/useValidation'
+import type { FieldContext } from '~/composables/use-validation'
 import { useAttrs, ref } from '#imports'
 import ExclamationMark from '~/assets/svg/Monochrome=exclamationmark.circle.fill.svg'
 

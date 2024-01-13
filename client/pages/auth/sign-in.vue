@@ -46,14 +46,16 @@ import CerberTextLogo from '~/assets/svg/cerber-text-logo.svg'
 import CerberLogo from '~/assets/svg/cerber-logo.svg'
 import TextField from '~/components/ui/TextField.vue'
 import TheButton from '~/components/ui/Button.vue'
-import { useValidation } from '~/composables/useValidation'
-import { ref } from '#imports'
+import { useValidation } from '~/composables/use-validation'
+import { ref, useHead } from '#imports'
 import { object, string } from 'yup'
+
+useHead({ title: 'Cerber - Авторизация' })
 
 const pending = ref(false)
 
 const { useField, validate, touchAll } = useValidation().defineRules(object({
-	login: string().required('Требуется ввести логин').min(4, 'Логин должен состоять минимум из 4 символов'),
+	login: string().required('Требуется ввести логин'),
 	password: string().required('Требуется ввести пароль')
 }))
 
