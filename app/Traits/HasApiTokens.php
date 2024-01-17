@@ -5,17 +5,13 @@ namespace App\Traits;
 use App\Models\Auth\PersonalAccessToken;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Laravel\Sanctum\HasApiTokens as SanctumHasApiTokens;
 use Laravel\Sanctum\NewAccessToken;
 use Illuminate\Support\Str;
 
 trait HasApiTokens
 {
-	use SanctumHasApiTokens;
+	protected PersonalAccessToken $accessToken;
 
-	/**
-	 * Create a new personal access token for the user.
-	 */
 	public function createToken(array $abilities = ['*'], DateTimeInterface $expiresAt = null): NewAccessToken
 	{
 		$token = $this->personalAccessTokens()->create([
@@ -27,11 +23,20 @@ trait HasApiTokens
 		return new NewAccessToken($token, $token->getKey().'|'.$plainTextToken);
 	}
 
-	/**
-     * Get the access tokens that belong to model.
-     */
-	public function personalAccessTokens(): HasMany
+	public function accessTokens(): HasMany
 	{
 		return $this->hasMany(PersonalAccessToken::class, 'user_id');
+	}
+
+	public function currentAccessToken(): PersonalAccessToken
+    {
+        return $this->accessToken;
+    }
+
+	public function withAccessToken(PersonalAccessToken $accessToken): self
+	{
+		$this->accessToken = $accessToken;
+
+		return $this;
 	}
 }

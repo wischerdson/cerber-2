@@ -42,14 +42,14 @@ return new class extends Migration
 		Schema::create('personal_access_tokens', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('user_id')->constrained()->cascadeOnDelete();
-			$table->string('token', 64)->unique();
-			$table->text('abilities')->nullable();
+			$table->string('access_token', 64);
+			$table->string('refresh_token');
 			$table->timestamp('last_used_at')->useCurrent();
-			$table->timestamp('expires_at')->nullable();
+			$table->timestamp('expires_at')->useCurrent();
 			$table->timestamp('created_at')->useCurrent();
 		});
 
-		Schema::create('auth_details', function (Blueprint $table) {
+		Schema::create('auth_sessions', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('personal_access_token_id')->constrained('personal_access_tokens')->cascadeOnDelete();
 			$table->foreignId('entry_point_id')->constrained('auth_entry_points')->cascadeOnDelete();
