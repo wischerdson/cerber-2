@@ -25,8 +25,6 @@ class EntryPoint extends Model
 
 	protected $table = 'auth_entry_points';
 
-	protected static $unguarded = true;
-
 	public function user(): BelongsTo
 	{
 		return $this->belongsTo(User::class, 'user_id');
@@ -41,6 +39,4 @@ class EntryPoint extends Model
 	{
 		return $this->hasMany(AuthDetails::class, 'entry_point_id');
 	}
-
-
 }

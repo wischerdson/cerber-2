@@ -2,9 +2,9 @@
 
 namespace App\Models\Auth;
 
+use App\Traits\ProviderEntryPoint;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -12,11 +12,12 @@ use Illuminate\Support\Facades\Hash;
  * @property string $login
  * @property string $password
  * @property string $password_hash
+ * @property \App\Models\Auth\EntryPoint $baseEntryPoint
  * @property \Illuminate\Support\Carbon $password_changed_at
  */
-class LoginProviderEntryPoint extends Model
+class LoginProviderEntryPoint extends Model implements ProviderEntryPoint
 {
-	use HasFactory;
+	use HasFactory, ProviderEntryPoint;
 
 	public $timestamps = false;
 
@@ -26,11 +27,6 @@ class LoginProviderEntryPoint extends Model
 		'password_changed_at' => 'timestamp',
 		'password' => 'encrypted'
 	];
-
-	public function baseEntryPoint(): MorphOne
-	{
-		return $this->morphOne(EntryPoint::class, 'provider', 'provider', 'provider_entry_point_id');
-	}
 
 	protected static function booted()
 	{

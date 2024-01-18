@@ -63,9 +63,9 @@ class Guard implements AuthGuard
 	}
 
 	/**
-	 * @return array{0: int, 1: string}
+	 * @return null|array{0: int, 1: string}
 	 */
-	protected function getTokenFromRequest(): array
+	protected function getTokenFromRequest(): ?array
 	{
 		$token = $this->request->bearerToken();
 
