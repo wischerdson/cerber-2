@@ -1,0 +1,12 @@
+{
+	"editor.insertSpaces": false,
+	"files.eol": "\n",
+	"intelephense.phpdoc.useFullyQualifiedNames": true,
+	"files.insertFinalNewline": true,
+	"files.trimFinalNewlines": true,
+	"workbench.editor.showTabs": "single",
+	"files.trimTrailingWhitespace": true,
+	"[markdown]": {
+		"files.trimTrailingWhitespace": false
+	}
+}
