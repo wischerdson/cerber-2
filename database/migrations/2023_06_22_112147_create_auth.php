@@ -23,15 +23,17 @@ return new class extends Migration
 			$table->timestamp('deleted_at')->nullable();
 		});
 
-		Schema::create('auth_entry_points', function (Blueprint $table) {
+		Schema::create('auth_grants', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('user_id')->constrained()->cascadeOnDelete();
-			$table->string('provider');
-			$table->bigInteger('provider_entry_point_id')->unsigned();
+			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+			$table->string('grant_type');
+			$table->string('grant_id');
+			$table->boolean('is_active')->default(true);
 			$table->timestamp('created_at')->useCurrent();
+			$table->timestamp('updated_at')->nullable();
 		});
 
-		Schema::create('login_provider_entry_points', function (Blueprint $table) {
+		Schema::create('auth_grant_passwords', function (Blueprint $table) {
 			$table->id();
 			$table->string('login')->unique();
 			$table->text('password')->nullable();
@@ -39,25 +41,14 @@ return new class extends Migration
 			$table->timestamp('password_changed_at')->nullable();
 		});
 
-		Schema::create('personal_access_tokens', function (Blueprint $table) {
-			$table->id();
-			$table->foreignId('user_id')->constrained()->cascadeOnDelete();
-			$table->string('access_token', 64);
-			$table->string('refresh_token');
-			$table->timestamp('last_used_at')->useCurrent();
-			$table->timestamp('expires_at')->useCurrent();
-			$table->timestamp('created_at')->useCurrent();
-		});
-
 		Schema::create('auth_sessions', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('personal_access_token_id')->constrained('personal_access_tokens')->cascadeOnDelete();
-			$table->foreignId('entry_point_id')->constrained('auth_entry_points')->cascadeOnDelete();
+			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+			$table->foreignId('grant_id')->constrained('auth_grants')->cascadeOnDelete();
 			$table->text('user_agent')->nullable();
 			$table->ipAddress('ip')->nullable();
-			$table->string('ip_country_code', 2)->nullable();
-			$table->string('ip_region')->nullable();
-			$table->string('ip_city')->nullable();
+			$table->boolean('revoked')->default(false);
+			$table->timestamp('last_seen_at')->useCurrent();
 		});
 	}
 
@@ -66,10 +57,9 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists('auth_details');
-		Schema::dropIfExists('personal_access_tokens');
-		Schema::dropIfExists('login_provider_entry_points');
-		Schema::dropIfExists('auth_entry_points');
+		Schema::dropIfExists('auth_sessions');
+		Schema::dropIfExists('auth_grant_passwords');
+		Schema::dropIfExists('auth_grants');
 		Schema::dropIfExists('users');
 	}
 };

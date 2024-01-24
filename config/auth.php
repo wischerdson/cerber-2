@@ -30,13 +30,13 @@ return [
 	| users are actually retrieved out of your database or other storage
 	| mechanisms used by this application to persist your user's data.
 	|
-	| Supported: "session", "cerber"
+	| Supported: "session", "jwt"
 	|
 	*/
 
 	'guards' => [
 		'api' => [
-			'driver' => 'cerber'
+			'driver' => 'jwt'
 		],
 	],
 
@@ -62,6 +62,12 @@ return [
 			'driver' => 'eloquent',
 			'model' => App\Models\User::class,
 		]
-	]
+	],
+
+	'openssl_public_key_file' => storage_path('public.key'),
+
+	'openssl_private_key_file' => storage_path('private.key'),
+
+	'allow_indefinite_token_ttl' => false
 
 ];

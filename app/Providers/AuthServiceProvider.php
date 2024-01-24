@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\Auth\AuthService;
+use App\Services\Auth\GrantTypes\PasswordGrantType;
+use App\Services\Auth\GrantTypes\RefreshTokenGrantType;
 use App\Services\Auth\Guard;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -18,13 +21,27 @@ class AuthServiceProvider extends ServiceProvider
 		//
 	];
 
+	public function register()
+	{
+		parent::register();
+
+		$this->app->singleton(AuthService::class, function (Application $app) {
+            return new AuthService($app->make('request'));
+        });
+	}
+
 	/**
 	 * Register any authentication / authorization services.
 	 */
 	public function boot(): void
 	{
-		Auth::extend('cerber', function (Application $app) {
+		Auth::extend('jwt', function (Application $app) {
 			return new Guard($app->make('request'));
+		});
+
+		tap($this->app->make(AuthService::class), function (AuthService $service) {
+			$service->enableGrantType(new RefreshTokenGrantType());
+			$service->enableGrantType(new PasswordGrantType());
 		});
 	}
 }

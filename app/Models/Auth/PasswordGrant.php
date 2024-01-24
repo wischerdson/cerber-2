@@ -2,7 +2,7 @@
 
 namespace App\Models\Auth;
 
-use App\Traits\ProviderEntryPoint;
+use App\Traits\ExtendedGrant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
@@ -15,18 +15,23 @@ use Illuminate\Support\Facades\Hash;
  * @property \App\Models\Auth\EntryPoint $baseEntryPoint
  * @property \Illuminate\Support\Carbon $password_changed_at
  */
-class LoginProviderEntryPoint extends Model implements ProviderEntryPoint
+class PasswordGrant extends Model
 {
-	use HasFactory, ProviderEntryPoint;
+	use HasFactory, ExtendedGrant;
 
 	public $timestamps = false;
 
-	protected $table = 'login_provider_entry_points';
+	protected $table = 'auth_grant_passwords';
 
 	protected $casts = [
 		'password_changed_at' => 'timestamp',
 		'password' => 'encrypted'
 	];
+
+	public function getMorphClass(): string
+	{
+		return PasswordGrant::getIdentifier();
+	}
 
 	protected static function booted()
 	{

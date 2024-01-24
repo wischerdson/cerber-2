@@ -12,31 +12,35 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * @property int $id
  * @property int $user_id
+ * @property string $grant_type
+ * @property int $grant_id
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\User $user
- * @property string $provider
- * @property int $provider_entry_point_id
- * @property \Illuminate\Support\Carbon|null $created_at
  */
-class EntryPoint extends Model
+class Grant extends Model
 {
 	use HasFactory;
 
-	public $timestamps = false;
+	protected $table = 'auth_grants';
 
-	protected $table = 'auth_entry_points';
+	protected $casts = [
+		'is_active' => 'boolean'
+	];
 
 	public function user(): BelongsTo
 	{
 		return $this->belongsTo(User::class, 'user_id');
 	}
 
-	public function providerEntryPoint(): MorphTo
+	public function extendedGrant(): MorphTo
 	{
-		return $this->morphTo('provider', 'provider', 'provider_entry_point_id');
+		return $this->morphTo(type: 'grant_type', id: 'grant_id');
 	}
 
-	public function authDetails(): HasMany
+	public function authSession(): HasMany
 	{
-		return $this->hasMany(AuthDetails::class, 'entry_point_id');
+		return $this->hasMany(Session::class, 'grant_id');
 	}
 }

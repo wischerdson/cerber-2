@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Auth\EntryPoint;
-use App\Traits\HasApiTokens;
+use App\Models\Auth\Session as AuthSession;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -22,7 +21,7 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-	use HasApiTokens, HasFactory, Notifiable;
+	use HasFactory, Notifiable;
 
 	const UPDATED_AT = null;
 
@@ -30,16 +29,16 @@ class User extends Authenticatable
 
 	protected $hidden = ['is_admin'];
 
-	protected static $unguarded = true;
+	protected AuthSession $authSession;
 
 	protected $casts = [
 		'is_admin' => 'boolean',
 		'created_at' => 'timestamp'
 	];
 
-	public function entryPoints(): HasMany
+	public function sessions(): HasMany
 	{
-		return $this->hasMany(EntryPoint::class, 'user_id');
+		return $this->hasMany(AuthSession::class, 'user_id');
 	}
 
 	public function asAdmin(): self
@@ -47,5 +46,17 @@ class User extends Authenticatable
 		$this->is_admin = true;
 
 		return $this;
+	}
+
+	public function withAuthSession(AuthSession $session): self
+	{
+		$this->authSession = $session;
+
+		return $this;
+	}
+
+	public function currentAuthSession(): AuthSession
+	{
+		return $this->authSession;
 	}
 }
