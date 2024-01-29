@@ -2,9 +2,9 @@
 
 namespace App\Services\Auth\GrantTypes;
 
-use App\Models\Auth\Session as AuthSession;
+use App\Models\Auth\PasswordGrant;
+use App\Services\Auth\Exceptions\AuthCredentialsErrorException;
 use App\Services\Auth\TokensPair;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,6 +19,12 @@ class PasswordGrantType extends AbstractGrantType
 		return 'password';
 	}
 
+	public function setCredentials(string $login, string $password)
+	{
+		$this->login = $login;
+		$this->password = $password;
+	}
+
 	public function canRespondToAccessTokenRequest(Request $request)
 	{
 		return (
@@ -30,46 +36,58 @@ class PasswordGrantType extends AbstractGrantType
 		);
 	}
 
+	/**
+	 * @throws \App\Services\Auth\Exceptions\AuthCredentialsErrorException
+	 */
 	public function respondToAccessTokenRequest(Request $request): TokensPair
 	{
-		$session = new AuthSession();
+		$this->setCredentials($request->login, $request->password);
 
-		return $this->makeTokensPair($session);
+		if (
+			(!$grant = $this->findGrant()) ||
+			(!$baseGrant = $grant->baseGrant) ||
+			(!$baseGrant->is_active)
+		) {
+			throw new AuthCredentialsErrorException();
+		}
+
+		return $this->makeTokensPair(
+			$this->createSession($baseGrant, $request),
+			$this->createRefreshTokenGrant($baseGrant->user_id)
+		);
 	}
 
-	public function createNewGrant()
+	public function hasGrant(): bool
+	{
+		return PasswordGrant::query()->where('login', $this->login)->exists();
+	}
+
+	public function findGrant(): ?PasswordGrant
+	{
+		/** @var \App\Models\Auth\PasswordGrant $grant */
+		$grant = PasswordGrant::query()
+			->where('login', $this->login)
+			->first();
+
+		if ($grant && Hash::check($this->password, $grant->password_hash)) {
+			return $grant;
+		}
+
+		return null;
+	}
+
+	public function updateGrant()
 	{
 
 	}
 
-	// public function setCredentials(string $login, string $password): void
-	// {
-	// 	$this->login = $login;
-	// 	$this->password = $password;
-	// }
+	protected function createGrant(): PasswordGrant
+	{
+		$grant = new PasswordGrant();
+		$grant->login = $this->login;
+		$grant->password = $this->password;
+		$grant->save();
 
-	// public function getProviderEntryPointModelClass(): string
-	// {
-	// 	return LoginProviderEntryPoint::class;
-	// }
-
-	// protected function checkCredentials(ProviderEntryPoint $providerEntryPoint): bool
-	// {
-	// 	return Hash::check($this->password, $providerEntryPoint->password_hash);
-	// }
-
-	// protected function filterProviderEntryPoint(Builder $query): void
-	// {
-	// 	$query->where('login', $this->login);
-	// }
-
-	// protected function fillEntryPoint(ProviderEntryPoint $providerEntryPoint): ProviderEntryPoint
-	// {
-	// 	$providerEntryPoint->login = $this->login;
-	// 	$providerEntryPoint->password = $this->password;
-
-	// 	return $providerEntryPoint;
-	// }
-
-
+		return $grant;
+	}
 }

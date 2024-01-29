@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Facades\Auth;
 use App\Models\User;
-use App\Services\Auth\Providers\LoginAuthProvider;
 use Illuminate\Console\Command;
+
+use function Laravel\Prompts\error;
+use function Laravel\Prompts\password;
+use function Laravel\Prompts\text;
 
 class CreateAdmin extends Command
 {
@@ -20,29 +24,35 @@ class CreateAdmin extends Command
 	 */
 	public function handle()
 	{
-		$login = $this->ask('Admin login', 'admin');
+		$login = text(label: 'Admin login', default: 'admin', required: true);
 
 		do {
-			$password = $this->secret("Password for \"$login\"");
-			$passwordRepeating = $this->secret("Please repeate password for \"$login\"");
+			$password = password(label: "Password for \"$login\"", required: true);
+			$passwordRepeating = password(label: "Please repeat password for \"$login\"", required: true);
 
 			if ($password === $passwordRepeating) {
 				break;
 			}
 
-			$this->error('Passwords don\'t match');
+			error('Passwords don\'t match');
 		} while (true);
 
-		$authProvider = new LoginAuthProvider($login, $password);
+		/** @var \App\Services\Auth\GrantTypes\PasswordGrantType */
+		$grantType = Auth::grantType('password');
+		$grantType->setCredentials($login, $password);
 
-		if ($authProvider->hasEntryPoint()) {
-			$this->error("User \"$login\" already exists");
+		if ($grantType->hasGrant()) {
+			error("User \"$login\" already exists");
 			return self::FAILURE;
 		}
 
 		$user = new User();
+		$user->first_name = 'Lindsey';
+		$user->last_name = 'Stirling';
+		$user->email = 'admin@example.com';
 		$user->asAdmin()->save();
-		$authProvider->createEntryPointFor($user);
+
+		$grantType->createGrantFor($user);
 
 		return self::SUCCESS;
 	}

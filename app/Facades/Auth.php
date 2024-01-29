@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string respondToAccessTokenRequest()
  * @method static void enableGrantType(\App\Services\Auth\GrantTypes\AbstractGrantType $grantType)
  * @method static \App\Models\Auth\Session currentSession()
+ * @method static \App\Services\Auth\GrantTypes\AbstractGrantType grantType(string $identifier)
  *
  * @see \App\Services\Auth\AuthService
  */

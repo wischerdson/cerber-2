@@ -39,7 +39,7 @@ class Grant extends Model
 		return $this->morphTo(type: 'grant_type', id: 'grant_id');
 	}
 
-	public function authSession(): HasMany
+	public function authSessions(): HasMany
 	{
 		return $this->hasMany(Session::class, 'grant_id');
 	}

@@ -2,7 +2,7 @@
 
 namespace App\Services\Auth;
 
-use App\Models\Auth\Session as AuthSession;
+use DateTimeInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Lcobucci\JWT\Encoding\ChainedFormatter;
@@ -14,13 +14,15 @@ use Lcobucci\JWT\Token\RegisteredClaims;
 use Lcobucci\JWT\UnencryptedToken;
 use RuntimeException;
 
-class TokenFactory
+abstract class TokenFactory
 {
 	public const SESSION_ID_CLAIM = 'ses';
 
 	protected JwtBuilder $jwtBuilder;
 
-	private bool $allowIndefiniteTokenTTL;
+	protected bool $allowIndefiniteTokenTTL;
+
+	abstract public static function getExpiresAt(): Carbon;
 
 	public static function getSigningKey(): InMemory
 	{
@@ -35,22 +37,15 @@ class TokenFactory
 			new JoseEncoder(),
 			ChainedFormatter::withUnixTimestampDates()
 		);
-		$this->jwtBuilder->issuedAt(now()->toDateTimeImmutable());
+		$this->jwtBuilder = $this->jwtBuilder->issuedAt(now()->toDateTimeImmutable());
+		$this->expiresAt($this->getExpiresAt());
 
 		$this->allowIndefiniteTokenTTL = config('auth.allow_indefinite_token_ttl', false);
 	}
 
-	public function setAuthSession(AuthSession $session)
-	{
-		$this->jwtBuilder->withClaim(self::SESSION_ID_CLAIM, $session->getKey());
-	}
-
-	/**
-	 * Set time to live of the token
-	 */
 	public function expiresAt(Carbon $ttl)
 	{
-		$this->jwtBuilder->expiresAt($ttl->toDateTimeImmutable());
+		$this->jwtBuilder = $this->jwtBuilder->expiresAt($ttl->toDateTimeImmutable());
 	}
 
 	public function issueToken(): UnencryptedToken
@@ -66,14 +61,10 @@ class TokenFactory
 	protected function checkToken(UnencryptedToken $token): UnencryptedToken
 	{
 		if (
-			!$token->claims()->has(RegisteredClaims::EXPIRATION_TIME &&
+			!$token->claims()->has(RegisteredClaims::EXPIRATION_TIME) &&
 			!$this->allowIndefiniteTokenTTL
-		)) {
-			throw new RuntimeException('Token TTL is not set');
-		}
-
-		if (!$token->claims()->has(self::SESSION_ID_CLAIM)) {
-			throw new RuntimeException('Token session ID is not set');
+		) {
+			throw new RuntimeException('Token TTL is not set.');
 		}
 
 		return $token;

@@ -4,16 +4,21 @@ namespace App\Services\Auth;
 
 class TokensPair
 {
-	public readonly TokenFactory $accessTokenFactory;
-
-	public readonly TokenFactory $refreshTokenFactory;
-
-	public static function make(TokenFactory $accessTokenFactory, TokenFactory $refreshTokenFactory): self
+	public function __construct(
+		public readonly AccessTokenFactory $accessTokenFactory,
+		public readonly RefreshTokenFactory $refreshTokenFactory
+	)
 	{
-		$instance = new self();
-		$instance->accessTokenFactory = $accessTokenFactory;
-		$instance->refreshTokenFactory = $refreshTokenFactory;
 
-		return $instance;
+	}
+
+	public function issueAccessToken(): string
+	{
+		return $this->accessTokenFactory->issueToken()->toString();
+	}
+
+	public function issueRefreshToken(): string
+	{
+		return $this->refreshTokenFactory->issueToken()->toString();
 	}
 }

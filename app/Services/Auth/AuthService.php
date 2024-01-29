@@ -5,21 +5,66 @@ namespace App\Services\Auth;
 use App\Models\Auth\Session as AuthSession;
 use App\Services\Auth\Exceptions\UnsupportedGrantTypeException;
 use App\Services\Auth\GrantTypes\AbstractGrantType;
-use App\Services\Auth\ResponseTypes\BearerTokenResponse;
+use App\Services\Auth\TokenFactory;
+use App\Services\Auth\TokensPair;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Lcobucci\JWT\Encoding\CannotDecodeContent;
+use Lcobucci\JWT\Encoding\JoseEncoder;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Token\InvalidTokenStructure;
+use Lcobucci\JWT\Token\Parser;
+use Lcobucci\JWT\Token\UnsupportedHeaderFound;
+use Lcobucci\JWT\UnencryptedToken;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validation\Validator as JwtValidator;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthService
 {
-	/** @var \App\Services\Auth\GrantTypes\AbstractGrantType */
+	/** @var \App\Services\Auth\GrantTypes\AbstractGrantType[] */
 	protected array $enabledGrantTypes = [];
 
 	private Request $request;
 
+	public static function parseToken(string $rawToken, ?callable $beforeValidate = null): ?UnencryptedToken
+	{
+		$parser = new Parser(new JoseEncoder());
+
+		try {
+			$token = $parser->parse($rawToken);
+		} catch (CannotDecodeContent | InvalidTokenStructure | UnsupportedHeaderFound $e) {
+			return null;
+		}
+
+		$beforeValidate && $beforeValidate($token);
+
+		$validator = new JwtValidator();
+
+		if ($token->isExpired(now())) {
+			return null;
+		}
+
+		$signedWith = new SignedWith(new Sha256(), TokenFactory::getSigningKey());
+
+		if (!$validator->validate($token, $signedWith)) {
+			return null;
+		}
+
+		return $token;
+	}
+
 	public function __construct(Request $request)
 	{
 		$this->request = $request;
+	}
+
+	/**
+	 * @throws \App\Services\Auth\Exceptions\UnsupportedGrantTypeException
+	 */
+	public function grantType(string $identifier): ?AbstractGrantType
+	{
+		return ($grant = @$this->enabledGrantTypes[$identifier]) ? $grant : throw new UnsupportedGrantTypeException();
 	}
 
 	public function enableGrantType(AbstractGrantType $grant)
@@ -53,22 +98,28 @@ class AuthService
 		throw new UnsupportedGrantTypeException();
 	}
 
-	protected function makeHttpResponse(TokensPair $pair): Response
+	public function findSessionByToken(UnencryptedToken $token): ?AuthSession
 	{
-		$responseType = new BearerTokenResponse();
-		$responseType->setTokensPair($pair);
+		$sessionId = $token->claims()->get(TokenFactory::SESSION_ID_CLAIM);
 
-		return $responseType->makeHttpResponse();
+		return AuthSession::query()
+			->where('id', $sessionId)
+			->where('revoked', false)
+			->where('user_agent', $this->request->header('User-Agent'))
+			->first();
 	}
 
+	protected function makeHttpResponse(TokensPair $pair): Response
+	{
+		$responseParams = [
+			'token_type' => 'Bearer',
+			'access_token' => $pair->issueAccessToken(),
+			'refresh_token' => $pair->issueRefreshToken(),
+		];
 
-
-	// private function detailAuthentication(PersonalAccessToken $token, EntryPoint $entryPoint)
-	// {
-	// 	$authDetails = new AuthDetails();
-	// 	$authDetails->personal_access_token_id = $token->id;
-	// 	$authDetails->user_agent = $this->request->header('User-Agent');
-	// 	$authDetails->ip = $this->request->ip();
-	// 	$entryPoint->authDetails()->save($authDetails);
-	// }
+		return response()->json($responseParams, 201, [
+			'pragma' => 'no-cache',
+			'cache-control' => 'no-store'
+		]);
+	}
 }

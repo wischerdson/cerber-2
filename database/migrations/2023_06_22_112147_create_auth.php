@@ -33,12 +33,19 @@ return new class extends Migration
 			$table->timestamp('updated_at')->nullable();
 		});
 
-		Schema::create('auth_grant_passwords', function (Blueprint $table) {
+		Schema::create('auth_password_grants', function (Blueprint $table) {
 			$table->id();
 			$table->string('login')->unique();
 			$table->text('password')->nullable();
 			$table->string('password_hash')->nullable();
 			$table->timestamp('password_changed_at')->nullable();
+		});
+
+		Schema::create('auth_refresh_token_grants', function (Blueprint $table) {
+			$table->id();
+			$table->string('code', 3);
+			$table->timestamp('expires_at');
+			$table->timestamp('updated_at');
 		});
 
 		Schema::create('auth_sessions', function (Blueprint $table) {
@@ -58,7 +65,8 @@ return new class extends Migration
 	public function down(): void
 	{
 		Schema::dropIfExists('auth_sessions');
-		Schema::dropIfExists('auth_grant_passwords');
+		Schema::dropIfExists('auth_refresh_token_grants');
+		Schema::dropIfExists('auth_password_grants');
 		Schema::dropIfExists('auth_grants');
 		Schema::dropIfExists('users');
 	}

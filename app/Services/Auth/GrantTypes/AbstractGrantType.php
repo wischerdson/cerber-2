@@ -2,36 +2,30 @@
 
 namespace App\Services\Auth\GrantTypes;
 
+use App\Models\Auth\AbstractExtendedGrant;
+use App\Models\Auth\Grant;
+use App\Models\Auth\RefreshTokenGrant;
 use App\Models\Auth\Session as AuthSession;
-use App\Services\Auth\TokenFactory;
+use App\Models\User;
+use App\Services\Auth\AccessTokenFactory;
+use App\Services\Auth\AuthService;
+use App\Services\Auth\RefreshTokenFactory;
 use App\Services\Auth\TokensPair;
+use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 
 abstract class AbstractGrantType
 {
-	// abstract public function getProviderEntryPointModelClass(): string;
-
-	// abstract protected function fillEntryPoint(ProviderEntryPoint $providerEntryPoint): ProviderEntryPoint;
-
-	// abstract protected function filterProviderEntryPoint(Builder $query): void;
-
-	// abstract protected function checkCredentials(ProviderEntryPoint $providerEntryPoint): bool;
-
 	/**
 	 * Return the grant identifier that can be used in matching up requests.
 	 */
 	abstract public static function getIdentifier(): string;
 
+	abstract public function hasGrant(): bool;
+
 	abstract public function respondToAccessTokenRequest(Request $request): TokensPair;
 
-	// public function hasEntryPoint(): bool
-	// {
-	// 	/** @var \Illuminate\Database\Eloquent\Builder $query */
-	// 	$query = $this->getProviderEntryPointModelClass()::query();
-	// 	$this->filterProviderEntryPoint($query);
-
-	// 	return $query->exists();
-	// }
+	abstract protected function createGrant(): AbstractExtendedGrant;
 
 	public function canRespondToAccessTokenRequest(Request $request)
 	{
@@ -42,64 +36,67 @@ abstract class AbstractGrantType
 		return $request->grant_type === $this->getIdentifier();
 	}
 
-	protected function makeTokensPair(AuthSession $session): TokensPair
+	public function createGrantFor(User|int $user): AbstractExtendedGrant
 	{
-		$accessTokenFactory = new TokenFactory();
-		$accessTokenFactory->setAuthSession($session);
-		$accessTokenFactory->expiresAt(now()->addMinutes(30));
+		$userId = gettype($user) === 'object' ? $user->getKey() : $user;
 
-		$refreshTokenFactory = new TokenFactory();
-		$refreshTokenFactory->setAuthSession($session);
-		$refreshTokenFactory->expiresAt(now()->addMonth());
+		$grant = $this->createGrant();
 
-		return TokensPair::make($accessTokenFactory, $refreshTokenFactory);
+		$baseGrant = new Grant();
+		$baseGrant->user_id = $userId;
+
+		$grant->baseGrant()->save($baseGrant);
+
+		return $grant->setRelation('baseGrant', $baseGrant);
 	}
 
-	/**
-	 * @throws \App\Exceptions\InvalidCredentialsException
-	 */
-	// public function findEntryPoint(bool $checkCredentials = true): ?EntryPoint
+	// public function updateGrantFor(User|int $user): AbstractExtendedGrant
 	// {
-	// 	$class = $this->getProviderEntryPointModelClass();
-
-	// 	$query = $class::query();
-	// 	$this->filterProviderEntryPoint($query);
-
-	// 	$providerEntryPoint = $query->first();
-
-	// 	if ($checkCredentials) {
-	// 		if (!$providerEntryPoint) {
-	// 			throw new InvalidCredentialsException();
-	// 		}
-
-	// 		if (!$this->checkCredentials($providerEntryPoint)) {
-	// 			throw new InvalidCredentialsException();
-	// 		}
-	// 	}
-
-	// 	if (!$providerEntryPoint) {
-	// 		return null;
-	// 	}
-
-	// 	/** @var \App\Models\Auth\EntryPoint $entryPoint */
-	// 	$entryPoint = $providerEntryPoint->baseEntryPoint;
-
-	// 	return $entryPoint->setRelation('providerEntryPoint', $providerEntryPoint);;
+	// 	$userId = gettype($user) === 'object' ? $user->getKey() : $user;
 	// }
 
-	// public function createGrantFor(User $user): Grant
-	// {
-	// 	$class = $this->getProviderEntryPointModelClass();
+	protected function createRefreshTokenGrant(int $userId): RefreshTokenGrant
+	{
+		/** @var \App\Services\Auth\AuthService */
+		$authService = Container::getInstance()->make(AuthService::class);
 
-	// 	$providerEntryPoint = $this->fillEntryPoint(new $class());
+		return $authService->grantType('refresh_token')->createGrantFor($userId);
+	}
 
-	// 	$entryPoint = new EntryPoint();
-	// 	$entryPoint->setAttribute(
-	// 		$entryPoint->user()->getForeignKeyName(),
-	// 		$user->getKey()
-	// 	);
-	// 	$entryPoint->providerEntryPoint()->associate($providerEntryPoint);
+	protected function makeTokensPair(AuthSession $session, RefreshTokenGrant $refreshTokenGrant): TokensPair
+	{
+		return new TokensPair(
+			$this->makeAccessToken($session),
+			$this->makeRefreshToken($session, $refreshTokenGrant)
+		);
+	}
 
-	// 	return $entryPoint->setRelation('providerEntryPoint', $providerEntryPoint);
-	// }
+	protected function makeAccessToken(AuthSession $session): AccessTokenFactory
+	{
+		$accessTokenFactory = new AccessTokenFactory();
+		$accessTokenFactory->setAuthSession($session);
+
+		return $accessTokenFactory;
+	}
+
+	protected function makeRefreshToken(AuthSession $session, RefreshTokenGrant $refreshTokenGrant): RefreshTokenFactory
+	{
+		$refreshTokenFactory = new RefreshTokenFactory();
+		$refreshTokenFactory->setRefreshTokenGrant($refreshTokenGrant);
+		$refreshTokenFactory->setAuthSession($session);
+
+		return $refreshTokenFactory;
+	}
+
+	protected function createSession(Grant $grant, Request $request): AuthSession
+	{
+		$session = new AuthSession();
+		$session->user_id = $grant->user_id;
+		$session->user_agent = $request->header('User-Agent');
+		$session->ip = $request->ip();
+
+		$grant->authSessions()->save($session);
+
+		return $session;
+	}
 }

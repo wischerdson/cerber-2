@@ -2,9 +2,7 @@
 
 namespace App\Models\Auth;
 
-use App\Traits\ExtendedGrant;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Services\Auth\GrantTypes\PasswordGrantType;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -12,16 +10,14 @@ use Illuminate\Support\Facades\Hash;
  * @property string $login
  * @property string $password
  * @property string $password_hash
- * @property \App\Models\Auth\EntryPoint $baseEntryPoint
+ * @property \App\Models\Auth\Grant $baseGrant
  * @property \Illuminate\Support\Carbon $password_changed_at
  */
-class PasswordGrant extends Model
+class PasswordGrant extends AbstractExtendedGrant
 {
-	use HasFactory, ExtendedGrant;
-
 	public $timestamps = false;
 
-	protected $table = 'auth_grant_passwords';
+	protected $table = 'auth_password_grants';
 
 	protected $casts = [
 		'password_changed_at' => 'timestamp',
@@ -30,7 +26,7 @@ class PasswordGrant extends Model
 
 	public function getMorphClass(): string
 	{
-		return PasswordGrant::getIdentifier();
+		return PasswordGrantType::getIdentifier();
 	}
 
 	protected static function booted()
