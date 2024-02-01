@@ -56,7 +56,9 @@ class Guard implements AuthGuard
 
 	protected function getTokenFromRequest(): ?UnencryptedToken
 	{
-		$bearerToken = $this->request->bearerToken();
+		if (!$bearerToken = $this->request->bearerToken()) {
+			return null;
+		}
 
 		return AuthService::parseToken($bearerToken, function (UnencryptedToken $token) {
 			$token->isExpired(now()) && throw new AccessTokenHasExpiredException();

@@ -15,4 +15,12 @@ class AuthController extends Controller
 	{
 		Auth::currentSession()->revoke();
 	}
+
+	public function user()
+	{
+		return [
+			'user' => Auth::user(),
+			'session' => Auth::currentSession()
+		];
+	}
 }

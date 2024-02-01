@@ -2,7 +2,6 @@
 
 namespace App\Services\Auth;
 
-use DateTimeInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Lcobucci\JWT\Encoding\ChainedFormatter;

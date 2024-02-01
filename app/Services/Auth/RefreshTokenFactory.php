@@ -21,8 +21,9 @@ class RefreshTokenFactory extends TokenFactory
 
 	public function setRefreshTokenGrant(RefreshTokenGrant $grant)
 	{
-		$this->jwtBuilder = $this->jwtBuilder->withClaim(self::REFRESH_TOKEN_GRANT_ID_CLAIM, $grant->getKey());
-		$this->jwtBuilder = $this->jwtBuilder->withClaim(self::REFRESH_TOKEN_GRANT_CODE_CLAIM, $grant->code);
+		$this->jwtBuilder = $this->jwtBuilder
+			->withClaim(self::REFRESH_TOKEN_GRANT_CODE_CLAIM, $grant->code)
+			->withClaim(self::REFRESH_TOKEN_GRANT_ID_CLAIM, $grant->getKey());
 	}
 
 	public function setAuthSession(AuthSession $session)

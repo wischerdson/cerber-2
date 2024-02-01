@@ -72,11 +72,19 @@ class AuthService
 		$this->enabledGrantTypes[$grant::getIdentifier()] = $grant;
 	}
 
+	public function apiGuard(): Guard
+	{
+		return Auth::guard('api');
+	}
+
 	public function currentSession(): AuthSession
 	{
-		return with(Auth::guard('api'), function (Guard $guard) {
-			return $guard->currentSession();
-		});
+		return $this->apiGuard()->currentSession();
+	}
+
+	public function user()
+	{
+		return $this->apiGuard()->user();
 	}
 
 	/**
