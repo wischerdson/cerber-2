@@ -92,6 +92,8 @@ case $command in
 		payload="$(runOrExec php) php $@" ;;
 	"artisan" | "art" | "laravel" | "lara")
 		payload="$(runOrExec php) php php /app/artisan $@" ;;
+	"pest")
+		payload="$(runOrExec php) php php /app/vendor/bin/pest $@" ;;
 	"composer")
 		payload="$(runOrExec php) php composer $@" ;;
 	"yarn")

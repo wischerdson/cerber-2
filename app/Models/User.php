@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Auth\Grant;
+use App\Models\Auth\PasswordGrant;
 use App\Models\Auth\Session as AuthSession;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -58,5 +61,19 @@ class User extends Authenticatable
 	public function currentAuthSession(): AuthSession
 	{
 		return $this->authSession;
+	}
+
+	public function grants(): HasMany
+	{
+		return $this->hasMany(Grant::class, 'user_id');
+	}
+
+	public function passwordGrant(): HasOne
+	{
+		$query = $this->grants()->getQuery()
+			->whereHasMorph('extendedGrant', PasswordGrant::class)
+			->with('extendedGrant');
+
+		return $this->newHasOne($query, $this, 'user_id', $this->getKeyName());
 	}
 }

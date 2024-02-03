@@ -2,7 +2,6 @@
 
 namespace App\Models\Auth;
 
-use App\Services\Auth\GrantTypes\PasswordGrantType;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -23,11 +22,6 @@ class PasswordGrant extends AbstractExtendedGrant
 		'password_changed_at' => 'timestamp',
 		'password' => 'encrypted'
 	];
-
-	public function getMorphClass(): string
-	{
-		return PasswordGrantType::getIdentifier();
-	}
 
 	protected static function booted()
 	{

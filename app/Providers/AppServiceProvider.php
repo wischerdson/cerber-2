@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Mixins\Str as StrMixin;
 use App\Mixins\FilesystemAdapter as FilesystemAdapterMixin;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -32,6 +33,11 @@ class AppServiceProvider extends ServiceProvider
 		$this->registerMixins();
 
 		JsonResource::withoutWrapping();
+
+		Relation::enforceMorphMap([
+			\App\Services\Auth\GrantTypes\PasswordGrantType::getIdentifier() . '_grant' => \App\Models\Auth\PasswordGrant::class,
+			\App\Services\Auth\GrantTypes\RefreshTokenGrantType::getIdentifier() . '_grant' => \App\Models\Auth\RefreshTokenGrant::class
+		]);
 	}
 
 	protected function registerMixins()
