@@ -7,7 +7,7 @@ use App\Services\Auth\Exceptions\UnsupportedGrantTypeException;
 use App\Services\Auth\GrantTypes\AbstractGrantType;
 use App\Services\Auth\TokenFactory;
 use App\Services\Auth\TokensPair;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Lcobucci\JWT\Encoding\CannotDecodeContent;
 use Lcobucci\JWT\Encoding\JoseEncoder;
@@ -25,7 +25,7 @@ class AuthService
 	/** @var \App\Services\Auth\GrantTypes\AbstractGrantType[] */
 	protected array $enabledGrantTypes = [];
 
-	private Request $request;
+	private Application $app;
 
 	public static function parseToken(string $rawToken, ?callable $beforeValidate = null): ?UnencryptedToken
 	{
@@ -54,9 +54,9 @@ class AuthService
 		return $token;
 	}
 
-	public function __construct(Request $request)
+	public function __construct(Application $app)
 	{
-		$this->request = $request;
+		$this->app = $app;
 	}
 
 	/**
@@ -92,13 +92,16 @@ class AuthService
 	 */
 	public function respondToAccessTokenRequest(): Response
 	{
+		/** @var \Illuminate\Http\Request */
+		$request = $this->app->make('request');
+
 		/** @var \App\Services\Auth\GrantTypes\AbstractGrantType $grantType */
 		foreach ($this->enabledGrantTypes as $grantType) {
-			if (!$grantType->canRespondToAccessTokenRequest($this->request)) {
+			if (!$grantType->canRespondToAccessTokenRequest($request)) {
 				continue;
 			}
 
-			$tokensPair = $grantType->respondToAccessTokenRequest($this->request);
+			$tokensPair = $grantType->respondToAccessTokenRequest($request);
 
 			return $this->makeHttpResponse($tokensPair);
 		}
@@ -108,12 +111,14 @@ class AuthService
 
 	public function findSessionByToken(UnencryptedToken $token): ?AuthSession
 	{
+		/** @var \Illuminate\Http\Request */
+		$request = $this->app->make('request');
 		$sessionId = $token->claims()->get(TokenFactory::SESSION_ID_CLAIM);
 
 		return AuthSession::query()
 			->where('id', $sessionId)
 			->where('revoked', false)
-			->where('user_agent', $this->request->header('User-Agent'))
+			->where('user_agent', $request->header('User-Agent'))
 			->first();
 	}
 

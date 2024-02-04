@@ -10,7 +10,7 @@
 		"fakerphp/faker": "^1.23.1",
 		"mockery/mockery": "^1.6.7",
 		"nunomaduro/collision": "^7.10.0",
-		"pestphp/pest": "^2.33.2",
+		"phpunit/phpunit": "^10.0",
 		"spatie/laravel-ignition": "^2.4"
 	},
 	"autoload": {

@@ -25,9 +25,7 @@ class AuthServiceProvider extends ServiceProvider
 	{
 		parent::register();
 
-		$this->app->singleton(AuthService::class, function (Application $app) {
-            return new AuthService($app->make('request'));
-        });
+		$this->app->singleton(AuthService::class);
 	}
 
 	/**

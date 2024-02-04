@@ -26,4 +26,9 @@ class GrantFactory extends Factory
 			// 'updated_at' => fake()->dateTimeBetween($createdAt)
 		];
 	}
+
+	public function asActive()
+	{
+		return $this->state(fn () => ['is_active' => true]);
+	}
 }
