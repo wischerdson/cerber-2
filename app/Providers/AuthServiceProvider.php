@@ -34,7 +34,7 @@ class AuthServiceProvider extends ServiceProvider
 	public function boot(): void
 	{
 		Auth::extend('jwt', function (Application $app) {
-			return new Guard($app->make('request'));
+			return new Guard($app);
 		});
 
 		tap($this->app->make(AuthService::class), function (AuthService $service) {

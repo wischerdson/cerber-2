@@ -21,8 +21,6 @@ abstract class AbstractGrantType
 	 */
 	abstract public static function getIdentifier(): string;
 
-	abstract public function hasGrant(): bool;
-
 	abstract public function respondToAccessTokenRequest(Request $request): TokensPair;
 
 	abstract protected function createGrant(): AbstractExtendedGrant;
@@ -49,11 +47,6 @@ abstract class AbstractGrantType
 
 		return $grant->setRelation('baseGrant', $baseGrant);
 	}
-
-	// public function updateGrantFor(User|int $user): AbstractExtendedGrant
-	// {
-	// 	$userId = gettype($user) === 'object' ? $user->getKey() : $user;
-	// }
 
 	protected function createRefreshTokenGrant(int $userId): RefreshTokenGrant
 	{

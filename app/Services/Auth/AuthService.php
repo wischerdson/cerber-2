@@ -113,7 +113,7 @@ class AuthService
 	{
 		/** @var \Illuminate\Http\Request */
 		$request = $this->app->make('request');
-		$sessionId = $token->claims()->get(TokenFactory::SESSION_ID_CLAIM);
+		$sessionId = $token->claims()->get(TokenFactory::CLAIM_SESSION_ID);
 
 		return AuthSession::query()
 			->where('id', $sessionId)

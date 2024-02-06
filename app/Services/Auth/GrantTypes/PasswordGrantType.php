@@ -76,11 +76,6 @@ class PasswordGrantType extends AbstractGrantType
 		return null;
 	}
 
-	public function updateGrant()
-	{
-
-	}
-
 	protected function createGrant(): PasswordGrant
 	{
 		$grant = new PasswordGrant();

@@ -8,18 +8,18 @@ use Illuminate\Auth\GuardHelpers;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard as AuthGuard;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
 use Lcobucci\JWT\UnencryptedToken;
 
 class Guard implements AuthGuard
 {
 	use GuardHelpers;
 
-	protected Request $request;
+	protected Application $app;
 
-	public function __construct(Request $request)
+	public function __construct(Application $app)
 	{
-		$this->request = $request;
+		$this->app = $app;
 	}
 
 	public function user(): ?Authenticatable
@@ -54,9 +54,17 @@ class Guard implements AuthGuard
 		return true;
 	}
 
+	public function setUser(Authenticatable $user)
+	{
+		$this->user = $user;
+	}
+
 	protected function getTokenFromRequest(): ?UnencryptedToken
 	{
-		if (!$bearerToken = $this->request->bearerToken()) {
+		/** @var \Illuminate\Http\Request */
+		$request = $this->app->make('request');
+
+		if (!$bearerToken = $request->bearerToken()) {
 			return null;
 		}
 

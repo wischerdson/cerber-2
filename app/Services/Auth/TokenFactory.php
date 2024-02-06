@@ -15,7 +15,7 @@ use RuntimeException;
 
 abstract class TokenFactory
 {
-	public const SESSION_ID_CLAIM = 'ses';
+	public const CLAIM_SESSION_ID = 'ses';
 
 	protected JwtBuilder $jwtBuilder;
 

@@ -50,11 +50,6 @@ class RefreshTokenGrantType extends AbstractGrantType
 		return $this->makeTokensPair($session, $grant);
 	}
 
-	public function hasGrant(): bool
-	{
-		return false;
-	}
-
 	protected function createGrant(): RefreshTokenGrant
 	{
 		$grant = new RefreshTokenGrant();
@@ -66,8 +61,8 @@ class RefreshTokenGrantType extends AbstractGrantType
 
 	private function findGrant(UnencryptedToken $token): ?RefreshTokenGrant
 	{
-		$grantId = $token->claims()->get(RefreshTokenFactory::REFRESH_TOKEN_GRANT_ID_CLAIM);
-		$grantCode = $token->claims()->get(RefreshTokenFactory::REFRESH_TOKEN_GRANT_CODE_CLAIM);
+		$grantId = $token->claims()->get(RefreshTokenFactory::CLAIM_GRANT_ID);
+		$grantCode = $token->claims()->get(RefreshTokenFactory::CLAIM_GRANT_CODE);
 
 		return RefreshTokenGrant::query()
 			->where('id', $grantId)

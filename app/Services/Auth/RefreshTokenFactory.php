@@ -10,9 +10,9 @@ use RuntimeException;
 
 class RefreshTokenFactory extends TokenFactory
 {
-	public const REFRESH_TOKEN_GRANT_ID_CLAIM = 'id';
+	public const CLAIM_GRANT_ID = 'id';
 
-	public const REFRESH_TOKEN_GRANT_CODE_CLAIM = 'code';
+	public const CLAIM_GRANT_CODE = 'code';
 
 	public static function getExpiresAt(): Carbon
 	{
@@ -22,13 +22,13 @@ class RefreshTokenFactory extends TokenFactory
 	public function setRefreshTokenGrant(RefreshTokenGrant $grant)
 	{
 		$this->jwtBuilder = $this->jwtBuilder
-			->withClaim(self::REFRESH_TOKEN_GRANT_CODE_CLAIM, $grant->code)
-			->withClaim(self::REFRESH_TOKEN_GRANT_ID_CLAIM, $grant->getKey());
+			->withClaim(self::CLAIM_GRANT_CODE, $grant->code)
+			->withClaim(self::CLAIM_GRANT_ID, $grant->getKey());
 	}
 
 	public function setAuthSession(AuthSession $session)
 	{
-		$this->jwtBuilder = $this->jwtBuilder->withClaim(self::SESSION_ID_CLAIM, $session->getKey());
+		$this->jwtBuilder = $this->jwtBuilder->withClaim(self::CLAIM_SESSION_ID, $session->getKey());
 	}
 
 	/**
@@ -39,9 +39,9 @@ class RefreshTokenFactory extends TokenFactory
 		parent::checkToken($token);
 
 		if (
-			!$token->claims()->has(self::REFRESH_TOKEN_GRANT_ID_CLAIM) ||
-			!$token->claims()->has(self::REFRESH_TOKEN_GRANT_CODE_CLAIM) ||
-			!$token->claims()->has(self::SESSION_ID_CLAIM)
+			!$token->claims()->has(self::CLAIM_GRANT_ID) ||
+			!$token->claims()->has(self::CLAIM_GRANT_CODE) ||
+			!$token->claims()->has(self::CLAIM_SESSION_ID)
 		) {
 			throw new RuntimeException('Refresh token cannot be issued.');
 		}

@@ -5,9 +5,11 @@ namespace Tests\Feature;
 use App\Models\Auth\Grant;
 use App\Models\Auth\PasswordGrant;
 use App\Models\User;
+use App\Services\Auth\Exceptions\AccessTokenHasExpiredException;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -31,6 +33,7 @@ class AuthTest extends TestCase
 	 */
 	public function check_request_body_validation(): void
 	{
+		// Ошибка, если не передать никакие данные аутентификации
 		$this->postJson('/auth/token')
 			->assertStatus(422)->assertJson(fn (AssertableJson $json) => $json
 				->where('error_reason', 'validation_failed')
@@ -40,12 +43,14 @@ class AuthTest extends TestCase
 				->etc()
 			);
 
+		// Ошибка, если передать неподдерживаемый grant-тип
 		$this->postJson('/auth/token', ['grant_type' => 'some-wrong-grant-type'])
 			->assertStatus(422)->assertJson(fn (AssertableJson $json) => $json
 				->where('error_reason', 'unsupported_grant_type')
 				->etc()
 			);
 
+		// Ошибка, если не передать данные аутентификации
 		$this->postJson('/auth/token', ['grant_type' => 'password'])
 			->assertStatus(422)->assertJson(fn (AssertableJson $json) => $json
 				->where('error_reason', 'validation_failed')
@@ -56,6 +61,7 @@ class AuthTest extends TestCase
 				->etc()
 			);
 
+		// Ошибка, если не передать refresh-токен
 		$this->postJson('/auth/token', ['grant_type' => 'refresh_token'])
 			->assertStatus(422)->assertJson(fn (AssertableJson $json) => $json
 				->where('error_reason', 'validation_failed')
@@ -65,12 +71,14 @@ class AuthTest extends TestCase
 				->etc()
 			);
 
+		// Ошибка, если передать несуществующие данные аутентификации
 		$this->postJson('/auth/token', [
 			'grant_type' => 'password',
 			'login' => 'unknown.login',
 			'password' => '123'
 		])->assertAuthCredentialsError();
 
+		// Ошибка, если передать несуществующий refresh-токен
 		$this->postJson('/auth/token', [
 			'grant_type' => 'refresh_token',
 			'refresh_token' => '123'
@@ -82,26 +90,16 @@ class AuthTest extends TestCase
 	 */
 	public function can_issue_access_token()
 	{
-		/** @var \Database\Factories\Auth\PasswordGrantFactory */
-		$passwordGrantFactory = PasswordGrant::factory()->state([
-			'login' => 'test',
-			'password' => '123123a'
-		]);
+		$this->createUser('test', '123123a');
 
-		/** @var \Database\Factories\Auth\GrantFactory */
-		$grantFactory = Grant::factory()->asActive()->for($passwordGrantFactory, 'extendedGrant');
-
-		/** @var \App\Models\User */
-		$user = with(User::factory(), function (UserFactory $factory) use ($grantFactory) {
-			return $factory->asNotAdmin()->has($grantFactory)->create();
-		});
-
+		// Ошибка, если пароль неверен
 		$this->postJson('/auth/token', [
 			'grant_type' => 'password',
 			'login' => 'test',
 			'password' => '123123A'
 		])->assertAuthCredentialsError();
 
+		// Успешный ответ, если все данные аутентификации верны
 		$response = $this->postJson('/auth/token', [
 			'grant_type' => 'password',
 			'login' => 'test',
@@ -109,11 +107,102 @@ class AuthTest extends TestCase
 		])->assertSuccessfulAuthentication();
 
 		$refreshToken = $response->json('refresh_token');
+		$wrongRefreshToken = $this->changeSessionInJwtToken($refreshToken);
 
-		$response = $this->postJson('/auth/token', [
+		// Ошибка, если данные refresh-токена изменили
+		$this->postJson('/auth/token', [
+			'grant_type' => 'refresh_token',
+			'refresh_token' => $wrongRefreshToken
+		])->assertAuthCredentialsError();
+
+		// Ошибка, если refresh-токен истек
+		$this->travelTo(now()->addMonth(), fn () =>
+			$this->postJson('/auth/token', [
+				'grant_type' => 'refresh_token',
+				'refresh_token' => $refreshToken
+			])->assertAuthCredentialsError()
+		);
+
+		// Успешный ответ, если refresh-токен валиден
+		$this->postJson('/auth/token', [
 			'grant_type' => 'refresh_token',
 			'refresh_token' => $refreshToken
 		])->assertSuccessfulAuthentication();
+
+		// Ошибка, если refresh-токеном попробовали воспользоваться второй раз
+		$this->postJson('/auth/token', [
+			'grant_type' => 'refresh_token',
+			'refresh_token' => $refreshToken
+		])->assertAuthCredentialsError();
+	}
+
+	public function test_auth_guard()
+	{
+		/** @var \Illuminate\Auth\AuthManager */
+		$auth = app()->make('auth');
+		$this->createUser('test', '123123a');
+
+		Route::get('user', fn () => 1)->middleware('auth:api');
+
+		$accessToken = (string) $this->postJson('/auth/token', [
+			'grant_type' => 'password',
+			'login' => 'test',
+			'password' => '123123a'
+		])->json('access_token');
+
+		$auth->forgetGuards();
+
+		$this->getJson('/user', ['Authorization' => "Bearer {$accessToken}"])->assertSuccessful();
+		$this->assertAuthenticated('api');
+
+		$auth->forgetGuards();
+
+		$this->getJson('/user', ['Authorization' => "Bearer test"])
+			->assertStatus(401)->assertJson(fn (AssertableJson $json) =>
+				$json->where('error_reason', 'unauthenticated')
+			);
+		$this->assertGuest('api');
+
+		$auth->forgetGuards();
+
+		$this->travelTo(now()->addMinutes(30), function () use ($accessToken, $auth) {
+			$this->getJson('/user', ['Authorization' => "Bearer {$accessToken}"])
+				->assertStatus(401)
+				->assertJson(fn (AssertableJson $json) =>
+					$json->where('error_reason', 'access_token_has_expired')
+			);
+			$this->assertThrows(
+				fn () => $auth->guard('api')->user(),
+				AccessTokenHasExpiredException::class
+			);
+		});
+	}
+
+	private function createUser(string $login, string $password): User
+	{
+		/** @var \Database\Factories\Auth\PasswordGrantFactory */
+		$passwordGrantFactory = PasswordGrant::factory()->state([
+			'login' => $login,
+			'password' => $password
+		]);
+
+		/** @var \Database\Factories\Auth\GrantFactory */
+		$grantFactory = Grant::factory()->asActive()->for($passwordGrantFactory, 'extendedGrant');
+
+		/** @var \App\Models\User */
+		return with(User::factory(), function (UserFactory $factory) use ($grantFactory) {
+			return $factory->has($grantFactory)->create();
+		});
+	}
+
+	private function changeSessionInJwtToken(string $token): string
+	{
+		[$headers, $payload, $sign] = explode('.', $token);
+		$payload = json_decode(base64_decode($payload), true);
+		$payload['ses'] = 123;
+		$payload = base64_encode(json_encode($payload));
+
+		return implode('.', [$headers, $payload, $sign]);
 	}
 
 	private function assertSuccessfulAuthentication(): callable
