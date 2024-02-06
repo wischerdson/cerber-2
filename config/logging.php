@@ -58,6 +58,12 @@ return [
 			'ignore_exceptions' => false,
 		],
 
+		'sql' => [
+			'driver' => 'daily',
+			'days' => 2,
+			'path' => base_path('.runtime/logs/sql.log')
+		],
+
 		'single' => [
 			'driver' => 'single',
 			'path' => base_path('.runtime/logs/laravel.log'),
