@@ -1,5 +1,5 @@
 import type { Schema, InferType, ValidationError, ObjectSchema, AnyObject } from 'yup'
-import { set, get } from 'lodash-es'
+import { set, get, difference } from 'lodash-es'
 import { useState, watch } from '#imports'
 import { uid } from '~/utils/helpers'
 
@@ -89,15 +89,25 @@ export const useValidation = (): ValidationContext<any> => {
 				throw new Error('Validation rules is not defined')
 			}
 
-			Object.values(state.fields).forEach(field => field.clearErrors())
+			const fieldsWithErrors: string[] = []
 
 			return state.rules.validate(state.model, { abortEarly: false })
 				.catch((e: ValidationError) => {
 					e.inner.forEach(error => {
 						if (typeof error.path === 'string' && error.path in state.fields) {
-							state.fields[error.path].appendError(error.message)
+							const field = state.fields[error.path]
+
+							fieldsWithErrors.push(error.path)
+							field.isDirty() && field.appendError(error.message)
 						}
 					})
+				})
+				.finally(() => {
+					difference(Object.keys(state.fields), fieldsWithErrors)
+						.forEach(path => {
+							const field = state.fields[path]
+							field.hasErrors() && field.clearErrors()
+						})
 				})
 		},
 		defineRules(rules) {

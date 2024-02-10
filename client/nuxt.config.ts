@@ -29,8 +29,7 @@ export default defineNuxtConfig({
 	],
 
 	tailwindcss: {
-		exposeConfig: false,
-		injectPosition: 'last'
+		exposeConfig: false
 	},
 
 	features: {
@@ -39,7 +38,7 @@ export default defineNuxtConfig({
 
 	css: [
 		'~/assets/sass/fonts.scss',
-		'~/assets/sass/reset.scss',
+		'~/assets/sass/reset.scss'
 	],
 
 	vite: {

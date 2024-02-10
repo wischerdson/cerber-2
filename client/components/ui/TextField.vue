@@ -6,6 +6,7 @@
 		<div class="relative">
 			<input
 				class="form-control"
+				:class="{ invalid: validationField?.hasErrors() }"
 				type="text"
 				v-uid
 				autocomplete="off"
@@ -16,17 +17,23 @@
 			>
 			<div class="absolute inset-0 pointer-events-none">
 				<slot name="layer-above-field"></slot>
-				<div class="absolute right-0 inset-y-0 flex items-center px-2" v-if="props.validationField && props.validationField.hasErrors()">
-					<ExclamationMark class="text-red-1 w-5 h-5" />
-				</div>
+				<transition>
+					<div class="absolute right-0 inset-y-0 flex items-center px-2" v-if="validationField && validationField.hasErrors()">
+						<ExclamationMark class="text-[#bf4c44] w-5 h-5" />
+					</div>
+				</transition>
 			</div>
 		</div>
 		<div class="form-text">
 			<slot name="post-scriptum"></slot>
 		</div>
-		<div class="validation-error text-sm text-red-1 mt-1" v-if="validationField && validationField.hasErrors()">
-			<span>{{ validationField.getError() }}</span>
-		</div>
+		<HeightAnimation>
+			<transition>
+				<div class="validation-error text-sm text-[#bf4c44] mt-1" v-if="validationField && validationField.hasErrors()">
+					<span class="tracking-wide font-light">{{ validationField.getError() }}</span>
+				</div>
+			</transition>
+		</HeightAnimation>
 	</div>
 </template>
 
@@ -36,6 +43,7 @@ import type { InputHTMLAttributes } from 'vue'
 import type { FieldContext } from '~/composables/use-validation'
 import { useAttrs, ref } from '#imports'
 import ExclamationMark from '~/assets/svg/Monochrome=exclamationmark.circle.fill.svg'
+import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 
 interface Props extends /* @vue-ignore */ InputHTMLAttributes {
 	label?: string | null
@@ -85,6 +93,24 @@ const [model] = defineModel({
 
 	&:focus {
 		border: 1px solid lighten(#1d1d1d, 20%);
+
+		&.invalid {
+			border-color: #9d2a23;
+		}
+	}
+
+	&.invalid {
+		background-color: rgba(#9d2a23, .1);
+	}
+}
+
+.form-group {
+	.v-enter-active, .v-leave-active {
+		transition: opacity .25s ease;
+	}
+
+	.v-enter-from, .v-leave-to {
+		opacity: 0;
 	}
 }
 
