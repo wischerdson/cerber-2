@@ -23,8 +23,8 @@ const authProviderTemplate = (storage: Storage) => ({
 
 export const bearerToken = (storage: Storage, onLogout?: (provider: AuthProvider) => Promise<unknown> | undefined) => {
 	const provider: AuthProvider = {
-		sign({ attachHeader }) {
-			attachHeader('Authorization', `Bearer ${storage.get()}`)
+		sign({ setHeader }) {
+			setHeader('Authorization', `Bearer ${storage.get()}`)
 		},
 		logout(quietly = false) {
 			let promise: Promise<unknown> | undefined

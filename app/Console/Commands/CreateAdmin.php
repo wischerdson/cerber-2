@@ -47,9 +47,9 @@ class CreateAdmin extends Command
 		}
 
 		$user = new User();
-		$user->first_name = 'Lindsey';
-		$user->last_name = 'Stirling';
-		$user->email = 'admin@example.com';
+		$user->first_name = fake('en_US')->firstName();
+		$user->last_name = fake('en_US')->lastName();
+		$user->email = fake('en_US')->safeEmail();
 		$user->asAdmin()->save();
 
 		$grantType->createGrantFor($user);

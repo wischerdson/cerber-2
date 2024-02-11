@@ -1,14 +1,15 @@
 <template>
-	<div class="pt-11 pb-16">
+	<div class="pt-11 pb-16 relative">
 		<div class="flex flex-col items-center text-dark-gray-1">
 			<CerberLogo class="w-24" />
 			<CerberTextLogo class="w-44 mt-4" />
 		</div>
 
+		<div class="absolute min-h-screen inset-0 overflow-hidden pointer-events-none -z-10 opacity-[.13]">
+			<img class="absolute right-1/2 top-0 w-[4290px] max-w-none -translate-y-[1590px] translate-x-[2386px]" src="/images/blurs.png">
+		</div>
+
 		<div class="mt-28">
-			<div class="absolute inset-0 overflow-hidden pointer-events-none -z-10 opacity-[.13]">
-				<img class="absolute right-0 top-0 w-[4290px] max-w-none -translate-y-[1590px] translate-x-[1528px]" src="/images/blurs.png">
-			</div>
 
 			<div class="max-w-sm bg-dark-gray-2/50 backdrop-blur-xl rounded-2xl mx-auto py-7">
 				<div class="text-center">
@@ -18,7 +19,7 @@
 					<TextField :validation-field="useField('login')">
 						<template #label>Логин</template>
 					</TextField>
-					<TextField type="text" :validation-field="useField('password')">
+					<TextField type="password" :validation-field="useField('password')">
 						<template #label>Пароль</template>
 					</TextField>
 
@@ -56,10 +57,11 @@ import TheButton from '~/components/ui/Button.vue'
 import TheAlert from '~/components/ui/Alert.vue'
 import { useValidation } from '~/composables/use-validation'
 import { usePostReq } from '~/composables/use-request'
-import { ref, useHead } from '#imports'
+import { definePageMeta, ref, useHead } from '#imports'
 import { object, string } from 'yup'
 
 useHead({ title: 'Cerber - Авторизация' })
+definePageMeta({ layout: 'auth' })
 
 const pending = ref(false)
 const serverError = ref<string|null>()

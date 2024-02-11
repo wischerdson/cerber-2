@@ -10,7 +10,7 @@ export interface Storage {
 	erase(): void
 }
 
-export const cookie = (name: string, config: CookieOptions = {}): Storage => {
+export const cookie = (name: string, config: CookieOptions & { readonly?: false | undefined; } = {}): Storage => {
 	const defaultConfig: CookieOptions = {
 		sameSite: 'strict',
 		maxAge: 2147483647

@@ -1,7 +1,7 @@
 import type { AuthProvider } from './auth-providers'
 import type { Ref } from 'vue'
 import type { FetchError } from 'ofetch'
-import type { UseFetchOptions, AsyncData } from 'nuxt/app'
+import type { UseFetchOptions } from 'nuxt/app'
 import { defaultsDeep } from 'lodash'
 import { useFetch, useNuxtApp } from 'nuxt/app'
 import { apiBaseUrl } from './helpers'
@@ -19,17 +19,18 @@ export type AuthType = Parameters<ReturnType<typeof useNuxtApp>['$auth']>[0]
 export interface AppRequest<DataT, ErrorT = FetchError | null> {
 	setOption<K extends keyof UseFetchOptions<DataT>>(name: K, value: UseFetchOptions<DataT>[K] | undefined): AppRequest<DataT, ErrorT>
 	getOption<K extends keyof UseFetchOptions<DataT>>(name: K): UseFetchOptions<DataT>[K]
-	attachHeader(name: string, value: string | null | undefined): AppRequest<DataT, ErrorT>
+	setHeader(name: string, value: string | null | undefined): AppRequest<DataT, ErrorT>
 	sign(authProvider: AuthProvider | AuthType): AppRequest<DataT, ErrorT>
-	send(): AsyncData<DataT, ErrorT>
+	send(): ReturnType<typeof useFetch<DataT, ErrorT>>
 }
 
-export const makeRequest = <DataT, ErrorT = FetchError | null>(url: Url, options: UseFetchOptions<DataT> = {}): AppRequest<DataT, ErrorT> => {
+export const makeRequest = <DataT, ErrorT = FetchError | null>(url: Url, options: UseFetchOptions<DataT, ErrorT> = {}): AppRequest<DataT, ErrorT> => {
 	const defaultOptions: UseFetchOptions<DataT> = {
 		watch: false,
 		baseURL: apiBaseUrl(),
 		key: typeof url === 'string' ? url : void 0,
-		server: true
+		server: true,
+		mode: 'cors'
 	}
 
 	options = defaultsDeep(options, defaultOptions)
@@ -44,7 +45,7 @@ export const makeRequest = <DataT, ErrorT = FetchError | null>(url: Url, options
 		getOption(name) {
 			return state.options[name]
 		},
-		attachHeader(name, value) {
+		setHeader(name, value) {
 			request.setOption('headers', Object.assign({ [name]: value }, state.options.headers))
 			return request
 		},
@@ -57,7 +58,6 @@ export const makeRequest = <DataT, ErrorT = FetchError | null>(url: Url, options
 			state.auth = authProvider
 			return request
 		},
-		// @ts-ignore
 		send() {
 			if (state.auth && state.auth.canSign()) {
 				state.auth.sign(request)
@@ -69,16 +69,3 @@ export const makeRequest = <DataT, ErrorT = FetchError | null>(url: Url, options
 
 	return request
 }
-
-// makeRequestsGroup('admin')
-// 	.sign(getAccessTokenProvider('admin'))
-// 	.onErrorReponse(e => {
-// 		if (e.status === 401) {
-// 			// ...
-// 		}
-// 	})
-// 	.onSuccessResponse(data => {
-
-// 	})
-// 	.onResponse(() => {})
-// }
