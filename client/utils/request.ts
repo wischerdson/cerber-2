@@ -1,52 +1,58 @@
+import type { NitroFetchRequest, NitroFetchOptions } from 'nitropack'
+import type { AsyncDataOptions, AsyncData, NuxtError } from 'nuxt/app'
 import type { AuthProvider } from './auth-providers'
-import type { Ref } from 'vue'
 import type { FetchError } from 'ofetch'
-import type { UseFetchOptions } from 'nuxt/app'
-import { defaultsDeep } from 'lodash'
-import { useFetch, useNuxtApp } from 'nuxt/app'
+import type { KeysOf, PickFrom } from '#app/composables/asyncData'
+import { useNuxtApp } from 'nuxt/app'
 import { apiBaseUrl } from './helpers'
-
-type Url = string | Request | Ref<string | Request> | (() => string | Request)
-
-interface RequestState<DataT> {
-	url: Url
-	options: UseFetchOptions<DataT>
-	auth: AuthProvider | null
-}
+import { defaults } from 'lodash-es'
+import { useAsyncData, } from 'nuxt/app'
 
 export type AuthType = Parameters<ReturnType<typeof useNuxtApp>['$auth']>[0]
 
-export interface AppRequest<DataT, ErrorT = FetchError | null> {
-	setOption<K extends keyof UseFetchOptions<DataT>>(name: K, value: UseFetchOptions<DataT>[K] | undefined): AppRequest<DataT, ErrorT>
-	getOption<K extends keyof UseFetchOptions<DataT>>(name: K): UseFetchOptions<DataT>[K]
-	setHeader(name: string, value: string | null | undefined): AppRequest<DataT, ErrorT>
-	sign(authProvider: AuthProvider | AuthType): AppRequest<DataT, ErrorT>
-	send(): ReturnType<typeof useFetch<DataT, ErrorT>>
+export type Options<DataT, RequestT extends NitroFetchRequest> = AsyncDataOptions<DataT> & NitroFetchOptions<RequestT> & { key?: string }
+
+export interface AppRequest<RequestT extends NitroFetchRequest, DataT, ErrorT = FetchError | null> {
+	setOption<K extends keyof Options<DataT, RequestT>>(name: K, value: Options<DataT, RequestT>[K]): AppRequest<RequestT, DataT, ErrorT>
+	getOption<K extends keyof Options<DataT, RequestT>>(name: K): Options<DataT, RequestT>[K]
+	setHeader(name: string, value?: string | null): AppRequest<RequestT, DataT, ErrorT>
+	key(value: string): AppRequest<RequestT, DataT, ErrorT>
+	sign(authProvider: AuthProvider | AuthType): AppRequest<RequestT, DataT, ErrorT>
+	send(): AsyncData<PickFrom<DataT, KeysOf<DataT>> | null, ErrorT | NuxtError<ErrorT> | null>
 }
 
-export const makeRequest = <DataT, ErrorT = FetchError | null>(url: Url, options: UseFetchOptions<DataT, ErrorT> = {}): AppRequest<DataT, ErrorT> => {
-	const defaultOptions: UseFetchOptions<DataT> = {
-		watch: false,
+export const makeRequest = <
+	DataT = unknown,
+	ErrorT = FetchError | null,
+	RequestT extends NitroFetchRequest = NitroFetchRequest
+> (url: RequestT, opts?: Options<DataT, RequestT>) => {
+	let auth: AuthProvider
+
+	const options = defaults(opts || {}, {
 		baseURL: apiBaseUrl(),
-		key: typeof url === 'string' ? url : void 0,
-		server: true,
-		mode: 'cors'
-	}
+		ignoreResponseError: true,
+		immediate: true,
+		mode: 'cors',
+		server: true
+	}) as Options<DataT, RequestT>
 
-	options = defaultsDeep(options, defaultOptions)
-
-	const state: RequestState<DataT> = { url, options, auth: null }
-
-	const request: AppRequest<DataT, ErrorT> = {
+	const request: AppRequest<RequestT, DataT, ErrorT> = {
 		setOption(name, value) {
-			value === undefined ? delete state.options[name] : state.options[name] = value
+			value === undefined ? delete options[name] : options[name] = value
+
 			return request
 		},
 		getOption(name) {
-			return state.options[name]
+			return options[name]
 		},
 		setHeader(name, value) {
-			request.setOption('headers', Object.assign({ [name]: value }, state.options.headers))
+			request.setOption('headers', Object.assign({ [name]: value }, options.headers))
+
+			return request
+		},
+		key(value: string) {
+			request.setOption('key', value)
+
 			return request
 		},
 		sign(authProvider) {
@@ -55,15 +61,20 @@ export const makeRequest = <DataT, ErrorT = FetchError | null>(url: Url, options
 				authProvider = $auth(authProvider)
 			}
 
-			state.auth = authProvider
+			auth = authProvider
+
 			return request
 		},
 		send() {
-			if (state.auth && state.auth.canSign()) {
-				state.auth.sign(request)
+			if (auth && auth.canSign()) {
+				auth.sign(request)
 			}
 
-			return useFetch(state.url, state.options)
+			if (options.hasOwnProperty('key') && options.key) {
+				return useAsyncData<DataT, ErrorT>(options.key, () => $fetch<DataT, RequestT>(url, options), options)
+			}
+
+			return useAsyncData<DataT, ErrorT>(() => $fetch<DataT, RequestT>(url, options), options)
 		}
 	}
 

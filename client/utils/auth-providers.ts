@@ -1,8 +1,9 @@
+import type { NitroFetchRequest } from 'nitropack'
 import type { AppRequest } from './request'
 import type { Storage } from './storages'
 
 export interface AuthProvider {
-	sign(request: Omit<AppRequest<any, any>, 'send'>): void
+	sign(request: Omit<AppRequest<NitroFetchRequest, any, any>, 'send'>): void
 	canSign(): boolean
 	cannotSign(): boolean
 	saveSignature(value: any): void

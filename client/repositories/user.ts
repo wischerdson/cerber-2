@@ -21,7 +21,7 @@ export type AccessToken = {
 	token: string
 }
 
-export const fetchUser = () => useGetReq<User>('/current-user')
+export const fetchUser = () => useGetReq<User>('/current-user').key('me')
 
 export const createAccessToken = (form: AccessTokenForm) => usePostReq<AccessToken>('/auth/token', form)
 
