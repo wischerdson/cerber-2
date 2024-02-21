@@ -1,5 +1,5 @@
 import { defineNuxtPlugin } from 'nuxt/app'
-import { bearerToken } from '~/utils/auth-providers'
+import { bearerToken } from '~/utils/auth'
 import { cookie } from '~/utils/storages'
 import { invalidateAccessToken } from '~/repositories/user'
 import { useAuthSignInPageView } from '~/composables/use-page-view'
@@ -11,6 +11,17 @@ export default defineNuxtPlugin(() => {
 			invalidateAccessToken().sign(auth).send()
 		])
 	})
+
+	// const admin = tokensAuthProvider()
+	// 	.make()
+	// 	.defineAccessTokenStorage(cookie('user-access-token'))
+	// 	.defineRefreshTokenStorage(cookie('user-refresh-token'))
+	// 	.setLogoutCallback(() => {
+	// 		return Promise.all([
+	// 			useAuthSignInPageView(),
+	// 			invalidateAccessToken().sign(auth).send()
+	// 		])
+	// 	})
 
 	const auth = { user }
 

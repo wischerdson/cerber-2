@@ -87,17 +87,21 @@ const sendForm = async () => {
 
 	pending.value = true
 
-	const { data, error } = await usePostReq<AuthTokenResponse>('/auth/token', {
+	const promise = usePostReq<AuthTokenResponse>('/auth/token', {
 		grant_type: 'password',
 		...form
-	}).send()
+	}, { 'responseType': 'arrayBuffer' }).send()
 
-	serverError.value = null
-	pending.value = false
+	return promise
+		.then(resp => {
 
-	if (error.value) {
-		return serverError.value = error.value.data.error_reason
-	}
+		})
+		.catch((error) => {
+			if (error.data) {
+				return serverError.value = error.data.error_reason
+			}
+		})
+		.finally(() => pending.value = false)
 }
 
 </script>

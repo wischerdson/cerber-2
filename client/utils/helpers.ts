@@ -39,3 +39,22 @@ export const forEachObjectDeep = function* (object: { [key: string]: any }) {
 }
 
 export const uid = () => Date.now().toString(36) + Math.random().toString(36).substring(2)
+
+export const parseJwt = <T>(jwt: string): T => {
+	const base64Url = jwt.split('.')[1]
+	const json = Buffer.from(base64Url, 'base64').toString()
+
+	return JSON.parse(json)
+}
+
+export const isJwtExpired = (jwt: string): boolean => {
+	const payload = parseJwt<{ exp: number }>(jwt)
+
+	if (payload.hasOwnProperty('exp')) {
+		const expiration = payload['exp']
+
+		return new Date().getTime() > new Date(expiration*1000).getTime()
+	}
+
+	return false
+}

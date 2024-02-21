@@ -1,42 +1,40 @@
 import type { NitroFetchRequest, NitroFetchOptions } from 'nitropack'
 import type { AsyncDataOptions, AsyncData, NuxtError } from 'nuxt/app'
-import type { AuthProvider } from './auth-providers'
+import type { AuthProvider, AuthType } from '~/utils/auth'
 import type { FetchError } from 'ofetch'
 import type { KeysOf, PickFrom } from '#app/composables/asyncData'
-import { useNuxtApp } from 'nuxt/app'
-import { apiBaseUrl } from './helpers'
+import { resolveAuthProvider } from '~/utils/auth'
+import { apiBaseUrl } from '~/utils/helpers'
 import { defaults } from 'lodash-es'
-import { useAsyncData, } from 'nuxt/app'
+import { useAsyncData } from 'nuxt/app'
 
-export type AuthType = Parameters<ReturnType<typeof useNuxtApp>['$auth']>[0]
+export type AsyncDataResponse<DataT, ErrorT = FetchError> = AsyncData<PickFrom<DataT, KeysOf<DataT>> | null, ErrorT | NuxtError<ErrorT> | null>
 
-export type Options<DataT, RequestT extends NitroFetchRequest> = AsyncDataOptions<DataT> & NitroFetchOptions<RequestT> & { key?: string }
+export type Options<DataT, RequestT extends NitroFetchRequest> = AsyncDataOptions<DataT> & NitroFetchOptions<RequestT>
 
-export interface AppRequest<RequestT extends NitroFetchRequest, DataT, ErrorT = FetchError | null> {
-	setOption<K extends keyof Options<DataT, RequestT>>(name: K, value: Options<DataT, RequestT>[K]): AppRequest<RequestT, DataT, ErrorT>
+export interface AppRequest<DataT, ErrorT, ResponseT, RequestT extends NitroFetchRequest = NitroFetchRequest> {
+	setOption<K extends keyof Options<DataT, RequestT>>(name: K, value: Options<DataT, RequestT>[K]): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	getOption<K extends keyof Options<DataT, RequestT>>(name: K): Options<DataT, RequestT>[K]
-	setHeader(name: string, value?: string | null): AppRequest<RequestT, DataT, ErrorT>
-	key(value: string): AppRequest<RequestT, DataT, ErrorT>
-	sign(authProvider: AuthProvider | AuthType): AppRequest<RequestT, DataT, ErrorT>
-	send(): AsyncData<PickFrom<DataT, KeysOf<DataT>> | null, ErrorT | NuxtError<ErrorT> | null>
+	setHeader(name: string, value?: string | null): AppRequest<DataT, ErrorT, ResponseT, RequestT>
+	asAsyncData(key: string, opts?: AsyncDataOptions<DataT>): AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
+	sign(authProvider: AuthProvider | AuthType): AppRequest<DataT, ErrorT, ResponseT, RequestT>
+	send(): ResponseT
 }
 
 export const makeRequest = <
 	DataT = unknown,
 	ErrorT = FetchError | null,
 	RequestT extends NitroFetchRequest = NitroFetchRequest
-> (url: RequestT, opts?: Options<DataT, RequestT>) => {
+> (url: RequestT, opts?: NitroFetchOptions<RequestT>) => {
+	const options = defaults<unknown, Options<DataT, RequestT>>(opts, {
+		baseURL: apiBaseUrl(),
+		mode: 'cors'
+	})
+
+	let asyncDataKey: string
 	let auth: AuthProvider
 
-	const options = defaults(opts || {}, {
-		baseURL: apiBaseUrl(),
-		ignoreResponseError: true,
-		immediate: true,
-		mode: 'cors',
-		server: true
-	}) as Options<DataT, RequestT>
-
-	const request: AppRequest<RequestT, DataT, ErrorT> = {
+	const request: AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT> | Promise<DataT>, RequestT> = {
 		setOption(name, value) {
 			value === undefined ? delete options[name] : options[name] = value
 
@@ -50,18 +48,18 @@ export const makeRequest = <
 
 			return request
 		},
-		key(value: string) {
-			request.setOption('key', value)
+		asAsyncData(key, asyncDataOpts) {
+			asyncDataKey = key
 
-			return request
+			Object.assign(options, asyncDataOpts, {
+				immediate: true,
+				server: true
+			})
+
+			return request as unknown as AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
 		},
 		sign(authProvider) {
-			if (typeof authProvider === 'string') {
-				const { $auth } = useNuxtApp()
-				authProvider = $auth(authProvider)
-			}
-
-			auth = authProvider
+			auth = resolveAuthProvider(authProvider)
 
 			return request
 		},
@@ -70,13 +68,15 @@ export const makeRequest = <
 				auth.sign(request)
 			}
 
-			if (options.hasOwnProperty('key') && options.key) {
-				return useAsyncData<DataT, ErrorT>(options.key, () => $fetch<DataT, RequestT>(url, options), options)
+			const fetch = () => $fetch<DataT>(url, options)
+
+			if (asyncDataKey) {
+				return useAsyncData<DataT, ErrorT>(asyncDataKey, fetch, options)
 			}
 
-			return useAsyncData<DataT, ErrorT>(() => $fetch<DataT, RequestT>(url, options), options)
+			return fetch()
 		}
 	}
 
-	return request
+	return request as AppRequest<DataT, ErrorT, Promise<DataT>, RequestT>
 }

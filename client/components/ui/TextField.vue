@@ -66,6 +66,9 @@ const [model] = defineModel({
 		}
 
 		return value
+	},
+	get(value) {
+		return props.validationField ? props.validationField.getValue() : value
 	}
 })
 
