@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<TopBar />
 		<ScreenSize />
 		<slot></slot>
 	</div>
@@ -9,6 +10,7 @@
 
 import { useHead } from '#imports'
 import ScreenSize from '~/components/dev/ScreenSize.vue'
+import TopBar from '~/components/account/TopBar.vue'
 import { useNoindexHeader } from '~/composables/use-noindex-header'
 
 useNoindexHeader()

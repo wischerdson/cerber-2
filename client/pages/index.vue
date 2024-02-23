@@ -1,6 +1,6 @@
 <template>
-	<div class="text-3xl font-mono">
-		Hello world
+	<div class="container mt-20 text-3xl font-mono text-center">
+		.
 	</div>
 </template>
 
@@ -8,6 +8,6 @@
 
 import { definePageMeta } from '#imports'
 
-definePageMeta({ middleware: 'auth' })
+definePageMeta({ middleware: 'auth', layout: 'account' })
 
 </script>
