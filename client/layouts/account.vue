@@ -1,8 +1,12 @@
 <template>
-	<div>
+	<div class="min-h-screen relative">
 		<TopBar />
 		<ScreenSize />
 		<slot></slot>
+
+		<div class="absolute bottom-0 -z-10 inset-x-0 pointer-events-none">
+			<img class="absolute inset-x-0 bottom-0 w-full opacity-10" src="/images/blurs-footer.png">
+		</div>
 	</div>
 </template>
 
@@ -27,7 +31,7 @@ useHead({
 	meta: [
 		{ name: 'msapplication-TileColor', content: '#000000' },
 		{ name: 'msapplication-config', content: '/favicon/browserconfig.xml' },
-		{ name: 'theme-color', content: '#ffffff' },
+		{ name: 'theme-color', content: '#ffffff' }
 	]
 })
 

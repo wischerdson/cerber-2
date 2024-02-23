@@ -33,8 +33,8 @@ const opacityTransition = ref(false)
 	user-select: none;
 
 	&:active {
-		opacity: .7;
-		transition: none;
+		opacity: .7 !important;
+		transition: none !important;
 	}
 }
 
