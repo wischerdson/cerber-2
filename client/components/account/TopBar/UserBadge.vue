@@ -20,7 +20,7 @@
 		</TheClickable>
 
 		<transition>
-			<div class="menu-wrapper absolute right-0 top-full pt-4" v-if="menu">
+			<div class="menu-wrapper absolute right-0 top-full pt-4 z-10" v-if="menu">
 				<div class="menu rounded-xl w-64 relative px-2.5 py-2.5 z-50" ref="$menu">
 					<div class="absolute right-0 -top-7">
 						<icon class="arrow-top" size="48px" name="material-symbols:arrow-drop-up-rounded" />
@@ -39,16 +39,18 @@
 						<HeightAnimation>
 							<transition>
 								<div class="submenu p-2.5 -mx-2.5 mt-3" v-if="themeSubmenu">
-									<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4">
+									<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'light'">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 bg-neutral-300" v-if="theme.mode === 'light'"></div>
 										<SunIcon class="mr-3 h-4 w-4" />
 										<span>Светлое</span>
 									</TheClickable>
-									<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4 relative">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 bg-neutral-300"></div>
+									<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.mode = 'dark'">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 bg-neutral-300" v-if="theme.mode === 'dark'"></div>
 										<MoonIcon class="mr-3 h-4 w-4" />
 										<span>Темное</span>
 									</TheClickable>
-									<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4">
+									<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'system'">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 bg-neutral-300" v-if="theme.mode === 'system'"></div>
 										<ComputerIcon class="mr-3 h-4 w-4" />
 										<span>Как в системе</span>
 									</TheClickable>
@@ -91,16 +93,22 @@ import ComputerIcon from '~/assets/svg/Monochrome=desktopcomputer.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 import { clickOutside } from '~/utils/helpers'
 import { ref, onUnmounted, watch } from '#imports'
+import { useTheme } from '~/composables/use-theme'
 
 const menu = ref(false)
 const themeSubmenu = ref(false)
 const $menu = ref<HTMLElement>()
 
+const { theme, destroy: destroyTheme } = useTheme()
+
 watch(menu, v => !v && (themeSubmenu.value = false))
 
 const destroyClickOutside = clickOutside($menu, () => menu.value = false).destroy
 
-onUnmounted(() => destroyClickOutside())
+onUnmounted(() => {
+	destroyClickOutside()
+	destroyTheme()
+})
 
 </script>
 

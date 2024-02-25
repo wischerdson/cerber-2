@@ -16,10 +16,14 @@ import { useHead } from '#imports'
 import ScreenSize from '~/components/dev/ScreenSize.vue'
 import TopBar from '~/components/account/TopBar.vue'
 import { useNoindexHeader } from '~/composables/use-noindex-header'
+import { useTheme } from '~/composables/use-theme'
 
 useNoindexHeader()
 
 useHead({
+	htmlAttrs: {
+		class: useTheme().theme.value.isDark ? 'dark' : ''
+	},
 	link: [
 		{ rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
 		{ rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon/favicon-32x32.png' },
@@ -40,8 +44,8 @@ useHead({
 <style lang="scss">
 
 body {
-	background-color: #000;
-	color: #fff;
+	@apply dark:bg-black bg-white text-black dark:text-white;
+
 	font-family: theme('fontFamily.sans');
 }
 

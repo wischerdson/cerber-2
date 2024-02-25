@@ -1,6 +1,8 @@
-const colors = require('tailwindcss/colors')
+import type { Config } from 'tailwindcss'
 
-module.exports = {
+// @ts-expect-error
+const config: Config = {
+	darkMode: 'selector',
 	corePlugins: {
 		preflight: false,
 		container: false,
@@ -61,20 +63,22 @@ module.exports = {
 			'sm':  { 'max': '639px' },
 		},
 		fontSize: {
-			'2xs':  ['0.5rem'],
-			'xs':   ['0.75rem'],
-			'sm':   ['0.875rem'],
-			'base': ['1rem'],
-			'lg':   ['1.125rem'],
-			'xl':   ['1.25rem'],
-			'2xl':  ['1.5rem'],
-			'3xl':  ['1.875rem'],
-			'4xl':  ['2.25rem'],
-			'5xl':  ['3rem'],
-			'6xl':  ['3.75rem'],
-			'7xl':  ['4.5rem'],
-			'8xl':  ['6rem'],
-			'9xl':  ['8rem'],
+			'2xs':  ['0.5rem', '1'],
+			'xs':   ['0.75rem', '1'],
+			'sm':   ['0.875rem', '1'],
+			'base': ['1rem', '1'],
+			'lg':   ['1.125rem', '1'],
+			'xl':   ['1.25rem', '1'],
+			'2xl':  ['1.5rem', '1'],
+			'3xl':  ['1.875rem', '1'],
+			'4xl':  ['2.25rem', '1'],
+			'5xl':  ['3rem', '1'],
+			'6xl':  ['3.75rem', '1'],
+			'7xl':  ['4.5rem', '1'],
+			'8xl':  ['6rem', '1'],
+			'9xl':  ['8rem', '1']
 		}
 	}
 }
+
+export default config
