@@ -10,12 +10,12 @@
 			</div>
 			<div class="ml-3">
 				<div>
-					<span class="text-white/85">Даниил </span>
-					<span class="text-white/50">О.</span>
+					<span class="text-black/85 dark:text-white/85">Даниил </span>
+					<span class="text-black/50 dark:text-white/50">О.</span>
 				</div>
 			</div>
 			<div class="ml-3">
-				<icon size="26px" name="material-symbols:arrow-drop-down-rounded" />
+				<icon class="text-black/50 dark:text-white/50" size="26px" name="material-symbols:arrow-drop-down-rounded" />
 			</div>
 		</TheClickable>
 
@@ -26,8 +26,9 @@
 						<icon class="arrow-top" size="48px" name="material-symbols:arrow-drop-up-rounded" />
 					</div>
 					<div>
-						<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
-							<MoonIcon class="mr-3 h-4 w-4" />
+						<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
+							<MoonIcon class="mr-3 h-4 w-4" v-if="theme.isDark" />
+							<SunIcon class="mr-3 h-4 w-4" v-else />
 							<span>Оформление</span>
 							<icon
 								class="ml-auto -mr-2 chevron-right"
@@ -38,19 +39,19 @@
 						</TheClickable>
 						<HeightAnimation>
 							<transition>
-								<div class="submenu p-2.5 -mx-2.5 mt-3" v-if="themeSubmenu">
-									<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'light'">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 bg-neutral-300" v-if="theme.mode === 'light'"></div>
+								<div class="submenu mt-3" v-if="themeSubmenu">
+									<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'light'">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-neutral-300 bg-neutral-600" v-if="theme.mode === 'light'"></div>
 										<SunIcon class="mr-3 h-4 w-4" />
 										<span>Светлое</span>
 									</TheClickable>
-									<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.mode = 'dark'">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 bg-neutral-300" v-if="theme.mode === 'dark'"></div>
+									<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.mode = 'dark'">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-neutral-300 bg-neutral-600" v-if="theme.mode === 'dark'"></div>
 										<MoonIcon class="mr-3 h-4 w-4" />
 										<span>Темное</span>
 									</TheClickable>
-									<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'system'">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 bg-neutral-300" v-if="theme.mode === 'system'"></div>
+									<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'system'">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-neutral-300 bg-neutral-600" v-if="theme.mode === 'system'"></div>
 										<ComputerIcon class="mr-3 h-4 w-4" />
 										<span>Как в системе</span>
 									</TheClickable>
@@ -59,13 +60,13 @@
 						</HeightAnimation>
 					</div>
 					<div class="mt-3">
-						<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4">
+						<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4">
 							<GearIcon class="gear-icon mr-3 h-4 w-4" />
 							<span>Настройки</span>
 						</TheClickable>
 					</div>
 					<div>
-						<TheClickable class="menu-item text-neutral-300 flex w-full h-9 rounded-md items-center px-4">
+						<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4">
 							<icon class="mr-2.5 -ml-0.5" size="20px" name="material-symbols:shield-rounded" />
 							<span>Безопасность</span>
 						</TheClickable>
@@ -118,7 +119,15 @@ onUnmounted(() => {
 	transition: background-color .15s ease;
 
 	&:hover, &.menu-is-shown {
-		background-color: darken(#fff, 91%);
+		background-color: #ebebeb;
+	}
+}
+
+html.dark {
+	.user-pill {
+		&:hover, &.menu-is-shown {
+			background-color: darken(#fff, 91%);
+		}
 	}
 }
 
@@ -134,10 +143,20 @@ onUnmounted(() => {
 }
 
 .menu {
-	background-color: darken(#fff, 91%);
+	box-shadow: 0 0 20px 0 rgba(#000, 8%);
 
 	.arrow-top {
-		color: darken(#fff, 91%);
+		color: #fff;
+	}
+}
+
+html.dark {
+	.menu {
+		background-color: darken(#fff, 91%);
+
+		.arrow-top {
+			color: darken(#fff, 91%);
+		}
 	}
 }
 
@@ -151,13 +170,19 @@ onUnmounted(() => {
 	}
 
 	&:hover {
-		background-color: darken(#fff, 85%);
+		background-color: #ebebeb;
+	}
+}
+
+html.dark {
+	.menu-item {
+		&:hover {
+			background-color: darken(#fff, 85%);
+		}
 	}
 }
 
 .submenu {
-	background-color: darken(#fff, 93%);
-
 	&.v-leave-active {
 		transition: opacity .15s ease;
 	}

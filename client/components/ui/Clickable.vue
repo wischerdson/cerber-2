@@ -4,7 +4,7 @@
 		:is="tag"
 		@mouseup="opacityTransition = true"
 		@transitionend="opacityTransition = false"
-		:style="{ transition: opacityTransition ? `opacity ${duration}ms ease` : '' }"
+		:style="{ transition: opacityTransition ? `opacity ${duration}ms ease` : null }"
 	>
 		<slot></slot>
 	</component>

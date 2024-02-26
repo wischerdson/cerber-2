@@ -38,6 +38,10 @@ export const useTheme = () => singletonClientOnly('theme', () => {
 	const update = () => {
 		const _isDark = isDark()
 
+		if (theme.value.isDark !== _isDark) {
+			document.documentElement.classList.add('theme-changing')
+		}
+
 		theme.value.isDark = _isDark
 
 		cookie.value = theme.value
@@ -53,13 +57,22 @@ export const useTheme = () => singletonClientOnly('theme', () => {
 		}
 	}
 
+	const themeChangingTransitionEnd = () => {
+		document.documentElement.classList.remove('theme-changing')
+	}
+
 	const stopWatch = watch(theme, update, { immediate: true, deep: true })
 
 	darkModePreference?.addEventListener('change', update)
 
+	if (document) {
+		document?.body.addEventListener('transitionend', themeChangingTransitionEnd)
+	}
+
 	const destroy = () => {
 		stopWatch()
 		darkModePreference?.removeEventListener('change', update)
+		document?.body.removeEventListener('transitionend', themeChangingTransitionEnd)
 	}
 
 	return { theme, destroy }

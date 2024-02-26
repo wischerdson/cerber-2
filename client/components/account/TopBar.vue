@@ -3,7 +3,7 @@
 		<div class="container relative">
 			<div class="flex py-2">
 				<div class="flex-1">
-					<CerberLogo class="h-12 text-white/60" />
+					<CerberLogo class="h-12 dark:text-white/60 text-black/60" />
 				</div>
 				<div class="items-center">
 					<div>

@@ -2,7 +2,7 @@
 	<TextField class="!pl-12" style="width: 420px;" placeholder="Поиск" v-model="searchQuery">
 		<template #layer-above-field>
 			<div class="h-full flex justify-between items-center px-4">
-				<icon class="text-white/50" size="24px" name="ph:magnifying-glass" />
+				<icon class="text-black/50 dark:text-white/50" size="24px" name="ph:magnifying-glass" />
 
 				<transition>
 					<Clickable
@@ -44,8 +44,16 @@ const showClearBtn = computed(() => !!searchQuery.value.length)
 	}
 
 	&:hover {
-		background-color: darken(#fff, 91%);
+		background-color: darken(#fff, 14%);
 		opacity: 1;
+	}
+}
+
+html.dark {
+	.clear-search-btn {
+		&:hover {
+			background-color: darken(#fff, 91%);
+		}
 	}
 }
 

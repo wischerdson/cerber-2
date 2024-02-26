@@ -84,8 +84,8 @@ const [model] = defineModel({
 }
 
 .form-control {
+	background-color: #eaeaea;
 	transition: border-color .15s ease;
-	background-color: theme('colors.dark.gray-3');
 	height: 46px;
 	padding: 0 16px;
 	border: 1px solid rgba(#000, 0);
@@ -94,8 +94,16 @@ const [model] = defineModel({
 	width: 100%;
 	font-size: 1rem;
 
+	&:where(.dark *) {
+		background-color: #1d1d1d;
+	}
+
 	&:focus {
-		border: 1px solid lighten(#1d1d1d, 20%);
+		border: 1px solid darken(#1d1d1d, 20%);
+
+		&:where(.dark *) {
+			border: 1px solid lighten(#1d1d1d, 20%);
+		}
 
 		&.invalid {
 			border-color: #9d2a23;
