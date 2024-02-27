@@ -5,7 +5,7 @@
 		<slot></slot>
 
 		<div class="absolute bottom-0 -z-10 inset-x-0 pointer-events-none">
-			<img class="absolute inset-x-0 bottom-0 w-full dark:opacity-10 opacity-15" src="/images/blurs-footer.png">
+			<img class="absolute inset-x-0 bottom-0 w-full dark:opacity-10 opacity-15 -z-10" src="/images/blurs-footer.png">
 		</div>
 	</div>
 </template>

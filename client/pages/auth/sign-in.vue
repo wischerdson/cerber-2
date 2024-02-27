@@ -10,7 +10,6 @@
 		</div>
 
 		<div class="mt-28">
-
 			<div class="max-w-sm bg-dark-gray-2/50 backdrop-blur-xl rounded-2xl mx-auto py-7">
 				<div class="text-center">
 					<h1 class="text-2xl font-medium">Войти</h1>

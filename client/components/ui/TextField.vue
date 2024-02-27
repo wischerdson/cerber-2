@@ -1,6 +1,6 @@
 <template>
 	<div class="form-group">
-		<label class="form-label" :for="input?.id">
+		<label class="form-label" :for="input?.id" v-if="!disableLabel">
 			<slot name="label"></slot>
 		</label>
 		<div class="relative">
@@ -46,7 +46,7 @@ import ExclamationMark from '~/assets/svg/Monochrome=exclamationmark.circle.fill
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 
 interface Props extends /* @vue-ignore */ InputHTMLAttributes {
-	label?: string | null
+	disableLabel?: boolean
 	validationField?: FieldContext<any>
 	validationTouchEvent?: string
 }
@@ -56,7 +56,8 @@ const input = ref<null | HTMLElement>(null)
 defineOptions({ inheritAttrs: false })
 
 const props = withDefaults(defineProps<Props>(), {
-	validationTouchEvent: 'change'
+	validationTouchEvent: 'change',
+	disableLabel: false
 })
 
 const [model] = defineModel({

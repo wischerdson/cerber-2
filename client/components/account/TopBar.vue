@@ -3,11 +3,15 @@
 		<div class="container relative">
 			<div class="flex py-2">
 				<div class="flex-1">
-					<CerberLogo class="h-12 dark:text-white/60 text-black/60" />
+					<NuxtLink to="/">
+						<TheClickable>
+							<CerberLogo class="h-12 dark:text-white/60 text-black/60" />
+						</TheClickable>
+					</NuxtLink>
 				</div>
 				<div class="items-center">
 					<div>
-						<Search />
+
 					</div>
 				</div>
 				<div class="flex-1 flex justify-end">
@@ -22,6 +26,6 @@
 
 import CerberLogo from '~/assets/svg/cerber-logo.svg'
 import UserBadge from '~/components/account/TopBar/UserBadge.vue'
-import Search from '~/components/account/TopBar/Search.vue'
+import TheClickable from '~/components/ui/Clickable.vue'
 
 </script>

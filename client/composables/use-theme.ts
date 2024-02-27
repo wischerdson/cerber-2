@@ -39,7 +39,7 @@ export const useTheme = () => singletonClientOnly('theme', () => {
 		const _isDark = isDark()
 
 		if (theme.value.isDark !== _isDark) {
-			document.documentElement.classList.add('theme-changing')
+			document?.documentElement.classList.add('theme-changing')
 		}
 
 		theme.value.isDark = _isDark

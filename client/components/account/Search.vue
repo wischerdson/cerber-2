@@ -1,8 +1,8 @@
 <template>
-	<TextField class="!pl-12" style="width: 420px;" placeholder="Поиск" v-model="searchQuery">
+	<TextField class="!pl-9 !h-10" placeholder="Поиск" v-model="searchQuery" disable-label>
 		<template #layer-above-field>
-			<div class="h-full flex justify-between items-center px-4">
-				<icon class="text-black/50 dark:text-white/50" size="24px" name="ph:magnifying-glass" />
+			<div class="h-full flex justify-between items-center pl-2 pr-4">
+				<icon class="text-black/50 dark:text-white/50" size="22px" name="ph:magnifying-glass" />
 
 				<transition>
 					<Clickable
@@ -32,8 +32,8 @@ const showClearBtn = computed(() => !!searchQuery.value.length)
 <style lang="scss" scoped>
 
 .clear-search-btn {
-	opacity: .75;
-	transition: background-color .15s ease, opacity .15s ease;
+	opacity: .5;
+	transition: opacity .15s ease;
 
 	&.v-enter-active, &.v-leave-active {
 		transition: opacity .15s ease;
@@ -44,7 +44,7 @@ const showClearBtn = computed(() => !!searchQuery.value.length)
 	}
 
 	&:hover {
-		background-color: darken(#fff, 14%);
+		// background-color: darken(#fff, 14%);
 		opacity: 1;
 	}
 }

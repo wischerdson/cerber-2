@@ -59,11 +59,14 @@
 							</transition>
 						</HeightAnimation>
 					</div>
+
 					<div class="mt-3">
-						<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4">
-							<GearIcon class="gear-icon mr-3 h-4 w-4" />
-							<span>Настройки</span>
-						</TheClickable>
+						<NuxtLink to="settings">
+							<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4">
+								<GearIcon class="gear-icon mr-3 h-4 w-4" />
+								<span>Настройки</span>
+							</TheClickable>
+						</NuxtLink>
 					</div>
 					<div>
 						<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4">
@@ -71,10 +74,11 @@
 							<span>Безопасность</span>
 						</TheClickable>
 					</div>
+
 					<div class="mt-3">
-						<TheClickable class="menu-item text-[#bf4c44] text-red-5002 flex w-full h-9 rounded-md items-center px-4">
+						<TheClickable class="menu-item text-[#bf4c44] flex w-full h-9 rounded-md items-center px-4">
 							<DoorIcon class="mr-3 h-4 w-4" />
-							Выйти
+							<span>Выйти</span>
 						</TheClickable>
 					</div>
 				</div>
@@ -144,6 +148,7 @@ html.dark {
 
 .menu {
 	box-shadow: 0 0 20px 0 rgba(#000, 8%);
+	background-color: #fff;
 
 	.arrow-top {
 		color: #fff;
