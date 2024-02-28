@@ -213,7 +213,7 @@ button, input, optgroup, select, textarea {
 	appearance: none;
 	-webkit-appearance: none;
 	border-radius: 0;
-	border: none;
+	border-width: 0;
 
 	&:focus {
 		outline: none;

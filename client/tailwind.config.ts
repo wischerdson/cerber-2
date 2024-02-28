@@ -1,8 +1,15 @@
 import type { Config } from 'tailwindcss'
+import { resolve } from 'path'
 
-// @ts-expect-error
 const config: Config = {
 	darkMode: 'selector',
+	content: [
+		resolve(__dirname, './components/**/*.{js,vue,ts}'),
+		resolve(__dirname, './layouts/**/*.vue'),
+		resolve(__dirname, './pages/**/*.vue'),
+		resolve(__dirname, './plugins/**/*.{js,ts}'),
+		resolve(__dirname, './error.vue')
+	],
 	corePlugins: {
 		preflight: false,
 		container: false,

@@ -1,4 +1,5 @@
 import svgLoader from 'vite-svg-loader'
+import { resolve } from 'path'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -24,12 +25,16 @@ export default defineNuxtConfig({
 	},
 
 	modules: [
-		'@nuxtjs/tailwindcss',
 		'nuxt-icon'
 	],
 
-	tailwindcss: {
-		exposeConfig: false
+	postcss: {
+		plugins: {
+			tailwindcss: {
+				config: resolve(__dirname, './tailwind.config.ts')
+			},
+			autoprefixer: {},
+		},
 	},
 
 	features: {
@@ -39,6 +44,7 @@ export default defineNuxtConfig({
 	css: [
 		'~/assets/sass/fonts.scss',
 		'~/assets/sass/reset.scss',
+		'~/assets/sass/tailwind.css',
 		'~/assets/sass/utils.scss'
 	],
 

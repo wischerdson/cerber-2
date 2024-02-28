@@ -1,6 +1,6 @@
 import type { RouteRecordNormalized } from 'vue-router'
 import type { Ref } from 'vue'
-import { trim } from 'lodash'
+import { trim } from 'lodash-es'
 import { useRoute, useRouter, useRuntimeConfig, watch } from '#imports'
 
 export const storageUrl = (path: string) => {

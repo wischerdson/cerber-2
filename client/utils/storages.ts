@@ -1,5 +1,5 @@
 import type { CookieOptions } from 'nuxt/app'
-import { defaultsDeep } from 'lodash'
+import { defaultsDeep } from 'lodash-es'
 import { useCookie } from 'nuxt/app'
 
 export interface Storage {
