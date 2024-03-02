@@ -26,7 +26,7 @@
 						<icon class="arrow-top" size="48px" name="material-symbols:arrow-drop-up-rounded" />
 					</div>
 					<div>
-						<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
+						<TheClickable class="menu-item dark:text-gray-300 text-gray-600 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
 							<MoonIcon class="mr-3 h-4 w-4" v-if="theme.isDark" />
 							<SunIcon class="mr-3 h-4 w-4" v-else />
 							<span>Оформление</span>
@@ -40,18 +40,18 @@
 						<HeightAnimation>
 							<transition>
 								<div class="submenu mt-3" v-if="themeSubmenu">
-									<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'light'">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-neutral-300 bg-neutral-600" v-if="theme.mode === 'light'"></div>
+									<TheClickable class="menu-item dark:text-gray-300 text-gray-600 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'light'">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode === 'light'"></div>
 										<SunIcon class="mr-3 h-4 w-4" />
 										<span>Светлое</span>
 									</TheClickable>
-									<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.mode = 'dark'">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-neutral-300 bg-neutral-600" v-if="theme.mode === 'dark'"></div>
+									<TheClickable class="menu-item dark:text-gray-300 text-gray-600 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.mode = 'dark'">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode === 'dark'"></div>
 										<MoonIcon class="mr-3 h-4 w-4" />
 										<span>Темное</span>
 									</TheClickable>
-									<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'system'">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-neutral-300 bg-neutral-600" v-if="theme.mode === 'system'"></div>
+									<TheClickable class="menu-item dark:text-gray-300 text-gray-600 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'system'">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode === 'system'"></div>
 										<ComputerIcon class="mr-3 h-4 w-4" />
 										<span>Как в системе</span>
 									</TheClickable>
@@ -62,14 +62,14 @@
 
 					<div class="mt-3">
 						<NuxtLink to="settings">
-							<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4">
+							<TheClickable class="menu-item dark:text-gray-300 text-gray-600 flex w-full h-9 rounded-md items-center px-4">
 								<GearIcon class="gear-icon mr-3 h-4 w-4" />
 								<span>Настройки</span>
 							</TheClickable>
 						</NuxtLink>
 					</div>
 					<div>
-						<TheClickable class="menu-item dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4">
+						<TheClickable class="menu-item dark:text-gray-300 text-gray-600 flex w-full h-9 rounded-md items-center px-4">
 							<icon class="mr-2.5 -ml-0.5" size="20px" name="material-symbols:shield-rounded" />
 							<span>Безопасность</span>
 						</TheClickable>

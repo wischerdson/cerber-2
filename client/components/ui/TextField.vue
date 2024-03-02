@@ -95,24 +95,26 @@ const [model] = defineModel({
 	width: 100%;
 	font-size: 1rem;
 
-	&:where(.dark *) {
-		background-color: #1d1d1d;
-	}
-
 	&:focus {
 		border: 1px solid darken(#1d1d1d, 20%);
+	}
+}
 
-		&:where(.dark *) {
-			border: 1px solid lighten(#1d1d1d, 20%);
-		}
+html.dark .form-control {
+	background-color: #1d1d1d;
 
+	&:focus {
+		border: 1px solid lighten(#1d1d1d, 20%);
+	}
+}
+
+html body .form-control.invalid {
+	background-color: rgba(#9d2a23, .1);
+
+	&:focus {
 		&.invalid {
 			border-color: #9d2a23;
 		}
-	}
-
-	&.invalid {
-		background-color: rgba(#9d2a23, .1);
 	}
 }
 

@@ -1,5 +1,5 @@
 <template>
-	<div class="w-80 dark:bg-[#111]/60 bg-gray-50/50 backdrop-blur-xl rounded-2xl">
+	<div class="w-80 dark:bg-gray-900/50 bg-gray-50/50 backdrop-blur-xl rounded-2xl">
 		<div class="mt-4 px-4">
 			<Search />
 		</div>
@@ -13,17 +13,17 @@
 				<span>Избранные</span>
 			</TheClickable>
 		</div>
-		<hr class="mx-4 mt-4 border-neutral-200">
+		<hr class="mx-4 mt-4 border-gray-200 dark:border-gray-800">
 		<div class="mt-4 px-4 pb-4">
-			<div class="flex items-center justify-between text-neutral-700 mb-2">
-				<h2 class="text-sm text-neutral-400">Группы</h2>
-				<TheClickable class="add-group-btn rounded-md text-neutral-500" title="Добавить новую группу">
+			<div class="flex items-center justify-between text-gray-700 mb-2">
+				<h2 class="text-sm text-gray-400">Группы</h2>
+				<TheClickable class="add-group-btn rounded-md text-gray-500" title="Добавить новую группу">
 					<icon size="24px" name="material-symbols:add-rounded" />
 				</TheClickable>
 			</div>
 			<TheClickable class="menu-item">
 				<icon
-					class="chevron-right text-neutral-500 -ml-2"
+					class="chevron-right text-gray-500 -ml-2"
 					name="material-symbols:chevron-right-rounded"
 					size="22px"
 				/>
@@ -32,7 +32,7 @@
 			</TheClickable>
 			<TheClickable class="menu-item">
 				<icon
-					class="chevron-right text-neutral-500 -ml-2"
+					class="chevron-right text-gray-500 -ml-2"
 					name="material-symbols:chevron-right-rounded"
 					size="22px"
 				/>
@@ -57,12 +57,22 @@ import ClockIcon from '~/assets/svg/Monochrome=clock.fill.svg'
 	height: 28px;
 
 	&:hover {
-		background-color: #e7e7e7;
+		color: theme('colors.gray.600');
+		background-color: #eaeaea;
+	}
+}
+
+html.dark {
+	.add-group-btn {
+		&:hover {
+			color: theme('colors.gray.200');
+			background-color: #1d1d1d;
+		}
 	}
 }
 
 .menu-item {
-	@apply dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-3;
+	@apply text-gray-600 flex w-full h-9 rounded-md items-center px-3;
 
 	.chevron-right {
 		transition: transform .15s ease;
@@ -75,8 +85,10 @@ import ClockIcon from '~/assets/svg/Monochrome=clock.fill.svg'
 
 html.dark {
 	.menu-item {
+		color: theme('colors.gray.200');
+
 		&:hover {
-			background-color: darken(#fff, 85%);
+			background-color: #1d1d1d;
 		}
 	}
 }

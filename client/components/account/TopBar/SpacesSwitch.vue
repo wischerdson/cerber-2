@@ -1,7 +1,7 @@
 <template>
-	<div class="spaces-switch bg-gray-50/50 rounded-full p-1 relative">
+	<div class="spaces-switch dark:bg-gray-850/40 bg-gray-50/50 rounded-full p-1 relative">
 		<div
-			class="highlighter rounded-full absolute inset-y-1 left-0 w-20 z-0"
+			class="highlighter bg-white dark:bg-gray-850 rounded-full absolute inset-y-1 left-0 w-20 z-0"
 			:style="{
 				transition: highlighter.transition ? '' : 'none',
 				transform: `translateX(${highlighter.x}px)`,
@@ -10,19 +10,19 @@
 		></div>
 		<ul class="flex relative z-10">
 			<li>
-				<button class="switch-item h-[42px] flex items-center px-5 rounded-full" data-space="private" @click="changeSpace('private')">
+				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-gray-250" data-space="private" @click="changeSpace('private')">
 					<icon class="mr-2.5" name="material-symbols:person-rounded" size="24px" />
 					<span>Личное</span>
-				</button>
+				</TheClickable>
 			</li>
 			<li>
-				<button class="switch-item h-[42px] flex items-center px-5" data-space="work" @click="changeSpace('work')">
+				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-gray-250" data-space="work" @click="changeSpace('work')">
 					<BriefcaseIcon class="w-5 h-5 mr-3" />
 					<span>Работа</span>
-				</button>
+				</TheClickable>
 			</li>
-			<li>
-				<TheClickable class="switch-item border border-gray-200 h-[42px] flex justify-center items-center w-[42px] rounded-full">
+			<li class="ml-4">
+				<TheClickable class="switch-item border border-gray-200 dark:border-gray-800 dark:text-gray-250 h-[42px] flex justify-center items-center w-[42px] rounded-full">
 					<!-- <icon size="24px" name="material-symbols:add-rounded" /> -->
 					<icon size="20px" name="ion:ellipsis-horizontal" />
 				</TheClickable>
@@ -73,11 +73,7 @@ onMounted(() => {
 
 .highlighter {
 	transition: transform .4s cubic-bezier(.3,.3,.14,1), width .4s cubic-bezier(.3,.3,.14,1);
-}
-
-.highlighter, .switch-item.active {
 	box-shadow: 0 0 6px 0 rgba(#000, 12%);
-	background-color: #fff;
 }
 
 </style>
