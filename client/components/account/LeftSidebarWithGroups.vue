@@ -1,5 +1,5 @@
 <template>
-	<div class="w-80 dark:bg-[#111]/60 bg-[#ebebeb]/40 backdrop-blur-xl rounded-2xl">
+	<div class="w-80 dark:bg-[#111]/60 bg-gray-50/50 backdrop-blur-xl rounded-2xl">
 		<div class="mt-4 px-4">
 			<Search />
 		</div>

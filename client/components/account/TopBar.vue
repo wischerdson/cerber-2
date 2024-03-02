@@ -10,9 +10,7 @@
 					</NuxtLink>
 				</div>
 				<div class="items-center">
-					<div>
-
-					</div>
+					<SpacesSwitch />
 				</div>
 				<div class="flex-1 flex justify-end">
 					<UserBadge />
@@ -26,6 +24,7 @@
 
 import CerberLogo from '~/assets/svg/cerber-logo.svg'
 import UserBadge from '~/components/account/TopBar/UserBadge.vue'
+import SpacesSwitch from '~/components/account/TopBar/SpacesSwitch.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 
 </script>
