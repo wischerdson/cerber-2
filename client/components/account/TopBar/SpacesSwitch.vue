@@ -1,7 +1,7 @@
 <template>
-	<div class="spaces-switch dark:bg-gray-850/40 bg-gray-50/50 rounded-full p-1 relative">
+	<div class="spaces-switch p-1 relative">
 		<div
-			class="highlighter bg-white dark:bg-gray-850 rounded-full absolute inset-y-1 left-0 w-20 z-0"
+			class="highlighter bg-white dark:bg-gray-850 rounded-full absolute inset-y-1 left-0 z-0"
 			:style="{
 				transition: highlighter.transition ? '' : 'none',
 				transform: `translateX(${highlighter.x}px)`,
@@ -10,7 +10,7 @@
 		></div>
 		<ul class="flex relative z-10">
 			<li>
-				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-gray-250" data-space="private" @click="changeSpace('private')">
+				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-white" data-space="private" @click="changeSpace('private')">
 					<icon class="mr-2.5" name="material-symbols:person-rounded" size="24px" />
 					<span>Личное</span>
 				</TheClickable>
@@ -21,9 +21,18 @@
 					<span>Работа</span>
 				</TheClickable>
 			</li>
-			<li class="ml-4">
-				<TheClickable class="switch-item border border-gray-200 dark:border-gray-800 dark:text-gray-250 h-[42px] flex justify-center items-center w-[42px] rounded-full">
-					<!-- <icon size="24px" name="material-symbols:add-rounded" /> -->
+			<li>
+				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-gray-250" data-space="stuff" @click="changeSpace('stuff')">
+					<icon class="mr-2.5" name="material-symbols:account-balance-rounded" size="24px" />
+					<span>Еще что-то с текстом</span>
+				</TheClickable>
+			</li>
+			<li class="ml-3">
+				<TheClickable
+					class="switch-item border border-gray-200 dark:border-gray-800 dark:text-gray-250 h-[42px] flex justify-center items-center w-[42px] rounded-full"
+					@click="emit('expandManager')"
+				>
+					<icon size="24px" name="material-symbols:add-rounded" v-if="false"/>
 					<icon size="20px" name="ion:ellipsis-horizontal" />
 				</TheClickable>
 			</li>

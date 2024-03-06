@@ -13,10 +13,10 @@
 				<span>Избранные</span>
 			</TheClickable>
 		</div>
-		<hr class="mx-4 mt-4 border-gray-200 dark:border-gray-800">
+		<hr class="mx-4 mt-4 border-gray-200 dark:border-gray-850">
 		<div class="mt-4 px-4 pb-4">
-			<div class="flex items-center justify-between text-gray-700 mb-2">
-				<h2 class="text-sm text-gray-400">Группы</h2>
+			<div class="flex items-center justify-between mb-2">
+				<h2 class="text-sm text-gray-400 dark:text-gray-750">Группы</h2>
 				<TheClickable class="add-group-btn rounded-md text-gray-500" title="Добавить новую группу">
 					<icon size="24px" name="material-symbols:add-rounded" />
 				</TheClickable>
@@ -27,8 +27,8 @@
 					name="material-symbols:chevron-right-rounded"
 					size="22px"
 				/>
-				<span>Внутренние</span>
-				<icon class="ml-auto" size="18px" name="svg-spinners:90-ring-with-bg" />
+				<span>Какая-то группа</span>
+				<!-- <icon class="ml-auto" size="18px" name="svg-spinners:90-ring-with-bg" /> -->
 			</TheClickable>
 			<TheClickable class="menu-item">
 				<icon
@@ -36,7 +36,7 @@
 					name="material-symbols:chevron-right-rounded"
 					size="22px"
 				/>
-				<span>Команда "The crew"</span>
+				<span>Lorem ipsum dolor sit</span>
 			</TheClickable>
 		</div>
 	</div>

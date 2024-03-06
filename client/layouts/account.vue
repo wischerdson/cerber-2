@@ -4,8 +4,10 @@
 		<ScreenSize />
 		<slot></slot>
 
-		<div class="absolute bottom-0 -z-10 inset-x-0 pointer-events-none">
-			<img class="absolute inset-x-0 bottom-0 w-full dark:opacity-10 opacity-15 -z-10" src="/images/blurs-footer.png">
+		<div class="absolute bottom-0 -z-10 inset-x-0 pointer-events-none flex justify-center">
+			<img class="w-full dark:opacity-10 opacity-15 -z-10" src="/images/blurs-footer.png">
+			<!-- <img class="w-full dark:opacity-10 opacity-15 -z-10 dark:hidden" src="/images/blurs-footer.png"> -->
+			<!-- <img class="w-full opacity-15 -z-10 hidden dark:block max-w-[1700px] translate-x-10" src="/images/IMG_1111.png"> -->
 		</div>
 	</div>
 </template>
@@ -22,7 +24,8 @@ useNoindexHeader()
 
 useHead({
 	htmlAttrs: {
-		class: useTheme().theme.value.isDark ? 'dark' : ''
+		class: useTheme().theme.value.isDark ? 'dark' : '',
+		lang: 'ru-RU'
 	},
 	link: [
 		{ rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },

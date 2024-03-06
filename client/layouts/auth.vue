@@ -7,13 +7,16 @@
 
 <script setup lang="ts">
 
-import { useHead } from '#imports'
+import { useHead, useTheme } from '#imports'
 import ScreenSize from '~/components/dev/ScreenSize.vue'
 import { useNoindexHeader } from '~/composables/use-noindex-header'
 
 useNoindexHeader()
 
 useHead({
+	htmlAttrs: {
+		class: useTheme().theme.value.isDark ? 'dark' : ''
+	},
 	link: [
 		{ rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
 		{ rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon/favicon-32x32.png' },
@@ -25,7 +28,7 @@ useHead({
 	meta: [
 		{ name: 'msapplication-TileColor', content: '#000000' },
 		{ name: 'msapplication-config', content: '/favicon/browserconfig.xml' },
-		{ name: 'theme-color', content: '#ffffff' },
+		{ name: 'theme-color', content: '#ffffff' }
 	]
 })
 

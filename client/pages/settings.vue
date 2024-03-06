@@ -1,7 +1,7 @@
 <template>
 	<div class="container py-7">
 		<div>
-			<h1 class="font-bold text-neutral-700 text-2.5xl">Настройки</h1>
+			<h1 class="font-bold text-gray-700 text-2.5xl">Настройки</h1>
 		</div>
 		<div class="flex gap-6 mt-5">
 			<div class="w-80 h-[400px] dark:bg-[#111]/60 bg-[#ebebeb]/50 backdrop-blur-xl rounded-2xl">
@@ -39,7 +39,7 @@ definePageMeta({ middleware: 'auth', layout: 'account' })
 <style lang="scss" scoped>
 
 .menu-item {
-	@apply dark:text-neutral-300 text-neutral-600 flex w-full h-9 rounded-md items-center px-4;
+	@apply dark:text-gray-300 text-gray-600 flex w-full h-9 rounded-md items-center px-4;
 
 	.chevron-right {
 		transition: transform .15s ease;
