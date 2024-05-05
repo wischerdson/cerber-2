@@ -1,7 +1,6 @@
 import type { RouteRecordNormalized } from 'vue-router'
-import type { Ref } from 'vue'
 import { trim } from 'lodash-es'
-import { useRoute, useRouter, useRuntimeConfig, watch } from '#imports'
+import { useRoute, useRouter, useRuntimeConfig } from '#imports'
 
 export const storageUrl = (path: string) => {
 	return trim(useRuntimeConfig().public.storageBaseUrl, '/') + '/' + trim(path, '/')
@@ -58,25 +57,4 @@ export const isJwtExpired = (jwt: string): boolean => {
 	}
 
 	return false
-}
-
-export const clickOutside = ($element: Ref<HTMLElement | undefined>, callback: () => void) => {
-	const onClick = (event: MouseEvent) => {
-		if (!$element.value?.contains(event.target as Node)) {
-			callback()
-		}
-	}
-
-	const removeListener = () => document.removeEventListener('click', onClick)
-
-	const unwatch = watch($element, $el => {
-		$el ? document.addEventListener('click', onClick) : removeListener()
-	})
-
-	return {
-		destroy: () => {
-			unwatch()
-			removeListener()
-		}
-	}
 }

@@ -2,8 +2,8 @@
 	<div class="relative">
 		<TheClickable
 			class="user-pill rounded-full pr-2 h-12 flex items-center"
-			:class="{ 'menu-is-shown': menu }"
-			@click.stop="menu = !menu"
+			:class="{ 'menu-is-shown': showMenu }"
+			@click="showMenu = !showMenu"
 		>
 			<div>
 				<img class="h-12 rounded-full" src="/images/avatar.jpg" alt="Avatar">
@@ -20,7 +20,7 @@
 		</TheClickable>
 
 		<transition>
-			<div class="menu-wrapper absolute right-0 top-full pt-4 z-10" v-if="menu">
+			<div class="menu-wrapper absolute right-0 top-full pt-4 z-10" v-click-outside="() => showMenu = false" v-if="showMenu">
 				<div class="menu rounded-xl w-64 relative px-2.5 py-2.5 z-50" ref="$menu">
 					<div class="absolute right-0 -top-7">
 						<icon class="arrow-top" size="48px" name="material-symbols:arrow-drop-up-rounded" />
@@ -96,22 +96,18 @@ import SunIcon from '~/assets/svg/Monochrome=sun.max.fill.svg'
 import MoonIcon from '~/assets/svg/Monochrome=moon.stars.fill.svg'
 import ComputerIcon from '~/assets/svg/Monochrome=desktopcomputer.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
-import { clickOutside } from '~/utils/helpers'
 import { ref, onUnmounted, watch } from '#imports'
 import { useTheme } from '~/composables/use-theme'
 
-const menu = ref(false)
+const showMenu = ref(false)
 const themeSubmenu = ref(false)
 const $menu = ref<HTMLElement>()
 
 const { theme, destroy: destroyTheme } = useTheme()
 
-watch(menu, v => !v && (themeSubmenu.value = false))
-
-const destroyClickOutside = clickOutside($menu, () => menu.value = false).destroy
+watch(showMenu, () => themeSubmenu.value = false)
 
 onUnmounted(() => {
-	destroyClickOutside()
 	destroyTheme()
 })
 
