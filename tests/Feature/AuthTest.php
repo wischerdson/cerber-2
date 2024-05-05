@@ -2,16 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Auth\Grant;
-use App\Models\Auth\PasswordGrant;
-use App\Models\User;
 use App\Services\Auth\Exceptions\AccessTokenHasExpiredException;
-use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Testing\TestResponse;
+use Tests\Helpers;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -90,7 +87,7 @@ class AuthTest extends TestCase
 	 */
 	public function can_issue_access_token()
 	{
-		$this->createUser('test', '123123a');
+		Helpers::createUser('test', '123123a');
 
 		// Ошибка, если пароль неверен
 		$this->postJson('/auth/token', [
@@ -140,7 +137,7 @@ class AuthTest extends TestCase
 	{
 		/** @var \Illuminate\Auth\AuthManager */
 		$auth = app()->make('auth');
-		$this->createUser('test', '123123a');
+		Helpers::createUser('test', '123123a');
 
 		Route::get('user', fn () => 1)->middleware('auth:api');
 
@@ -175,23 +172,6 @@ class AuthTest extends TestCase
 				fn () => $auth->guard('api')->user(),
 				AccessTokenHasExpiredException::class
 			);
-		});
-	}
-
-	private function createUser(string $login, string $password): User
-	{
-		/** @var \Database\Factories\Auth\PasswordGrantFactory */
-		$passwordGrantFactory = PasswordGrant::factory()->state([
-			'login' => $login,
-			'password' => $password
-		]);
-
-		/** @var \Database\Factories\Auth\GrantFactory */
-		$grantFactory = Grant::factory()->asActive()->for($passwordGrantFactory, 'extendedGrant');
-
-		/** @var \App\Models\User */
-		return with(User::factory(), function (UserFactory $factory) use ($grantFactory) {
-			return $factory->has($grantFactory)->create();
 		});
 	}
 
