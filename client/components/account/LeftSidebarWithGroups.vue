@@ -1,9 +1,9 @@
 <template>
-	<div class="w-80 dark:bg-gray-900/50 bg-gray-50/50 backdrop-blur-xl rounded-2xl">
-		<div class="mt-4 px-4">
+	<div class="w-72 dark:bg-gray-900/50 bg-white backdrop-blur-xl rounded-2xl">
+		<div>
 			<Search />
 		</div>
-		<div class="mt-4 px-4">
+		<div class="mt-4">
 			<TheClickable class="menu-item">
 				<ClockIcon class="mr-2 h-4 w-4" />
 				<span>Недавние</span>
@@ -13,8 +13,8 @@
 				<span>Избранные</span>
 			</TheClickable>
 		</div>
-		<hr class="mx-4 mt-4 border-gray-200 dark:border-gray-850">
-		<div class="mt-4 px-4 pb-4">
+		<hr class="mx-4 mt-4 border-gray-150 dark:border-gray-850">
+		<div class="mt-4 pb-4">
 			<div class="flex items-center justify-between mb-2">
 				<h2 class="text-sm text-gray-400 dark:text-gray-750">Группы</h2>
 				<TheClickable class="add-group-btn rounded-md text-gray-500" title="Добавить новую группу">

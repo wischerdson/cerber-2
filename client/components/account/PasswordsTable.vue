@@ -6,11 +6,11 @@
 					<div class="w-10 h-10" v-if="password.icon.type === 'image'">
 						<img class="w-full h-full object-contain object-center rounded-md" :src="password.icon.content">
 					</div>
-					<div class="w-10 h-10" v-else-if="password.icon.type === 'icones'">
-						<icon class="text-gray-200" size="28px" :name="password.icon.content" />
+					<div class="w-10 h-10 p-1 bg-gray-100 dark:bg-gray-850 rounded-lg flex items-center justify-center" v-else-if="password.icon.type === 'icones'">
+						<icon class="text-gray-700 dark:text-gray-200" size="24px" :name="password.icon.content" />
 					</div>
-					<div class="w-10 h-10 p-1 bg-gray-850 rounded-lg flex items-center justify-center" v-else-if="password.icon.type === 'letter'">
-						<span class="text-2xl text-gray-200" >E</span>
+					<div class="w-10 h-10 p-1 bg-gray-100 dark:bg-gray-850 rounded-lg flex items-center justify-center" v-else-if="password.icon.type === 'letter'">
+						<span class="text-2xl text-gray-700 dark:text-gray-200">E</span>
 					</div>
 				</div>
 				<div class="ml-4 text-left">
@@ -21,13 +21,13 @@
 				</div>
 				<div class="ml-auto flex">
 					<div class="flex items-center mr-6">
-						<div class="text-xs text-gray-700">
+						<div class="text-xs text-gray-300 dark:text-gray-700">
 							12 февраля 2024 г
 						</div>
 					</div>
 					<div class="flex items-center">
 						<div v-if="password.starred">
-							<icon class="text-gray-100 -mt-0.5" size="26px" name="material-symbols:star-rounded"  />
+							<icon class="text-gray-800 dark:text-gray-100 -mt-0.5" size="26px" name="material-symbols:star-rounded"  />
 						</div>
 						<div v-else>
 							<icon class="text-gray-500 -mt-0.5" size="26px" name="material-symbols:star-outline-rounded" />
@@ -35,7 +35,7 @@
 					</div>
 				</div>
 			</TheClickable>
-			<hr class="absolute bottom-0 left-14 right-0 border-gray-900">
+			<hr class="absolute bottom-0 left-14 right-0 border-gray-100 dark:border-gray-900">
 		</li>
 	</ul>
 </template>
@@ -58,3 +58,17 @@ type Password = {
 const props = defineProps<{ passwords: Password[] }>()
 
 </script>
+
+<style lang="scss" scoped>
+
+.passwords-list {
+	.password-item {
+		&:last-child {
+			hr {
+				display: none;
+			}
+		}
+	}
+}
+
+</style>

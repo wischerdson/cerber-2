@@ -1,7 +1,7 @@
 <template>
 	<div class="spaces-switch p-1 relative">
 		<div
-			class="highlighter bg-white dark:bg-gray-850 rounded-full absolute inset-y-1 left-0 z-0"
+			class="highlighter bg-white dark:bg-gray-800 rounded-full absolute inset-y-1 left-0 z-0"
 			:style="{
 				transition: highlighter.transition ? '' : 'none',
 				transform: `translateX(${highlighter.x}px)`,
@@ -29,7 +29,7 @@
 			</li>
 			<li class="ml-3">
 				<TheClickable
-					class="switch-item border border-gray-200 dark:border-gray-800 dark:text-gray-250 h-[42px] flex justify-center items-center w-[42px] rounded-full"
+					class="switch-item show-more-btn bg-white border1 border-gray-200 dark:border-gray-800 dark:text-gray-250 h-[42px] flex justify-center items-center w-[42px] rounded-full"
 					@click="emit('expandManager')"
 				>
 					<icon size="24px" name="material-symbols:add-rounded" v-if="false"/>
@@ -83,6 +83,10 @@ onMounted(() => {
 .highlighter {
 	transition: transform .4s cubic-bezier(.3,.3,.14,1), width .4s cubic-bezier(.3,.3,.14,1);
 	box-shadow: 0 0 6px 0 rgba(#000, 12%);
+}
+
+.show-more-btn {
+	box-shadow: 0 0 6px 0 rgba(#000, 6%);
 }
 
 </style>
