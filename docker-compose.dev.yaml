@@ -20,7 +20,7 @@ services:
       - 443:443
 
   mariadb:
-    image: mariadb:11.2.2
+    image: mariadb:11.3
     volumes:
       - ./.runtime/mariadb:/var/lib/mysql
     environment:
