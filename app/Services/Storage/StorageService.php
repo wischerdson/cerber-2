@@ -4,7 +4,6 @@ namespace App\Services\Storage;
 
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -39,10 +38,7 @@ class StorageService
 
 			$filename = time() . '-' . Str::randHex() . $extension;
 			$filePath = Str::finish($dir->path, '/') . $filename . $extension;
-		} while (
-			file_exists($filePath) &&
-			(Log::info('😳 При сохранении файла создалось имя, под которым уже существует другой файл. Вероятность этого составляет 1 к 65535') || true)
-		);
+		} while (file_exists($filePath));
 
 		if (!$file = $this->adapter->putFileAs($dir->path, $file, $filename)) {
 			throw new RuntimeException('Failed to save file');
