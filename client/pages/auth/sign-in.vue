@@ -97,6 +97,7 @@ const sendForm = async () => {
 		})
 		.catch((error) => {
 			if (error.data) {
+				console.log(JSON.stringify(error))
 				return serverError.value = error.data.error_reason
 			}
 		})

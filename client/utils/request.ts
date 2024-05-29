@@ -1,9 +1,7 @@
 import type { NitroFetchRequest, NitroFetchOptions } from 'nitropack'
 import type { AsyncDataOptions, AsyncData, NuxtError } from 'nuxt/app'
-import type { AuthProvider, AuthType } from '~/utils/auth'
 import type { FetchError } from 'ofetch'
 import type { KeysOf, PickFrom } from '#app/composables/asyncData'
-import { resolveAuthProvider } from '~/utils/auth'
 import { apiBaseUrl } from '~/utils/helpers'
 import { defaults } from 'lodash-es'
 import { useAsyncData } from 'nuxt/app'
@@ -12,12 +10,13 @@ export type AsyncDataResponse<DataT, ErrorT = FetchError> = AsyncData<PickFrom<D
 
 export type Options<DataT, RequestT extends NitroFetchRequest> = AsyncDataOptions<DataT> & NitroFetchOptions<RequestT>
 
-export interface AppRequest<DataT, ErrorT, ResponseT, RequestT extends NitroFetchRequest = NitroFetchRequest> {
+export interface AppRequest<DataT = any, ErrorT = any, ResponseT = any, RequestT extends NitroFetchRequest = NitroFetchRequest> {
 	setOption<K extends keyof Options<DataT, RequestT>>(name: K, value: Options<DataT, RequestT>[K]): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	getOption<K extends keyof Options<DataT, RequestT>>(name: K): Options<DataT, RequestT>[K]
 	setHeader(name: string, value?: string | null): AppRequest<DataT, ErrorT, ResponseT, RequestT>
+	setBearerToken(token: string): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	asAsyncData(key: string, opts?: AsyncDataOptions<DataT>): AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
-	sign(authProvider: AuthProvider | AuthType): AppRequest<DataT, ErrorT, ResponseT, RequestT>
+	as(authProvider: undefined, strict: boolean): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	send(): ResponseT
 }
 
@@ -27,12 +26,12 @@ export const makeRequest = <
 	RequestT extends NitroFetchRequest = NitroFetchRequest
 > (url: RequestT, opts?: NitroFetchOptions<RequestT>) => {
 	const options = defaults<unknown, Options<DataT, RequestT>>(opts, {
+		headers: {},
 		baseURL: apiBaseUrl(),
 		mode: 'cors'
 	})
 
 	let asyncDataKey: string
-	let auth: AuthProvider
 
 	const request: AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT> | Promise<DataT>, RequestT> = {
 		setOption(name, value) {
@@ -48,26 +47,31 @@ export const makeRequest = <
 
 			return request
 		},
+		setBearerToken(token) {
+			request.setHeader('Authorization', `Bearer ${token}`)
+
+			return request
+		},
 		asAsyncData(key, asyncDataOpts) {
 			asyncDataKey = key
 
-			Object.assign(options, asyncDataOpts, {
+			Object.assign(options, {
 				immediate: true,
 				server: true
-			})
+			}, asyncDataOpts)
 
 			return request as unknown as AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
 		},
-		sign(authProvider) {
-			auth = resolveAuthProvider(authProvider)
+		as(authProvider, strict = true) {
+			if (user) {
+				// request.setBearerToken(`${user.id}:${user.token}`)
+			} else if (throwIfUndefined) {
+				throw new Error('User is not defined')
+			}
 
 			return request
 		},
 		send() {
-			if (auth && auth.canSign()) {
-				auth.sign(request)
-			}
-
 			const fetch = () => $fetch<DataT>(url, options)
 
 			if (asyncDataKey) {

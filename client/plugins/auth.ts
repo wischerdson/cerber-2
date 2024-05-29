@@ -5,12 +5,12 @@ import { invalidateAccessToken } from '~/repositories/user'
 import { useAuthSignInPageView } from '~/composables/use-page-view'
 
 export default defineNuxtPlugin(() => {
-	const user = bearerToken(cookie('access-token'), auth => {
-		return Promise.all([
-			useAuthSignInPageView(),
-			invalidateAccessToken().sign(auth).send()
-		])
-	})
+	// const user = bearerToken(cookie('access-token'), auth => {
+	// 	return Promise.all([
+	// 		useAuthSignInPageView(),
+	// 		invalidateAccessToken().sign(auth).send()
+	// 	])
+	// })
 
 	// const admin = tokensAuthProvider()
 	// 	.make()
@@ -23,11 +23,11 @@ export default defineNuxtPlugin(() => {
 	// 		])
 	// 	})
 
-	const auth = { user }
+	// const auth = { user }
 
 	return {
 		provide: {
-			auth: (key: keyof typeof auth) => auth[key]
+			// auth: (key: keyof typeof auth) => auth[key]
 		}
 	}
 })

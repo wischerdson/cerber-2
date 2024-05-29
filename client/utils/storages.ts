@@ -1,15 +1,16 @@
 import type { CookieOptions } from 'nuxt/app'
-import type { WatchOptions } from 'vue'
-import { watch } from 'vue'
-import { defaultsDeep, isObject, snakeCase } from 'lodash-es'
+import type { Ref } from 'vue'
+import { defaultsDeep, snakeCase } from 'lodash-es'
 import { useCookie, useState } from 'nuxt/app'
 import { singletonClientOnly } from './singleton'
 
-interface StorageDriver<T> {
+export interface StorageDriver<T> {
 	uid: string
-	read(key: string): T | null
-	write(key: string, value: T | null): void
+	read(key: string): T
+	write(key: string, value: T): void
 }
+
+export type DefinedStorage<T> = [state: Ref<T>, write: () => void]
 
 const stringify = (data: unknown): string => typeof data === 'object' ? JSON.stringify(data) : `${data}`
 
@@ -25,10 +26,12 @@ const handleFetchedData = <T>(rawData: string | null | undefined, init?: () => T
 	}
 }
 
-export const cookieStorageDriver = <T>(
+export function cookieStorageDriver<T>(init: () => T, config?: CookieOptions & { readonly?: false | undefined; }): StorageDriver<T>
+export function cookieStorageDriver<T>(init?: () => T, config?: CookieOptions & { readonly?: false | undefined; }): StorageDriver<T | null>
+export function cookieStorageDriver<T>(
 	init?: () => T,
 	config: CookieOptions & { readonly?: false | undefined; } = {}
-): StorageDriver<T> => {
+): StorageDriver<T | null> {
 	const opts = defaultsDeep(config, {
 		sameSite: 'strict',
 		maxAge: 2147483647
@@ -48,7 +51,9 @@ export const cookieStorageDriver = <T>(
 	}
 }
 
-export const localStorageDriver = <T>(init?: () => T): StorageDriver<T> => {
+export function localStorageDriver<T>(init: () => T): StorageDriver<T>
+export function localStorageDriver<T>(init?: () => T): StorageDriver<T | null>
+export function localStorageDriver<T>(init?: () => T): StorageDriver<T | null> {
 	if (process.server) {
 		throw new Error('There is impossible to use localStorage driver on the server side')
 	}
@@ -67,7 +72,9 @@ export const localStorageDriver = <T>(init?: () => T): StorageDriver<T> => {
 	}
 }
 
-export const dummyStorageDriver = <T>(init?: () => T): StorageDriver<T> => {
+export function dummyStorageDriver<T>(init: () => T): StorageDriver<T>
+export function dummyStorageDriver<T>(init?: () => T): StorageDriver<T | null>
+export function dummyStorageDriver<T>(init?: () => T): StorageDriver<T | null> {
 	return {
 		uid: 'dummy',
 		read: init || (() => null),
@@ -75,20 +82,15 @@ export const dummyStorageDriver = <T>(init?: () => T): StorageDriver<T> => {
 	}
 }
 
-export const initStorage = <T>(key: string, driver: StorageDriver<T>, watchOptions: WatchOptions = {}) => {
+export const defineStorage = <T>(key: string, driver: StorageDriver<T>): DefinedStorage<T> => {
 	const stateKey = snakeCase(`${driver.uid}_${key}`)
 
 	return singletonClientOnly(stateKey, () => {
 		const storageKey = snakeCase(`app_${key}`)
+		const state = useState<T>(stateKey, () => driver.read(storageKey))
 
-		const state = useState<T | null>(stateKey, () => driver.read(storageKey))
+		const write = () => driver.write(storageKey, state.value)
 
-		if (isObject(state.value) && !('deep' in watchOptions)) {
-			watchOptions.deep = true
-		}
-
-		watch(state, v => driver.write(storageKey, v), watchOptions)
-
-		return state
+		return [ state, write ]
 	})
 }

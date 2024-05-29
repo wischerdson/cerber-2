@@ -11,6 +11,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
 	const { $auth } = useNuxtApp()
 	const auth = $auth('user')
 
+	return
+
 	if (auth.cannotSign()) {
 		return await useAuthSignInPageView()
 	}
