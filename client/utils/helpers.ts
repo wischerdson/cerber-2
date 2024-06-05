@@ -15,7 +15,7 @@ export const replacePageView = (targetRoute: RouteRecordNormalized) => {
 	const router = useRouter()
 	const currentRoute = router.currentRoute.value
 
-	router.addRoute({ ...targetRoute, path: currentRoute.path, name: currentRoute.name || undefined })
+	router.addRoute({ ...targetRoute, path: currentRoute.path })
 	const promise = router.replace(currentRoute)
 	router.addRoute(currentRoute.matched[0])
 

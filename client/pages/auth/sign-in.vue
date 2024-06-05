@@ -5,7 +5,7 @@
 			<CerberTextLogo class="w-44 mt-4" />
 		</div>
 
-		<div class="absolute min-h-screen inset-0 overflow-hidden pointer-events-none -z-10 opacity-[.13]">
+		<div class="absolute min-h-screen inset-0 overflow-hidden pointer-events-none -z-10 opacity-[.1]">
 			<img class="absolute right-1/2 top-0 w-[4290px] max-w-none -translate-y-[1590px] translate-x-[2386px]" src="/images/blurs.png">
 		</div>
 
@@ -55,8 +55,7 @@ import TextField from '~/components/ui/TextField.vue'
 import TheButton from '~/components/ui/Button.vue'
 import TheAlert from '~/components/ui/Alert.vue'
 import { useValidation } from '~/composables/use-validation'
-import { usePostReq } from '~/composables/use-request'
-import { definePageMeta, ref, useHead } from '#imports'
+import { definePageMeta, ref, useAuth, useHead, useNuxtApp } from '#imports'
 import { object, string } from 'yup'
 
 useHead({ title: 'Cerber - Авторизация' })
@@ -70,12 +69,6 @@ const { useField, validate, touchAll } = useValidation().defineRules(object({
 	password: string().required('Введите пароль')
 }))
 
-type AuthTokenResponse = {
-	token_type: string,
-	access_token: string,
-	refresh_token: string
-}
-
 const sendForm = async () => {
 	const form = await validate()
 	touchAll()
@@ -86,22 +79,12 @@ const sendForm = async () => {
 
 	pending.value = true
 
-	const promise = usePostReq<AuthTokenResponse>('/auth/token', {
-		grant_type: 'password',
-		...form
-	}, { 'responseType': 'arrayBuffer' }).send()
-
-	return promise
-		.then(resp => {
-
+	useAuth('default').signIn(form.login, form.password)
+		.catch(reason => {
+			console.log('adsasd', reason)
 		})
-		.catch((error) => {
-			if (error.data) {
-				console.log(JSON.stringify(error))
-				return serverError.value = error.data.error_reason
-			}
-		})
-		.finally(() => pending.value = false)
+
+	pending.value = false
 }
 
 </script>

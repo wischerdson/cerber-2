@@ -1,5 +1,6 @@
 import type { CookieOptions } from 'nuxt/app'
-import type { Ref } from 'vue'
+import type { Ref, WatchOptions, WatchStopHandle } from 'vue'
+import { watch } from 'vue'
 import { defaultsDeep, snakeCase } from 'lodash-es'
 import { useCookie, useState } from 'nuxt/app'
 import { singletonClientOnly } from './singleton'
@@ -10,7 +11,7 @@ export interface StorageDriver<T> {
 	write(key: string, value: T): void
 }
 
-export type DefinedStorage<T> = [state: Ref<T>, write: () => void]
+export type DefinedStorage<T> = [state: Ref<T>, write: () => void, watch: (options?: WatchOptions) => WatchStopHandle]
 
 const stringify = (data: unknown): string => typeof data === 'object' ? JSON.stringify(data) : `${data}`
 
@@ -83,7 +84,7 @@ export function dummyStorageDriver<T>(init?: () => T): StorageDriver<T | null> {
 }
 
 export const defineStorage = <T>(key: string, driver: StorageDriver<T>): DefinedStorage<T> => {
-	const stateKey = snakeCase(`${driver.uid}_${key}`)
+	const stateKey = snakeCase(`storage_${driver.uid}_${key}`)
 
 	return singletonClientOnly(stateKey, () => {
 		const storageKey = snakeCase(`app_${key}`)
@@ -91,6 +92,8 @@ export const defineStorage = <T>(key: string, driver: StorageDriver<T>): Defined
 
 		const write = () => driver.write(storageKey, state.value)
 
-		return [ state, write ]
+		const watchStorage = (watchOptions: WatchOptions = {}) => watch(state, write, watchOptions)
+
+		return [ state, write, watchStorage ]
 	})
 }

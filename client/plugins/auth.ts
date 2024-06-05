@@ -1,33 +1,27 @@
+import type { AuthProvider } from '~/utils/auth'
 import { defineNuxtPlugin } from 'nuxt/app'
-import { bearerToken } from '~/utils/auth'
-import { cookie } from '~/utils/storages'
-import { invalidateAccessToken } from '~/repositories/user'
+import { defineJwtPairAuthProvider } from '~/utils/auth'
 import { useAuthSignInPageView } from '~/composables/use-page-view'
+import { useLocalStorage } from '#imports'
 
 export default defineNuxtPlugin(() => {
-	// const user = bearerToken(cookie('access-token'), auth => {
-	// 	return Promise.all([
-	// 		useAuthSignInPageView(),
-	// 		invalidateAccessToken().sign(auth).send()
-	// 	])
-	// })
+	const [ pair, write, watchStorage ] = useLocalStorage<{ access_token: string, refresh_token: string }>('user_auth')
 
-	// const admin = tokensAuthProvider()
-	// 	.make()
-	// 	.defineAccessTokenStorage(cookie('user-access-token'))
-	// 	.defineRefreshTokenStorage(cookie('user-refresh-token'))
-	// 	.setLogoutCallback(() => {
-	// 		return Promise.all([
-	// 			useAuthSignInPageView(),
-	// 			invalidateAccessToken().sign(auth).send()
-	// 		])
-	// 	})
+	watchStorage()
 
-	// const auth = { user }
+	const defaultUser = defineJwtPairAuthProvider(pair, () => useAuthSignInPageView())
+
+	const providers = { default: defaultUser }
+
+	const resolveAuthProvider = (provider: keyof typeof providers | AuthProvider) => {
+		if (typeof provider === 'string') {
+			return providers[provider]
+		}
+
+		return provider
+	}
 
 	return {
-		provide: {
-			// auth: (key: keyof typeof auth) => auth[key]
-		}
+		provide: { resolveAuthProvider }
 	}
 })

@@ -48,7 +48,7 @@ import GearIcon from '~/assets/svg/Monochrome=gearshape.fill.svg'
 import EditIcon from '~/assets/svg/Monochrome=applepencil.gen1.svg'
 import PasswordsTable from '~/components/account/PasswordsTable.vue'
 
-definePageMeta({ middleware: 'auth', layout: 'account' })
+definePageMeta({ middleware: 'auth' })
 
 const passwords = [
 	{ name: 'Email', icon: { type: 'letter', content: 'E' }, login: 'test', starred: false },

@@ -1,53 +1,91 @@
+import type { Ref } from 'vue'
+import type { AppRequest } from './request'
+import { isJwtExpired } from './helpers'
+import { issueTokensPairViaPasswordGrant, issueTokensPairViaRefreshToken, revokeSession } from '~/repositories/auth'
+import { pick } from 'lodash-es'
 
-
-
-
-interface TokensPairAuthenticationScheme {
-
+export type JwtTokensPair = {
+	access_token: string
+	refresh_token: string
 }
 
+export interface AuthProvider {
+	sign(request: AppRequest): Promise<boolean>
+	canSign(): boolean
+	signIn(login: string, password: string): Promise<unknown>
+	logout(): void
+	saveSignature(signature: JwtTokensPair): void
+}
 
-// interface AuthPackage {
+export const defineJwtPairAuthProvider = (pair: Ref<JwtTokensPair | null | undefined>, onLogout: () => void) => {
+	const saveSignature: AuthProvider['saveSignature'] = (signature: JwtTokensPair) => {
+		pair.value = signature
+	}
 
-// }
+	const canSign: AuthProvider['canSign'] = () => {
+		if (!pair.value) {
+			return false
+		}
 
+		if (isJwtExpired(pair.value.refresh_token)) {
+			return false
+		}
 
-// function defineBearerAuthPackage(): AuthPackage
-// {
-// 	return {}
-// }
+		return true
+	}
 
+	const sign: AuthProvider['sign'] = async (request) => {
+		if (!canSign()) {
+			return false
+		}
 
+		pair.value = pair.value as JwtTokensPair
 
-// // interface AuthenticationScheme {
+		if (isJwtExpired(pair.value.access_token)) {
+			try {
+				const newPair = await issueTokensPairViaRefreshToken(pair.value.refresh_token)
 
-// // }
+				saveSignature(pick(newPair, ['access_token', 'refresh_token']))
+			} catch (reason: any) {
+				if (reason.data && reason.data.error_reason === 'auth_credentials_error') {
+					return false
+				}
 
-// // interface AuthenticationProtocol {
+				console.error('Error occured while tokens pair issuing')
 
-// // }
+				throw reason
+			}
+		}
 
-// // interface BearerTokenAuthProvider extends AuthProvider {
+		request.setBearerToken(pair.value.access_token)
 
-// // }
+		return true
+	}
 
-// // interface JwtPairAuthProvider extends BearerTokenAuthProvider {
+	const logout: AuthProvider['logout'] = async () => {
+		const request = revokeSession()
 
-// // }
+		if (await sign(request)) {
+			try { await request.send() } catch {}
+		}
 
+		pair.value = null
 
-// function defineBearerTokenAuthProvider() {
-// 	const sign = () => {
+		onLogout()
+	}
 
-// 	}
-// }
+	const signIn: AuthProvider['signIn'] = async (login: string, password: string) => {
+		try {
+			const response = await issueTokensPairViaPasswordGrant(login, password)
+			console.log('response', response)
+		} catch (error: any) {
+			console.log('error', error)
 
+			return error
+		}
+	}
 
+	const provider: AuthProvider = { sign, canSign, logout, saveSignature, signIn }
 
-// /*
-
-// Есть некая сущность, которая должна взять некие данные/набор данных (откуда-то) и подписать ими запрос
-// так как умеет именно эта сущность.
-
-
-// */
+	return provider
+}

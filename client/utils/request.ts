@@ -2,6 +2,9 @@ import type { NitroFetchRequest, NitroFetchOptions } from 'nitropack'
 import type { AsyncDataOptions, AsyncData, NuxtError } from 'nuxt/app'
 import type { FetchError } from 'ofetch'
 import type { KeysOf, PickFrom } from '#app/composables/asyncData'
+import type { AuthProvider } from './auth'
+import type { AuthType } from '~/composables/use-auth'
+import { useAuth } from '~/composables/use-auth'
 import { apiBaseUrl } from '~/utils/helpers'
 import { defaults } from 'lodash-es'
 import { useAsyncData } from 'nuxt/app'
@@ -16,8 +19,8 @@ export interface AppRequest<DataT = any, ErrorT = any, ResponseT = any, RequestT
 	setHeader(name: string, value?: string | null): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	setBearerToken(token: string): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	asAsyncData(key: string, opts?: AsyncDataOptions<DataT>): AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
-	as(authProvider: undefined, strict: boolean): AppRequest<DataT, ErrorT, ResponseT, RequestT>
-	send(): ResponseT
+	sign(authProvider: AuthType, strict: boolean): AppRequest<DataT, ErrorT, ResponseT, RequestT>
+	send(): Promise<ResponseT>
 }
 
 export const makeRequest = <
@@ -32,6 +35,8 @@ export const makeRequest = <
 	})
 
 	let asyncDataKey: string
+	let authProvider: AuthProvider
+	let stopIfCannotSign: boolean = false
 
 	const request: AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT> | Promise<DataT>, RequestT> = {
 		setOption(name, value) {
@@ -62,23 +67,34 @@ export const makeRequest = <
 
 			return request as unknown as AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
 		},
-		as(authProvider, strict = true) {
-			if (user) {
-				// request.setBearerToken(`${user.id}:${user.token}`)
-			} else if (throwIfUndefined) {
-				throw new Error('User is not defined')
-			}
+		sign(_authProvider, _stopIfCannotSign = false) {
+			authProvider = useAuth(_authProvider)
+			stopIfCannotSign = _stopIfCannotSign
 
 			return request
 		},
 		send() {
-			const fetch = () => $fetch<DataT>(url, options)
+			return new Promise(async (resolve, reject) => {
+				if (authProvider) {
+					try {
+						await authProvider.sign(request)
+					} catch (reason) {
+						authProvider.logout()
 
-			if (asyncDataKey) {
-				return useAsyncData<DataT, ErrorT>(asyncDataKey, fetch, options)
-			}
+						if (stopIfCannotSign) {
+							return null
+						}
+					}
+				}
 
-			return fetch()
+				const fetch = () => $fetch<DataT>(url, options)
+
+				if (asyncDataKey) {
+					return await useAsyncData<DataT, ErrorT>(asyncDataKey, fetch, options)
+				}
+
+				return await fetch()
+			})
 		}
 	}
 
