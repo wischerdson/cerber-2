@@ -89,11 +89,15 @@ export const makeRequest = <
 
 				const fetch = () => $fetch<DataT>(url, options)
 
-				if (asyncDataKey) {
-					return await useAsyncData<DataT, ErrorT>(asyncDataKey, fetch, options)
-				}
+				try {
+					const result = await asyncDataKey ?
+						useAsyncData<DataT, ErrorT>(asyncDataKey, fetch, options) :
+						fetch()
 
-				return await fetch()
+					resolve(result)
+				} catch (error) {
+					reject(error)
+				}
 			})
 		}
 	}

@@ -75,14 +75,8 @@ export const defineJwtPairAuthProvider = (pair: Ref<JwtTokensPair | null | undef
 	}
 
 	const signIn: AuthProvider['signIn'] = async (login: string, password: string) => {
-		try {
-			const response = await issueTokensPairViaPasswordGrant(login, password)
-			console.log('response', response)
-		} catch (error: any) {
-			console.log('error', error)
-
-			return error
-		}
+		const response = await issueTokensPairViaPasswordGrant(login, password)
+		console.log('response', response)
 	}
 
 	const provider: AuthProvider = { sign, canSign, logout, saveSignature, signIn }

@@ -24,7 +24,7 @@
 
 					<div>
 						<TheAlert
-							class="mb-8"
+							class="mb-8 text-sm"
 							:show="serverError === 'auth_credentials_error'"
 							appearance="error"
 						>Неверный логин или пароль</TheAlert>
@@ -55,7 +55,7 @@ import TextField from '~/components/ui/TextField.vue'
 import TheButton from '~/components/ui/Button.vue'
 import TheAlert from '~/components/ui/Alert.vue'
 import { useValidation } from '~/composables/use-validation'
-import { definePageMeta, ref, useAuth, useHead, useNuxtApp } from '#imports'
+import { definePageMeta, ref, useAuth, useHead } from '#imports'
 import { object, string } from 'yup'
 
 useHead({ title: 'Cerber - Авторизация' })
@@ -79,10 +79,14 @@ const sendForm = async () => {
 
 	pending.value = true
 
-	useAuth('default').signIn(form.login, form.password)
-		.catch(reason => {
-			console.log('adsasd', reason)
-		})
+	try {
+		await useAuth('default').signIn(form.login, form.password)
+		serverError.value = null
+	} catch (error: any) {
+		if (error.data && 'error_reason' in error.data) {
+			serverError.value = error.data.error_reason
+		}
+	}
 
 	pending.value = false
 }
