@@ -1,4 +1,3 @@
-import type { RouteRecordNormalized } from 'vue-router'
 import { trim } from 'lodash-es'
 import { useRoute, useRouter, useRuntimeConfig } from '#imports'
 
@@ -11,15 +10,23 @@ export const apiBaseUrl = () => {
 	return process.server ? config.apiBaseUrl : config.public.apiBaseUrl
 }
 
-export const replacePageView = (targetRoute: RouteRecordNormalized) => {
+export const replaceView = (routeName: string) => {
 	const router = useRouter()
-	const currentRoute = router.currentRoute.value
+	const targetRoute = router.getRoutes().find(route => route.name === routeName)
+	const currentRoute = router.currentRoute.value.matched[0]
 
-	router.addRoute({ ...targetRoute, path: currentRoute.path })
-	const promise = router.replace(currentRoute)
-	router.addRoute(currentRoute.matched[0])
+	if (targetRoute) {
+		router.addRoute({
+			...currentRoute,
+			components: targetRoute.components,
+			meta: targetRoute.meta
+		})
 
-	return promise
+		const promise = router.replace({ force: true })
+		router.addRoute(currentRoute)
+
+		return promise
+	}
 }
 
 export const reloadPageView = () => useRouter().replace(useRoute())
