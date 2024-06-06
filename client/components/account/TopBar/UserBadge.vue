@@ -76,7 +76,7 @@
 					</div>
 
 					<div class="mt-3">
-						<TheClickable class="menu-item text-[#bf4c44] flex w-full h-9 rounded-md items-center px-4">
+						<TheClickable class="menu-item text-[#bf4c44] flex w-full h-9 rounded-md items-center px-4" @click="logout">
 							<DoorIcon class="mr-3 h-4 w-4" />
 							<span>Выйти</span>
 						</TheClickable>
@@ -98,6 +98,7 @@ import ComputerIcon from '~/assets/svg/Monochrome=desktopcomputer.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 import { ref, onUnmounted, watch } from '#imports'
 import { useTheme } from '~/composables/use-theme'
+import { useAuth } from '~/composables/use-auth'
 
 const showMenu = ref(false)
 const themeSubmenu = ref(false)
@@ -106,6 +107,8 @@ const $menu = ref<HTMLElement>()
 const { theme, destroy: destroyTheme } = useTheme()
 
 watch(showMenu, () => themeSubmenu.value = false)
+
+const logout = () => useAuth('default').logout()
 
 onUnmounted(() => {
 	destroyTheme()

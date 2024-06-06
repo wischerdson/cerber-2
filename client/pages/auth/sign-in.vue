@@ -55,7 +55,7 @@ import TextField from '~/components/ui/TextField.vue'
 import TheButton from '~/components/ui/Button.vue'
 import TheAlert from '~/components/ui/Alert.vue'
 import { useValidation } from '~/composables/use-validation'
-import { definePageMeta, ref, useAuth, useHead } from '#imports'
+import { definePageMeta, ref, useAuth, useHead, useRouter } from '#imports'
 import { object, string } from 'yup'
 
 useHead({ title: 'Cerber - Авторизация' })
@@ -82,6 +82,8 @@ const sendForm = async () => {
 	try {
 		await useAuth('default').signIn(form.login, form.password)
 		serverError.value = null
+
+		useRouter().replace({ force: true })
 	} catch (error: any) {
 		if (error.data && 'error_reason' in error.data) {
 			serverError.value = error.data.error_reason

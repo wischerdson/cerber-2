@@ -1,4 +1,5 @@
 import { trim } from 'lodash-es'
+import { Buffer } from 'buffer'
 import { useRoute, useRouter, useRuntimeConfig } from '#imports'
 
 export const storageUrl = (path: string) => {
