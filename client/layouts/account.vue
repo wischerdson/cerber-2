@@ -4,19 +4,21 @@
 		<ScreenSize />
 		<slot></slot>
 
-		<div class="absolute bottom-0 -z-10 inset-x-0 pointer-events-none flex justify-center">
-			<!-- <img class="w-full dark:opacity-10 opacity-15 -z-10" src="/images/blurs-footer.png"> -->
-			<!-- <img class="w-full dark:opacity-10 opacity-15 -z-10 dark:hidden" src="/images/blurs-footer.png"> -->
-			<!-- <img class="w-full opacity-15 -z-10 hidden dark:block max-w-[1700px] translate-x-10" src="/images/IMG_1111.png"> -->
+		<div class="fixed inset-0 z-40 flex items-center justify-center dark:bg-black bg-white" v-if="showLoader">
+			<TheSpinner class="relative z-10" size="38" />
+			<div class="absolute bottom-0 -z-10 inset-x-0 pointer-events-none flex justify-center">
+				<!-- <img class="w-full dark:opacity-10 opacity-20 -z-10" src="/images/blurs-footer.png"> -->
+			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 
-import { useHead } from '#imports'
+import { onMounted, ref, useHead } from '#imports'
 import ScreenSize from '~/components/dev/ScreenSize.vue'
 import TopBar from '~/components/account/TopBar.vue'
+import TheSpinner from '~/components/ui/Spinner.vue'
 import { useNoindexHeader } from '~/composables/use-noindex-header'
 import { useTheme } from '~/composables/use-theme'
 
@@ -40,6 +42,12 @@ useHead({
 		{ name: 'msapplication-config', content: '/favicon/browserconfig.xml' },
 		{ name: 'theme-color', content: '#ffffff' }
 	]
+})
+
+const showLoader = ref(true)
+
+onMounted(() => {
+	showLoader.value = false
 })
 
 </script>

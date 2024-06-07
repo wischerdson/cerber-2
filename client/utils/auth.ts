@@ -17,7 +17,7 @@ export interface AuthProvider {
 	saveSignature(signature: JwtTokensPair): void
 }
 
-export const defineJwtPairAuthProvider = (pair: Ref<JwtTokensPair | null | undefined>, onLogout: () => void) => {
+export const defineJwtPairAuthProvider = (pair: Ref<JwtTokensPair | null | undefined>, onLogin: () => void, onLogout: () => void) => {
 	const saveSignature: AuthProvider['saveSignature'] = (signature: JwtTokensPair) => {
 		pair.value = signature
 	}
@@ -27,7 +27,7 @@ export const defineJwtPairAuthProvider = (pair: Ref<JwtTokensPair | null | undef
 			return false
 		}
 
-		if (isJwtExpired(pair.value.refresh_token)) {
+		if (pair.value.refresh_token !== 'valid' && isJwtExpired(pair.value.refresh_token)) {
 			return false
 		}
 
@@ -78,6 +78,8 @@ export const defineJwtPairAuthProvider = (pair: Ref<JwtTokensPair | null | undef
 		const response = await issueTokensPairViaPasswordGrant(login, password)
 
 		saveSignature(pick(response, ['access_token', 'refresh_token']))
+
+		onLogin()
 	}
 
 	const provider: AuthProvider = { sign, canSign, logout, saveSignature, signIn }

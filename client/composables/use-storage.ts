@@ -1,3 +1,4 @@
+import type { WatchOptions } from 'vue'
 import type { CookieOptions } from 'nuxt/app'
 import type { DefinedStorage } from '~/utils/storages'
 import { defineStorage, cookieStorageDriver, localStorageDriver, dummyStorageDriver } from '~/utils/storages'
@@ -12,9 +13,10 @@ export function useCookieStorage<T>(key: string, init?: () => T, cookieOptions?:
 export function useCookieStorage<T>(
 	key: string,
 	init?: () => T,
-	cookieOptions: _CookieOptions = {}
+	cookieOptions: _CookieOptions = {},
+	watchOptions: WatchOptions | false = {}
 ) {
-	return defineStorage(key, cookieStorageDriver(init, cookieOptions))
+	return defineStorage(key, cookieStorageDriver(init, cookieOptions), watchOptions)
 }
 
 /****************** Localstorage ******************/
@@ -24,9 +26,10 @@ export function useLocalStorage<T>(key: string, init?: () => T): DefinedStorage<
 
 export function useLocalStorage<T>(
 	key: string,
-	init?: () => T
+	init?: () => T,
+	watchOptions: WatchOptions | false = {}
 ) {
 	const driver = process.server ? dummyStorageDriver(init) : localStorageDriver(init)
 
-	return defineStorage(key, driver)
+	return defineStorage(key, driver, watchOptions)
 }

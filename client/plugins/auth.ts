@@ -1,26 +1,38 @@
 import type { AuthProvider } from '~/utils/auth'
 import { defineNuxtPlugin } from 'nuxt/app'
-import { defineJwtPairAuthProvider } from '~/utils/auth'
-import AuthMiddleware from '~/middleware/auth'
+import { defineJwtPairAuthProvider, type JwtTokensPair } from '~/utils/auth'
 import { useCookieStorage, useLocalStorage, useRouter } from '#imports'
 
-export default defineNuxtPlugin(() => {
+const defineDefaultUserAuthProvider = () => {
+	/**
+	 * Так как пару токенов для данного провайдера решено хранить в клиентском localstorage
+	 * (чтоб не гонять их в куках по сети и свести вероятность перехвата к минимуму), следовательно
+	 * сервер, который рендерит страницу, не шарит, что пользователь авторизирован. Поэтому в куках
+	 * серваку мы поясняем, что у клиента есть данные авторизации, только он их ему не отдаст.
+	 * Сервер рендерит не страницу авторизации а пустой личный кабинет, а далее клиент будет сам
+	 * запрашивать данные по API и дорисовывать интерфейс (если у него действительно валидная авторизация)
+	 */
+
 	const router = useRouter()
-	const [ pair, _, watchStorage ] = useLocalStorage<{ access_token: string, refresh_token: string }>('user_auth')
-	const [ authenticated, __, watchIsAuthenticated ] = useCookieStorage('is_authenticated')
-
-	watchStorage()
-	watchIsAuthenticated()
-
-	const defaultUser = defineJwtPairAuthProvider(pair, () => {
-		useRouter().replace({ force: true })
-
-		authenticated.value = false
+	const [ authenticated ] = useCookieStorage<boolean>('default_authenticated', () => false)
+	const [ pair ] = useLocalStorage<JwtTokensPair | undefined>('user_auth', () => {
+		if (process.server && authenticated.value) {
+			return { access_token: 'valid', refresh_token: 'valid' }
+		}
 	})
 
-	process.client && (authenticated.value = defaultUser.canSign())
+	return defineJwtPairAuthProvider(pair, () => {
+		authenticated.value = true
+	}, () => {
+		authenticated.value = false
+		router.replace({ force: true })
+	})
+}
 
-	const providers = { default: defaultUser }
+export default defineNuxtPlugin(() => {
+	const providers = {
+		default: defineDefaultUserAuthProvider()
+	}
 
 	const resolveAuthProvider = (provider: keyof typeof providers | AuthProvider) => {
 		if (typeof provider === 'string') {

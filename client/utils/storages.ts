@@ -11,7 +11,7 @@ export interface StorageDriver<T> {
 	write(key: string, value: T): void
 }
 
-export type DefinedStorage<T> = [state: Ref<T>, write: () => void, watch: (options?: WatchOptions) => WatchStopHandle]
+export type DefinedStorage<T> = [state: Ref<T>, write: () => void]
 
 const stringify = (data: unknown): string => typeof data === 'object' ? JSON.stringify(data) : `${data}`
 
@@ -83,7 +83,7 @@ export function dummyStorageDriver<T>(init?: () => T): StorageDriver<T | null> {
 	}
 }
 
-export const defineStorage = <T>(key: string, driver: StorageDriver<T>): DefinedStorage<T> => {
+export const defineStorage = <T>(key: string, driver: StorageDriver<T>, watchOptions: WatchOptions | false = {}): DefinedStorage<T> => {
 	const stateKey = snakeCase(`storage_${driver.uid}_${key}`)
 
 	return singletonClientOnly(stateKey, () => {
@@ -92,8 +92,8 @@ export const defineStorage = <T>(key: string, driver: StorageDriver<T>): Defined
 
 		const write = () => driver.write(storageKey, state.value)
 
-		const watchStorage = (watchOptions: WatchOptions = {}) => watch(state, write, watchOptions)
+		watchOptions !== false && watch(state, write, watchOptions)
 
-		return [ state, write, watchStorage ]
+		return [ state, write ]
 	})
 }
