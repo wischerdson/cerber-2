@@ -55,9 +55,14 @@ onMounted(() => {
 <style lang="scss">
 
 body {
-	@apply dark:bg-black bg-white text-black dark:text-white;
+	@apply text-black dark:text-white;
 
 	font-family: theme('fontFamily.sans');
+	background-color: #fbfbfd;
+}
+
+html.dark body {
+	background-color: #000;
 }
 
 html.theme-changing * {

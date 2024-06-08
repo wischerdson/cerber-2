@@ -1,5 +1,5 @@
 import type { CookieOptions } from 'nuxt/app'
-import type { Ref, WatchOptions, WatchStopHandle } from 'vue'
+import type { Ref, WatchOptions } from 'vue'
 import { watch } from 'vue'
 import { defaultsDeep, snakeCase } from 'lodash-es'
 import { useCookie, useState } from 'nuxt/app'

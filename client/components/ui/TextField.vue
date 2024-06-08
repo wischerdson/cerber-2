@@ -6,7 +6,10 @@
 		<div class="relative">
 			<input
 				class="form-control"
-				:class="{ invalid: validationField?.hasErrors() }"
+				:class="[
+					{ invalid: validationField?.hasErrors() },
+					`size-${size}`
+				]"
 				type="text"
 				v-uid
 				autocomplete="off"
@@ -49,6 +52,7 @@ interface Props extends /* @vue-ignore */ InputHTMLAttributes {
 	disableLabel?: boolean
 	validationField?: FieldContext<any>
 	validationTouchEvent?: string
+	size?: 'base' | 'lg'
 }
 
 const input = ref<null | HTMLElement>(null)
@@ -57,7 +61,8 @@ defineOptions({ inheritAttrs: false })
 
 const props = withDefaults(defineProps<Props>(), {
 	validationTouchEvent: 'change',
-	disableLabel: false
+	disableLabel: false,
+	size: 'base'
 })
 
 const [model] = defineModel({
@@ -81,19 +86,27 @@ const [model] = defineModel({
 	font-size: .875rem;
 	margin-bottom: 6px;
 	display: block;
-	color: #818181;
+	color: rgba(#000, .56);
 }
 
 .form-control {
-	background-color: #eaeaea;
+	// background-color: #eaeaea;
 	transition: border-color .15s ease;
-	height: 46px;
-	padding: 0 16px;
-	border: 1px solid rgba(#000, 0);
+	border: 1px solid rgba(#000, .16);
 	border-radius: 8px;
 	display: block;
 	width: 100%;
 	font-size: 1rem;
+
+	&.size-base {
+		height: 36px;
+		padding: 0 12px;
+	}
+
+	&.size-lg {
+		height: 46px;
+		padding: 0 16px;
+	}
 
 	&:focus {
 		border: 1px solid darken(#1d1d1d, 20%);

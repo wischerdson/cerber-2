@@ -4,8 +4,8 @@
 			<div class="flex py-2">
 				<NuxtLink class="flex-1" to="/">
 					<TheClickable class="flex items-end">
-						<CerberLogo class="h-12 dark:text-white/60 text-black/60" />
-						<CerberTextLogo class="h-2.5 dark:text-white/40 text-black/40 -translate-x-4" />
+						<CerberLogo class="h-12 dark:text-white/60 text-black/70" />
+						<CerberTextLogo class="h-2.5 dark:text-white/40 text-black/70 -translate-x-4" />
 					</TheClickable>
 				</NuxtLink>
 				<div class="items-center">

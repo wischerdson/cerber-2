@@ -45,7 +45,7 @@ onUnmounted(() => observer.disconnect())
 
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 
 .spacer {
 	max-height: 0;
