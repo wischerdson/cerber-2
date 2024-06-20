@@ -30,8 +30,6 @@ export const replaceView = (routeName: string) => {
 	}
 }
 
-export const reloadPageView = () => useRouter().replace(useRoute())
-
 export const forEachObjectDeep = function* (object: { [key: string]: any }) {
 	const stack = [object]
 

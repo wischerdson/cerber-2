@@ -21,6 +21,7 @@
 	},
 	"dependencies": {
 		"buffer": "^6.0.3",
+		"libphonenumber-js": "^1.11.4",
 		"lodash-es": "^4.17.21",
 		"yup": "^1.2.0"
 	}
