@@ -8,5 +8,6 @@
 	"files.trimTrailingWhitespace": true,
 	"[markdown]": {
 		"files.trimTrailingWhitespace": false
-	}
+	},
+	// "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

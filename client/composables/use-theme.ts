@@ -21,7 +21,7 @@ export const useTheme = () => singletonClientOnly('theme', () => {
 
 	theme.value = cookie.value
 
-	const darkModePreference = process.client ? window.matchMedia('(prefers-color-scheme: dark)') : null
+	const darkModePreference = import.meta.client ? window.matchMedia('(prefers-color-scheme: dark)') : null
 
 	const isDark = () => {
 		if (theme.value.mode === 'system') {

@@ -1,6 +1,6 @@
 <template>
 	<div class="form-group">
-		<label class="form-label" :for="input?.id" v-if="!disableLabel">
+		<label class="form-label" :for="$input?.id" v-if="!disableLabel">
 			<slot name="label"></slot>
 		</label>
 		<div class="relative">
@@ -16,7 +16,7 @@
 				v-bind="useAttrs()"
 				v-model="model"
 				v-on:[validationTouchEvent]="validationField && validationField.touch()"
-				ref="input"
+				ref="$input"
 			>
 			<div class="absolute inset-0 pointer-events-none">
 				<slot name="layer-above-field"></slot>
@@ -55,7 +55,7 @@ interface Props extends /* @vue-ignore */ InputHTMLAttributes {
 	size?: 'base' | 'lg'
 }
 
-const input = ref<null | HTMLElement>(null)
+const $input = ref<null | HTMLElement>(null)
 
 defineOptions({ inheritAttrs: false })
 
@@ -79,66 +79,3 @@ const [model] = defineModel({
 })
 
 </script>
-
-<style lang="scss">
-
-.form-label {
-	font-size: .875rem;
-	margin-bottom: 6px;
-	display: block;
-	color: rgba(#000, .56);
-}
-
-.form-control {
-	// background-color: #eaeaea;
-	transition: border-color .15s ease;
-	border: 1px solid rgba(#000, .16);
-	border-radius: 8px;
-	display: block;
-	width: 100%;
-	font-size: 1rem;
-
-	&.size-base {
-		height: 36px;
-		padding: 0 12px;
-	}
-
-	&.size-lg {
-		height: 46px;
-		padding: 0 16px;
-	}
-
-	&:focus {
-		border: 1px solid darken(#1d1d1d, 20%);
-	}
-}
-
-html.dark .form-control {
-	background-color: #1d1d1d;
-
-	&:focus {
-		border: 1px solid lighten(#1d1d1d, 20%);
-	}
-}
-
-html body .form-control.invalid {
-	background-color: rgba(#9d2a23, .1);
-
-	&:focus {
-		&.invalid {
-			border-color: #9d2a23;
-		}
-	}
-}
-
-.form-group {
-	.v-enter-active, .v-leave-active {
-		transition: opacity .25s ease;
-	}
-
-	.v-enter-from, .v-leave-to {
-		opacity: 0;
-	}
-}
-
-</style>

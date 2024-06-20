@@ -41,6 +41,9 @@ useHead({
 		{ name: 'msapplication-TileColor', content: '#000000' },
 		{ name: 'msapplication-config', content: '/favicon/browserconfig.xml' },
 		{ name: 'theme-color', content: '#ffffff' }
+	],
+	script: [
+		{ src: '/particles.min.js' }
 	]
 })
 

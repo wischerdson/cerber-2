@@ -12,23 +12,11 @@
 			</div>
 		</div> -->
 
-		<div class="flex gap-6 mt-4">
+		<div class="flex items-start gap-6 mt-4">
 			<Sidebar />
-			<ContentTile class="w-full h-52">
-
-			</ContentTile>
-			<ContentTile class="w-full max-w-sm h-52">
-				<form>
-					<div class="space-y-4">
-						<TextField>
-							<template #label>Название</template>
-						</TextField>
-						<TextField>
-							<template #label>Описание</template>
-						</TextField>
-					</div>
-
-				</form>
+			<ContentTile class="w-full h-52"> </ContentTile>
+			<ContentTile class="w-full">
+				<SecretView />
 			</ContentTile>
 		</div>
 	</DefaultPageView>
@@ -40,7 +28,10 @@ import DefaultPageView from '~/components/ui/DefaultPageView.vue'
 import ContentTile from '~/components/ui/ContentTile.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import TextField from '~/components/ui/TextField.vue'
+import TextArea from '~/components/ui/TextArea.vue'
 import Sidebar from '~/components/account/LeftSidebarWithGroups.vue'
+import GearIcon from '~/assets/svg/Monochrome=gearshape.fill.svg'
+import SecretView from '~/components/account/secrets/View.vue'
 import { definePageMeta, useHead } from '#imports'
 
 definePageMeta({ middleware: 'auth' })
@@ -49,8 +40,4 @@ useHead({ title: 'Cerber - Доступы' })
 
 </script>
 
-<style scoped lang="scss">
-
-
-
-</style>
+<style scoped lang="scss"></style>

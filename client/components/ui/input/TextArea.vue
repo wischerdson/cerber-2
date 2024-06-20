@@ -2,6 +2,7 @@
 	<textarea
 		class="form-control"
 		:class="`size-${size}`"
+		:style="{ resize: allowShrink ? 'none' : '' }"
 		v-uid
 		autocomplete="off"
 		:rows="rows"
@@ -38,6 +39,7 @@ const setHeight = () => {
 	if (!$textarea.value) {
 		return
 	}
+
 	const tx = ($textarea.value as HTMLElement)
 
 	if (tx.scrollHeight > tx.offsetHeight || props.allowShrink) {

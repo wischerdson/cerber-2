@@ -24,7 +24,7 @@ const config: Config = {
 					'gray-2': '#0c0c0c',
 					'gray-3': '#1d1d1d',
 				},
-				'red-1': '#933131',
+				'primary-red': '#933131',
 				gray: {
 					950: '#0d0d0d',
 					900: '#1a1a1a',
@@ -97,6 +97,7 @@ const config: Config = {
 			'base':  ['1rem', '1'],
 			'lg':    ['1.125rem', '1'],
 			'xl':    ['1.25rem', '1'],
+			'1.5xl': ['1.375rem', '1'],
 			'2xl':   ['1.5rem', '1'],
 			'2.5xl': ['1.6575rem', '1'],
 			'3xl':   ['1.875rem', '1'],

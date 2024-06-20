@@ -1,9 +1,8 @@
 <template>
 	<div class="search relative" :class="{ focused }">
 		<input
-			class="search-field pl-9 h-10"
+			class="search-field pl-8 pr-7 h-10"
 			type="text"
-			v-uid
 			autocomplete="off"
 			placeholder="Поиск"
 			v-model="searchQuery"
@@ -13,15 +12,15 @@
 		>
 		<div class="absolute inset-0 pointer-events-none">
 			<div class="h-full flex justify-between items-center pl-2 pr-4">
-				<icon class="text-black/50 dark:text-white/50" size="22px" name="ph:magnifying-glass" />
+				<icon class="text-black/60 dark:text-white/50" size="18px" name="ph:magnifying-glass" />
 
 				<transition>
 					<Clickable
-						class="clear-search-btn w-7 h-7 -mr-2 rounded-md flex items-center justify-center pointer-events-auto"
+						class="clear-search-btn w-4 h-4 bg-gray-100 text-black -mr-2 rounded-full flex items-center justify-center pointer-events-auto"
 						v-if="showClearBtn"
 						@click="searchQuery = ''"
 					>
-						<icon size="20px" name="material-symbols:close-rounded" />
+						<icon size="10px" name="material-symbols:close-rounded" />
 					</Clickable>
 				</transition>
 			</div>
@@ -54,7 +53,7 @@ onUnmounted(() => stopTypingDetection())
 .search {
 	transition: transform .3s ease;
 
-	&:hover, &.focused {
+	&.focused {
 		transform: scale(1.028);
 
 		.search-field {
@@ -72,7 +71,6 @@ onUnmounted(() => stopTypingDetection())
 }
 
 .clear-search-btn {
-	opacity: .5;
 	transition: opacity .15s ease;
 
 	&.v-enter-active, &.v-leave-active {

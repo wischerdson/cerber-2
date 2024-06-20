@@ -20,7 +20,7 @@
 		</TheClickable>
 
 		<transition>
-			<div class="menu-wrapper absolute right-0 top-full pt-4 z-10" v-click-outside="() => showMenu = false" v-if="showMenu">
+			<div class="menu-wrapper absolute right-0 top-full pt-4 z-10" v-click-outside="() => showMenu = false" v-show="showMenu">
 				<div class="menu rounded-xl w-64 relative px-2.5 py-2.5 z-50" ref="$menu">
 					<div class="absolute right-0 -top-7">
 						<icon class="arrow-top" size="48px" name="material-symbols:arrow-drop-up-rounded" />
