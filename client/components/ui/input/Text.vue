@@ -1,26 +1,23 @@
 <template>
+	<slot name="label" :id="$input?.id"></slot>
 	<input
-		v-uid="cb"
+		v-uid
 		class="form-control size-base"
 		type="text"
 		autocomplete="off"
 		v-model="model"
+		v-bind="useAttrs()"
+		ref="$input"
 	>
 </template>
 
 <script setup lang="ts">
 
-import type { Ref } from '#imports'
-import { inject, ref } from '#imports'
+import { ref, useAttrs } from '#imports'
 
 const props = defineProps<{ value?: string|number }>()
-const uid = inject<Ref<string>>('uid', ref(''))
 
-const cb = (id: string) => {
-	if (uid) {
-		uid.value = id
-	}
-}
+const $input = ref<HTMLElement>()
 
 const [model] = defineModel()
 

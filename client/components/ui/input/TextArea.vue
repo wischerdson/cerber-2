@@ -1,9 +1,11 @@
 <template>
+	<slot name="label" :id="$textarea?.id"></slot>
 	<textarea
 		class="form-control"
 		:class="`size-${size}`"
 		:style="{ resize: allowShrink ? 'none' : '' }"
 		v-uid
+		v-bind="useAttrs()"
 		autocomplete="off"
 		:rows="rows"
 		ref="$textarea"
@@ -14,7 +16,7 @@
 <script setup lang="ts">
 
 import type { TextareaHTMLAttributes } from 'vue'
-import { ref, onMounted } from '#imports'
+import { ref, onMounted, useAttrs } from '#imports'
 
 interface Props extends /* @vue-ignore */ TextareaHTMLAttributes {
 	size?: 'base' | 'lg'

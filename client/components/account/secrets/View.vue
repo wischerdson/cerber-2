@@ -12,9 +12,9 @@
 		</div>
 
 		<div class="mt-8 space-y-4">
-			<CopyingSecretField label="URL" content="https://sk-dev.ru/phpmyadmin" :secure="false" />
-			<CopyingSecretField label="Логин" content="panteric" :secure="false" />
-			<CopyingSecretField label="Секретный ключ" content="panteric" :secure="true" />
+			<CustomFieldView label="URL" content="https://sk-dev.ru/phpmyadmin" :secure="false" />
+			<CustomFieldView label="Логин" content="panteric" :secure="false" />
+			<CustomFieldView label="Секретный ключ" content="panteric" :secure="true" />
 		</div>
 
 		<div class="mt-10 flex justify-between items-center">
@@ -38,7 +38,7 @@
 
 import TheClickable from '~/components/ui/Clickable.vue'
 import TrashIcon from '~/assets/svg/Monochrome=trash.fill.svg'
-import CopyingSecretField from '../CopyingSecretField.vue'
+import CustomFieldView from '~/components/account/secrets/CustomFieldView.vue'
 
 </script>
 

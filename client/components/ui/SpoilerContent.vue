@@ -11,31 +11,36 @@ const $spoiler = ref<HTMLElement>()
 const config = {
 	particles: {
 		number: {
-			value: 500,
+			value: 400,
 			density: {
 				enable: false,
 				value_area: 800
 			}
 		},
-		color: { value: '#000000' },
+		color: { value: '#000' },
 		shape: {
 			type: 'circle',
 			stroke: {
 				width: 0,
 				color: '#000000'
 			},
-			polygon: { nb_sides: 5 }
+			polygon: { nb_sides: 0 }
 		},
 		opacity: {
+			anim: {
+				enable: true,
+				speed: 2,
+				opacity_min: 0.5
+			},
 			value: 1,
-			random: false
+			random: true
 		},
 		size: {
-			value: 1,
+			value: 1.4,
 			random: false,
 			anim: {
-				enable: false,
-				speed: 40,
+				enable: true,
+				speed: 3,
 				size_min: 0.1,
 				sync: false
 			}
@@ -43,11 +48,11 @@ const config = {
 		line_linked: { enable: false },
 		move: {
 			enable: true,
-			speed: 0.6,
+			speed: 0.3,
 			direction: 'none',
-			random: false,
+			random: true,
 			straight: false,
-			out_mode: 'out',
+			out_mode: 'bounce',
 			bounce: false,
 			attract: {
 				enable: false,
