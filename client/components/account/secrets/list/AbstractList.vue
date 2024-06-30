@@ -1,6 +1,6 @@
 <template>
 	<div class="list" :class="{ shown }">
-		<TheClickable class="show-hide-btn flex items-center justify-center text-gray-700 ml-1" @click="shown = !shown">
+		<TheClickable class="show-hide-btn flex items-center justify-center text-gray-700" @click="shown = !shown">
 			<span class="text-sm">{{ name }}</span>
 			<icon
 				class="chevron-right -mb-0.5 ml-1 -mr-2"

@@ -8,7 +8,7 @@ export const storageUrl = (path: string) => {
 
 export const apiBaseUrl = () => {
 	const config = useRuntimeConfig()
-	return process.server ? config.apiBaseUrl : config.public.apiBaseUrl
+	return import.meta.server ? config.apiBaseUrl : config.public.apiBaseUrl
 }
 
 export const replaceView = (routeName: string) => {

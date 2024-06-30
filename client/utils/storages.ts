@@ -55,7 +55,7 @@ export function cookieStorageDriver<T>(
 export function localStorageDriver<T>(init: () => T): StorageDriver<T>
 export function localStorageDriver<T>(init?: () => T): StorageDriver<T | null>
 export function localStorageDriver<T>(init?: () => T): StorageDriver<T | null> {
-	if (process.server) {
+	if (import.meta.server) {
 		throw new Error('There is impossible to use localStorage driver on the server side')
 	}
 

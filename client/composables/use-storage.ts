@@ -29,7 +29,7 @@ export function useLocalStorage<T>(
 	init?: () => T,
 	watchOptions: WatchOptions | false = {}
 ) {
-	const driver = process.server ? dummyStorageDriver(init) : localStorageDriver(init)
+	const driver = import.meta.server ? dummyStorageDriver(init) : localStorageDriver(init)
 
 	return defineStorage(key, driver, watchOptions)
 }

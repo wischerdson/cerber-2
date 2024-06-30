@@ -11,20 +11,20 @@
 		<ul class="flex relative z-10">
 			<li>
 				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-white" data-space="private" @click="changeSpace('private')">
-					<icon class="mr-2.5" name="material-symbols:person-rounded" size="24px" />
+					<icon class="mr-1.5" name="material-symbols:person-rounded" size="20px" />
 					<span>Личное</span>
 				</TheClickable>
 			</li>
 			<li>
 				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-gray-250" data-space="work" @click="changeSpace('work')">
-					<BriefcaseIcon class="w-5 h-5 mr-3" />
-					<span>Работа</span>
+					<icon class="mr-1.5" name="material-symbols:attach-money-rounded" size="20px" />
+					<span>Коммерческие проекты</span>
 				</TheClickable>
 			</li>
 			<li>
 				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-gray-250" data-space="stuff" @click="changeSpace('stuff')">
-					<icon class="mr-2.5" name="material-symbols:account-balance-rounded" size="24px" />
-					<span>Еще что-то с текстом</span>
+					<BriefcaseIcon class="w-5 h-5 mr-1.5" />
+					<span>Компания</span>
 				</TheClickable>
 			</li>
 			<li class="ml-3">

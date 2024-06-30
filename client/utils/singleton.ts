@@ -9,7 +9,7 @@ export const singleton = <T = any>(key: string, callback: () => T): T => {
 }
 
 export const singletonClientOnly = <T = any>(key: string, callback: () => T): T => {
-	if (process.server) {
+	if (import.meta.server) {
 		return callback()
 	}
 

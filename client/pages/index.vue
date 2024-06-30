@@ -3,14 +3,19 @@
 		<div class="flex items-start gap-6 mt-4">
 			<Sidebar />
 			<ContentTile class="w-full">
-				<div>
-					<SecretList />
-				</div>
+				<h2 class="">
+					<span class="text-gray-600">Результаты поиска по запросу</span> <span class="font-medium">"primesn"</span>:
+				</h2>
+				<div class="mt-8">
+					<div>
+						<SecretList />
+					</div>
 
-				<hr class="my-5 border-gray-100">
+					<hr class="my-5 border-gray-100">
 
-				<div>
-					<GroupList />
+					<div>
+						<GroupList />
+					</div>
 				</div>
 			</ContentTile>
 			<ContentTile class="w-full">

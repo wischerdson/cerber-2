@@ -46,7 +46,7 @@ export const useTheme = () => singletonClientOnly('theme', () => {
 
 		cookie.value = theme.value
 
-		if (process.server) {
+		if (import.meta.server) {
 			return
 		}
 
