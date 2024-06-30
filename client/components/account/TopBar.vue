@@ -1,6 +1,6 @@
 <template>
 	<section class="top-bar">
-		<div class="container relative">
+		<div class="container relative z-20">
 			<div class="flex py-2">
 				<NuxtLink class="flex-1" to="/">
 					<TheClickable class="flex items-end">
