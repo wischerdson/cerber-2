@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $grant_id
  * @property string $user_agent
  * @property string $ip
- * @property string $server_private_key
  * @property bool $revoked
  * @property \Illuminate\Support\Carbon $last_seen_at
  * @property \App\Models\User $user
@@ -26,10 +25,6 @@ class Session extends Model
 	public $timestamps = false;
 
 	protected $table = 'auth_sessions';
-
-	protected $hidden = [
-		'server_private_key'
-	];
 
 	protected $casts = [
 		'revoked' => 'boolean',
@@ -52,19 +47,5 @@ class Session extends Model
 		$this->save();
 
 		return $this;
-	}
-
-	protected static function booted(): void
-	{
-		static::creating(function (self $session) {
-			$privateKey = openssl_pkey_new([
-				'private_key_bits' => 1024,
-				'private_key_type' => OPENSSL_KEYTYPE_RSA,
-			]);
-
-			openssl_pkey_export($privateKey, $privateKeyExported);
-
-			$session->server_private_key = $privateKeyExported;
-		});
 	}
 }

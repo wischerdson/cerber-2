@@ -11,8 +11,12 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::table('auth_sessions', function (Blueprint $table) {
-			$table->text('server_private_key')->after('ip');
+		Schema::create('handshakes', function (Blueprint $table) {
+			$table->uuid()->primary();
+			$table->text('server_private_key');
+			$table->text('client_public_key');
+			$table->timestamp('last_used_at');
+			$table->timestamp('created_at');
 		});
 	}
 
@@ -21,8 +25,6 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-		Schema::table('auth_sessions', function (Blueprint $table) {
-			$table->dropColumn('server_private_key');
-		});
+		Schema::dropIfExists('handshakes');
 	}
 };
