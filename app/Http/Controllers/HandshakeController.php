@@ -14,12 +14,12 @@ class HandshakeController extends Controller
 	{
 		$clientPublicKey = $request->getContent();
 
-		if (Validator::make([$clientPublicKey], [new OpenSslRsaPublicKey()])->fails()) {
+		if (Validator::make([$clientPublicKey], ['required', new OpenSslRsaPublicKey()])->fails()) {
 			throw new OpenSslPublicKeyInvalidException();
 		}
 
 		$handshake = new Handshake();
-		$handshake->client_public_key = $request->getContent();
+		$handshake->client_public_key = $request->getContent() ?: null;
 		$handshake->save();
 
 		return [

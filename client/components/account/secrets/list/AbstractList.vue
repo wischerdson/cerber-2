@@ -28,7 +28,7 @@
 
 import TheClickable from '~/components/ui/Clickable.vue'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
-import { ref, withDefaults } from 'vue'
+import { ref } from 'vue'
 
 const props = withDefaults(defineProps<{
 	name: string

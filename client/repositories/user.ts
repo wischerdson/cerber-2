@@ -1,4 +1,4 @@
-import { useGetReq } from '~/composables/use-request'
+import { useGetReq, usePostReq } from '~/composables/use-request'
 
 export type User = {
 	id: number,
@@ -13,3 +13,8 @@ export type User = {
 }
 
 export const fetchUser = () => useGetReq<User>('/current-user')
+
+export const initEncryptionHandshake = (clientPublicKey: string) => {
+	return usePostReq<{ id: string, server_public_key: string }>('/handshake', clientPublicKey)
+		.setHeader('Content-Type', 'text/plain')
+}

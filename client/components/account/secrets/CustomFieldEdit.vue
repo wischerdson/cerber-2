@@ -8,7 +8,7 @@
 		<td>
 			<div class="h-9 flex items-center justify-end">
 				<TheClickable class="h-full -mt-0.5" tabindex="-1">
-					<span class="text-sm text-blue-500">{{ name }}</span>
+					<span class="text-sm text-blue-500 whitespace-nowrap">{{ name }}</span>
 				</TheClickable>
 				<icon
 					class="text-gray-500"
