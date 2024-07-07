@@ -11,6 +11,7 @@
 			<div>
 				<table class="w-full border-separate border-spacing-y-4">
 					<tbody>
+						<CustomFieldEdit name="Веб-сайт" />
 						<CustomFieldEdit name="Логин" />
 						<CustomFieldEdit name="Пароль" />
 					</tbody>

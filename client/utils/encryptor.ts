@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { pki } from 'node-forge'
+import { pki, util } from 'node-forge'
 import { initEncryptionHandshake } from '~/repositories/user'
 
 export type Handshake = {
@@ -43,8 +43,8 @@ export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 		const handshake = getHandshakeOrThrow()
 
 		return keypair = {
-			privateKey: pki.privateKeyFromPem(handshake.client_private_key),
-			publicKey: pki.publicKeyFromPem(handshake.server_public_key)
+			publicKey: pki.publicKeyFromPem(handshake.server_public_key),
+			privateKey: pki.privateKeyFromPem(handshake.client_private_key)
 		}
 	}
 
@@ -54,7 +54,7 @@ export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 		}
 	}
 
-	const encrypt = (data: string) => getKeypair().publicKey.encrypt(data)
+	const encrypt = (data: string) => util.encode64(getKeypair().publicKey.encrypt(data, 'RSA-OAEP'))
 
 	const decrypt = (data: string) => getKeypair().privateKey.decrypt(data)
 

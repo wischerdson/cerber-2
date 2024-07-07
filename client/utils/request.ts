@@ -7,7 +7,7 @@ import type { AuthType } from '~/composables/use-auth'
 import { useAuth } from '~/composables/use-auth'
 import { apiBaseUrl } from '~/utils/helpers'
 import { defaults } from 'lodash-es'
-import { useAsyncData } from 'nuxt/app'
+import { useAsyncData, useNuxtApp } from 'nuxt/app'
 
 export type AsyncDataResponse<DataT, ErrorT = FetchError> = AsyncData<PickFrom<DataT, KeysOf<DataT>> | null, ErrorT | NuxtError<ErrorT> | null>
 
@@ -16,10 +16,11 @@ export type Options<DataT, RequestT extends NitroFetchRequest> = AsyncDataOption
 export interface AppRequest<DataT = any, ErrorT = any, ResponseT = any, RequestT extends NitroFetchRequest = NitroFetchRequest> {
 	setOption<K extends keyof Options<DataT, RequestT>>(name: K, value: Options<DataT, RequestT>[K]): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	getOption<K extends keyof Options<DataT, RequestT>>(name: K): Options<DataT, RequestT>[K]
-	setHeader(name: string, value?: string | null): AppRequest<DataT, ErrorT, ResponseT, RequestT>
+	setHeader(name: string, value?: number | string | null): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	setBearerToken(token: string): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	asAsyncData(key: string, opts?: AsyncDataOptions<DataT>): AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
 	sign(authProvider: AuthType, strict: boolean): AppRequest<DataT, ErrorT, ResponseT, RequestT>
+	shouldEncrypt(): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	send(): Promise<ResponseT>
 }
 
@@ -34,9 +35,20 @@ export const makeRequest = <
 		mode: 'cors'
 	})
 
+	const { $encryptor } = useNuxtApp()
+
 	let asyncDataKey: string
 	let authProvider: AuthProvider
 	let stopIfCannotSign: boolean = false
+	let shouldEncrypt: boolean = false
+
+	const encrypt = () => {
+		request.setHeader('X-Encrypted', 1)
+		request.setHeader('X-Handshake-ID', $encryptor.getHandshakeId())
+		request.setHeader('Content-Type', 'application/octet-stream')
+
+		options.body = $encryptor.encrypt(JSON.stringify(options.body))
+	}
 
 	const request: AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT> | Promise<DataT>, RequestT> = {
 		setOption(name, value) {
@@ -73,6 +85,11 @@ export const makeRequest = <
 
 			return request
 		},
+		shouldEncrypt() {
+			shouldEncrypt = true
+
+			return request
+		},
 		send() {
 			return new Promise(async (resolve, reject) => {
 				if (authProvider) {
@@ -86,6 +103,8 @@ export const makeRequest = <
 						}
 					}
 				}
+
+				shouldEncrypt && encrypt()
 
 				const fetch = () => $fetch<DataT>(url, options)
 

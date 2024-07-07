@@ -9,3 +9,5 @@ Route::post('handshake', [HandshakeController::class, 'create']);
 Route::post('auth/token', [AuthController::class, 'token']);
 Route::delete('auth/session', [AuthController::class, 'revokeSession']);
 Route::get('auth/user', [AuthController::class, 'user'])->middleware('auth');
+
+Route::post('hello-world', [HandshakeController::class, 'test']);

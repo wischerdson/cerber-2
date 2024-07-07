@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Traits\PrimaryUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 /**
  * @property string $uuid
@@ -15,13 +15,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Handshake extends Model
 {
-	use HasFactory, PrimaryUuid;
+	use HasFactory, HasUuids;
 
 	const UPDATED_AT = null;
 
 	public readonly string $server_public_key;
 
 	protected $table = 'handshakes';
+
+	protected $primaryKey = 'uuid';
 
 	protected $casts = [
 		'last_used_at' => 'timestamp',
