@@ -30,7 +30,7 @@
 					</TheClickable>
 				</div>
 
-				<transition duration="150">
+				<transition :duration="150">
 					<div class="copied-badge absolute right-8 z-10 inset-y-0 flex items-center pr-3 select-none" v-if="showCopiedBadge">
 						<div class="text-xs tracking-wide bg-green-200 text-green-700 px-2 py-1 rounded-full">Скопировано</div>
 					</div>

@@ -25,14 +25,13 @@
 					</div>
 				</div>
 			</ContentTile>
-			<div class="space-y-6">
-				<ContentTile class="w-full">
-					<SecretView />
-				</ContentTile>
-				<ContentTile class="w-full">
-					<SecretEdit />
-				</ContentTile>
-			</div>
+
+			<ContentTile class="w-full" v-if="secretsStore.mode.value === 'create'">
+				<SecretCreate />
+			</ContentTile>
+			<ContentTile class="w-full" v-if="secretsStore.mode.value === 'view'">
+				<SecretView />
+			</ContentTile>
 		</div>
 	</DefaultPageView>
 </template>
@@ -44,13 +43,17 @@ import ContentTile from '~/components/ui/ContentTile.vue'
 import Sidebar from '~/components/account/LeftSidebarWithGroups.vue'
 import SecretView from '~/components/account/secrets/View.vue'
 import SecretEdit from '~/components/account/secrets/Edit.vue'
+import SecretCreate from '~/components/account/secrets/Create.vue'
 import SecretList from '~/components/account/secrets/list/SecretList.vue'
 import GroupList from '~/components/account/secrets/list/GroupList.vue'
 import { definePageMeta, useHead } from '#imports'
+import { useSecretsStore } from '~/store/secrets'
 
 definePageMeta({ middleware: 'auth' })
 
 useHead({ title: 'Cerber - Доступы' })
+
+const secretsStore = useSecretsStore()
 
 </script>
 

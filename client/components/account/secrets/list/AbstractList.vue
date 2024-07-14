@@ -9,7 +9,7 @@
 					size="22px"
 				/>
 			</TheClickable>
-			<TheClickable class="add-btn rounded-md text-gray-700" :title="addItemTitle">
+			<TheClickable class="add-btn rounded-md text-gray-700" :title="addItemTitle" @click="emits('add')">
 				<icon size="20px" name="material-symbols:add-rounded" />
 			</TheClickable>
 		</div>
@@ -35,6 +35,8 @@ const props = withDefaults(defineProps<{
 	addItemTitle: string
 	showOnInit?: boolean
 }>(), { showOnInit: void 0 })
+
+const emits = defineEmits<{ (e: 'add'): void }>()
 
 const shown = ref(props.showOnInit !== false)
 

@@ -27,8 +27,4 @@ class HandshakeController extends Controller
 			'server_public_key' => $handshake->server_public_key,
 		];
 	}
-
-	public function test(Request $request) {
-		$request->dd();
-	}
 }
