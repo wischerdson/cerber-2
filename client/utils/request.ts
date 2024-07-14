@@ -45,7 +45,6 @@ export const makeRequest = <
 	const encrypt = () => {
 		request.setHeader('X-Encrypted', 1)
 		request.setHeader('X-Handshake-ID', $encryptor.getHandshakeId())
-		request.setHeader('Content-Type', 'application/octet-stream')
 
 		options.body = $encryptor.encrypt(JSON.stringify(options.body))
 	}

@@ -6,6 +6,7 @@ use App\Exceptions\HandshakeNotFound;
 use App\Models\Handshake;
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class DecryptRequest
@@ -17,9 +18,6 @@ class DecryptRequest
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
-
-		dd(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
-
 		if (!$request->header('X-Encrypted')) {
 			return $next($request);
 		}
@@ -31,6 +29,20 @@ class DecryptRequest
 
 		openssl_private_decrypt(base64_decode($request->getContent()), $decrypted, $handshake->server_private_key, OPENSSL_PKCS1_OAEP_PADDING);
 
-		dd($decrypted);
+		$json = $request->isJson() ? (array) json_decode($decrypted, true) : [];
+
+		$symfonyRequest = new SymfonyRequest(
+			$request->query(),
+			$json,
+			$request->attributes->all(),
+			$request->cookie(),
+			[],
+			$request->server(),
+			$decrypted
+		);
+
+		$newRequest = Request::createFromBase($symfonyRequest);
+
+		return $next($newRequest);
 	}
 }
