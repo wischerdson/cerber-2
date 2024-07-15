@@ -1,15 +1,15 @@
 <template>
 	<div class="pt-5 secret-field" :class="{ secure, visible }">
-		<div class="form-label -mt-5">
+		<div class="-mt-5">
 			<div class="flex">
-				<span>{{ label }}</span>
-				<TheClickable
+				<span class="text-sm text-gray-700 mb-1">{{ label }}</span>
+				<!-- <TheClickable
 					v-if="isUrl"
 					tag="a"
 					class="underline text-blue-500 -mt-0.5 ml-4 inline-block"
 					target="_blank"
 					:href="content"
-				>перейти</TheClickable>
+				>перейти</TheClickable> -->
 			</div>
 		</div>
 		<div class="flex space-x-2">
@@ -42,6 +42,7 @@
 				<EyeIcon class="w-5 text-gray-500" v-else />
 			</TheClickable>
 		</div>
+		<p class="text-xs mt-1 pb-2 tracking-wide text-gray-500 leading-snug">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto dolorum aut fuga eveniet necessitatibus illo, est at quasi voluptatese?</p>
 	</div>
 </template>
 

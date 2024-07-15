@@ -30,6 +30,11 @@ class Handshake extends Model
 		'created_at' => 'timestamp'
 	];
 
+	public function touch($attribute = null)
+	{
+		return parent::touch($attribute ?: 'last_used_at');
+	}
+
 	protected static function booted(): void
 	{
 		parent::booted();

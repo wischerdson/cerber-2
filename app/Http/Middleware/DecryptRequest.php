@@ -22,11 +22,20 @@ class DecryptRequest
 			return $next($request);
 		}
 
+		/** @var \App\Models\Handshake */
 		$handshake = Handshake::findOr(
 			$request->header('X-Handshake-ID'),
 			fn () => throw new HandshakeNotFound()
 		);
+		$handshake->touch();
 
+		return $next(
+			$this->decryptRequest($handshake, $request)
+		);
+	}
+
+	private function decryptRequest(Handshake $handshake, Request $request): Request
+	{
 		openssl_private_decrypt(base64_decode($request->getContent()), $decrypted, $handshake->server_private_key, OPENSSL_PKCS1_OAEP_PADDING);
 
 		$json = $request->isJson() ? (array) json_decode($decrypted, true) : [];
@@ -41,8 +50,6 @@ class DecryptRequest
 			$decrypted
 		);
 
-		$newRequest = Request::createFromBase($symfonyRequest);
-
-		return $next($newRequest);
+		return Request::createFromBase($symfonyRequest);
 	}
 }
