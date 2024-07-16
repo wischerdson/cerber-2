@@ -22,6 +22,11 @@ class Secret extends Model
 
 	protected $table = 'secrets';
 
+	protected $casts = [
+		'created_at' => 'timestamp',
+		'updated_at' => 'timestamp'
+	];
+
 	public function fields(): HasMany
 	{
 		return $this->hasMany(SecretField::class, 'secret_id');

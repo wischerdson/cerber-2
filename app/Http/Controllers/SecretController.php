@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class SecretController extends Controller
 {
+	public function index()
+	{
+		return Secret::with('fields')->get();
+	}
+
 	public function create(Request $request)
 	{
 		$request->validate([
