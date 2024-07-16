@@ -2,8 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Exceptions\HandshakeNotFound;
-use App\Models\Handshake;
+use App\Services\RsaEncryption;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -18,27 +17,20 @@ class DecryptRequest
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
-		if (!$request->header('X-Encrypted')) {
+		if (!$request->hasHeader('X-Encrypted')) {
 			return $next($request);
 		}
 
-		/** @var \App\Models\Handshake */
-		$handshake = Handshake::findOr(
-			$request->header('X-Handshake-ID'),
-			fn () => throw new HandshakeNotFound()
-		);
-		$handshake->touch();
-
 		return $next(
-			$this->decryptRequest($handshake, $request)
+			$this->decryptRequest($request)
 		);
 	}
 
-	private function decryptRequest(Handshake $handshake, Request $request): Request
+	private function decryptRequest(Request $request): Request
 	{
-		openssl_private_decrypt(base64_decode($request->getContent()), $decrypted, $handshake->server_private_key, OPENSSL_PKCS1_OAEP_PADDING);
+		$content = app(RsaEncryption::class)->decrypt($request->getContent());
 
-		$json = $request->isJson() ? (array) json_decode($decrypted, true) : [];
+		$json = $request->isJson() ? (array) json_decode($content, true) : [];
 
 		$symfonyRequest = new SymfonyRequest(
 			$request->query(),
@@ -47,7 +39,7 @@ class DecryptRequest
 			$request->cookie(),
 			[],
 			$request->server(),
-			$decrypted
+			$content
 		);
 
 		return Request::createFromBase($symfonyRequest);

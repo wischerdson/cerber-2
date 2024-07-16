@@ -27,15 +27,25 @@ class BadRequestException extends Exception
 	{
 		$responseData = ['error_reason' => $this->errorReason ?: $this->guessErrorReason()];
 
-		if ($this->errorMessage !== null) {
-			$responseData['message'] = $this->errorMessage;
+		if (($message = $this->getErrorMessage()) !== null) {
+			$responseData['message'] = $message;
 		}
 
-		if ($this->errorDetails !== null) {
-			$responseData['details'] = $this->errorDetails;
+		if (($details = $this->getErrorDetails()) !== null) {
+			$responseData['details'] = $details;
 		}
 
 		return response()->json($responseData, $this->statusCode);
+	}
+
+	protected function getErrorMessage()
+	{
+		return $this->errorMessage;
+	}
+
+	protected function getErrorDetails()
+	{
+		return $this->errorDetails;
 	}
 
 	private function guessErrorReason()

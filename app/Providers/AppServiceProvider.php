@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Mixins\Str as StrMixin;
-use App\Mixins\FilesystemAdapter as FilesystemAdapterMixin;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Filesystem\FilesystemAdapter;
@@ -26,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
 		Application::getInstance()->useBootstrapPath(base_path('app'));
 
 		env('DB_LOG_SQL_QUERIES', false) && $this->enableDbQueriesLogging();
+
+		$this->app->singleton(\App\Services\RsaEncryption::class);
 	}
 
 	/**
@@ -47,8 +47,8 @@ class AppServiceProvider extends ServiceProvider
 
 	protected function registerMixins()
 	{
-		Str::mixin(new StrMixin());
-		FilesystemAdapter::mixin(new FilesystemAdapterMixin());
+		Str::mixin(new \App\Mixins\Str());
+		FilesystemAdapter::mixin(new \App\Mixins\FilesystemAdapter());
 	}
 
 	protected function enableDbQueriesLogging()
@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
 				->getQueryGrammar()
 				->substituteBindingsIntoRawSql($query->sql, $query->bindings);
 
-			Log::channel('sql')->debug("({$query->time}) " . $sql);
+			Log::channel('sql')->debug("({$query->time}) {$sql}");
 		});
 	}
 }
