@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<div class="space-y-2">
+		<!-- <pre>{{ model }}</pre> -->
+		<div class="space-y-2 mt-4">
 			<div>
 				<InputText class="mt-1" v-model="model.name">
 					<template #label="{ id }">
@@ -11,11 +12,10 @@
 			<div>
 				<table class="w-full border-separate border-spacing-y-4">
 					<tbody>
-						<CustomFieldEdit
+						<FieldEditRow
 							v-for="(field, idx) in model.fields"
 							:key="`field-${idx}`"
-							:name="field.name"
-							:secure="field.secure"
+							v-model="model.fields[idx]"
 						/>
 					</tbody>
 				</table>
@@ -40,7 +40,7 @@
 			<TheClickable class="h-8">
 				<span class="text-gray-700 text-sm font-medium">Отменить</span>
 			</TheClickable>
-			<TheClickable class="h-8 bg-blue-100 text-blue-800 px-4 rounded-md text-sm">Сохранить</TheClickable>
+			<TheClickable class="h-8 bg-blue-100 text-blue-800 px-4 rounded-md text-sm" @click="emit('save', model)">Сохранить</TheClickable>
 		</div>
 	</div>
 </template>
@@ -50,26 +50,39 @@
 import InputText from '~/components/ui/input/Text.vue'
 import TextArea from '~/components/ui/input/TextArea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
-import CustomFieldEdit from '~/components/account/secrets/CustomFieldEdit.vue'
+import FieldEditRow from '~/components/account/secrets/FieldEditRow.vue'
 import { reactive } from 'vue'
 
-const props = defineProps<{
+export type Props = {
 	name: string
 	notes: string
 	fields: {
-		name: string,
+		name: string
+		value: string
 		secure: boolean
+		multiline: boolean
+		short_description?: string | null
 	}[]
-}>()
+}
 
-const model = reactive({
+const emit = defineEmits<{ (e: 'save', model: Props): void }>()
+
+const props = defineProps<Props>()
+
+const model = reactive<Props>({
 	name: props.name,
 	notes: props.notes,
 	fields: Object.assign(props.fields)
 })
 
 const addField = () => {
-	model.fields.push({ name: `Поле #${model.fields.length + 1}` })
+	model.fields.push({
+		name: `Поле #${model.fields.length + 1}`,
+		secure: false,
+		multiline: false,
+		value: '',
+		short_description: null
+	})
 }
 
 </script>

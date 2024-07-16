@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<div class="space-y-2">
+		<h2 class="font-bold text-gray-850 text-1.5xl tracking-wide">Новый доступ</h2>
+		<div class="space-y-2 mt-6">
 			<div>
 				<InputText class="mt-1">
 					<template #label="{ id }">
@@ -20,7 +21,7 @@
 					<div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center mr-2.5" >
 						<icon class="text-white" name="material-symbols:add-rounded" size="20px" />
 					</div>
-					<span class="text-sm text-blue-500">Добавить поле</span>
+					<span class="text-sm text-gray-600">Добавить поле</span>
 				</TheClickable>
 			</div>
 		</div>
@@ -47,7 +48,7 @@
 import InputText from '~/components/ui/input/Text.vue'
 import TextArea from '~/components/ui/input/TextArea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
-import CustomFieldEdit from '~/components/account/secrets/CustomFieldEdit.vue'
+import CustomFieldEdit from '~/components/account/secrets/FieldEditRow.vue'
 
 </script>
 

@@ -38,7 +38,7 @@
 
 import TheClickable from '~/components/ui/Clickable.vue'
 import TrashIcon from '~/assets/svg/Monochrome=trash.fill.svg'
-import CustomFieldView from '~/components/account/secrets/CustomFieldView.vue'
+import CustomFieldView from '~/components/account/secrets/FieldView.vue'
 
 </script>
 
