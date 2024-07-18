@@ -17,7 +17,9 @@
 						<span class="text-sm font-medium text-gray-700 whitespace-nowrap">{{ model.name }}</span>
 					</TheClickable>
 
-					<FieldPropertiesPopover class="z-10" v-if="showPopover" v-click-outside="() => showPopover = false" />
+					<transition :duration="500">
+						<FieldPropertiesPopover class="z-10" v-if="showPopover" v-click-outside="() => showPopover = false" />
+					</transition>
 				</div>
 
 				<icon

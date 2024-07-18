@@ -10,15 +10,17 @@
 				</InputText>
 			</div>
 			<div>
-				<table class="w-full border-separate border-spacing-y-4">
-					<tbody>
-						<FieldEditRow
-							v-for="(field, idx) in model.fields"
-							:key="`field-${idx}`"
-							v-model="model.fields[idx]"
-						/>
-					</tbody>
-				</table>
+				<HeightAnimation>
+					<table class="w-full border-separate border-spacing-y-4">
+						<TransitionGroup name="field-list" tag="tbody">
+							<FieldEditRow
+								v-for="(field, idx) in model.fields"
+								:key="`field-${idx}`"
+								v-model="model.fields[idx]"
+							/>
+						</TransitionGroup>
+					</table>
+				</HeightAnimation>
 				<TheClickable class="flex items-center h-9" tabindex="-1" @click="addField">
 					<div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center mr-2.5" >
 						<icon class="text-white" name="material-symbols:add-rounded" size="20px" />
@@ -52,6 +54,7 @@ import TextArea from '~/components/ui/input/TextArea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import FieldEditRow from '~/components/account/secrets/FieldEditRow.vue'
 import { reactive } from 'vue'
+import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 
 export type Props = {
 	name: string
@@ -86,3 +89,19 @@ const addField = () => {
 }
 
 </script>
+
+<style scoped lang="scss">
+
+.field-list-move,
+.field-list-enter-active,
+.field-list-leave-active {
+	transition: transform .25s ease, opacity .25s ease;
+}
+
+.field-list-enter-from,
+.field-list-leave-to {
+	opacity: 0;
+	transform: translateY(-20px);
+}
+
+</style>

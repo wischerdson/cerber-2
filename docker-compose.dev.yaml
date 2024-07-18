@@ -34,6 +34,7 @@ services:
       PMA_HOST: mariadb
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 1G
     ports:
       - 8080:80
     depends_on:
