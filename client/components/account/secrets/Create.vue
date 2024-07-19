@@ -5,7 +5,13 @@
 			class="mt-6"
 			name=""
 			:fields="[
-				{ name: 'Веб-сайт', secure: false, multiline: false, value: '' },
+				{ label: 'Веб-сайт', secure: false, multiline: false, value: '', shortDescription: null, sort: 1 },
+				{ label: 'Веб-сайт 1', secure: false, multiline: false, value: '', shortDescription: null, sort: 1 },
+				{ label: 'Веб-сайт 2', secure: false, multiline: false, value: '', shortDescription: null, sort: 1 },
+				{ label: 'Веб-сайт 3', secure: false, multiline: false, value: '', shortDescription: null, sort: 1 },
+				{ label: 'Веб-сайт 4', secure: false, multiline: false, value: '', shortDescription: null, sort: 1 },
+				{ label: 'Веб-сайт 5', secure: false, multiline: false, value: '', shortDescription: null, sort: 1 },
+				{ label: 'Веб-сайт 6', secure: false, multiline: false, value: '', shortDescription: null, sort: 1 },
 				// { name: 'Логин', secure: false, multiline: false, value: '' },
 				// { name: 'Пароль', secure: true, multiline: false, value: '' }
 			]"
@@ -22,7 +28,7 @@ import TheForm from '~/components/account/secrets/Form.vue'
 import { create } from '~/repositories/secrets'
 
 const save = (model: Props) => {
-	create(model)
+	// create(model)
 }
 
 </script>

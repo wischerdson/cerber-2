@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Crypt;
 /**
  * @property int $id
  * @property int $secret_id
- * @property string $name
+ * @property string $label
  * @property string $short_description
  * @property string $value
  * @property bool $multiline

@@ -1,11 +1,9 @@
 <template>
-	<tr>
-		<td class="w-5">
-			<div class="-ml-0.5" title="Удалить поле" tabindex="-1">
-				<icon class="text-gray-300" name="material-symbols:drag-handle-rounded" size="24px" />
-			</div>
-		</td>
-		<td>
+	<div class="table-row">
+		<DraggableCol class="table-cell align-middle" />
+		<LabelCol class="table-cell align-middle" v-model="model" @remove="emit('remove')" />
+		<ValueCol class="table-cell align-middle" v-model="model" />
+		<!-- <div class="table-cell align-middle">
 			<div class="h-7 flex items-center justify-end">
 				<div class="h-full relative">
 					<TheClickable
@@ -14,11 +12,21 @@
 						tabindex="-1"
 						@click="showPopover = true"
 					>
-						<span class="text-sm font-medium text-gray-700 whitespace-nowrap">{{ model.name }}</span>
+						<span class="text-sm font-medium text-gray-700 whitespace-nowrap">{{ model.label }}</span>
 					</TheClickable>
 
-					<transition :duration="500">
-						<FieldPropertiesPopover class="z-10" v-if="showPopover" v-click-outside="() => showPopover = false" />
+					<transition :duration="500" @after-leave="onPopoverClosed">
+						<FieldPropertiesPopover
+							class="z-10"
+							v-if="showPopover"
+							v-click-outside="() => showPopover = false"
+							:label="model.label"
+							:short-description="model.shortDescription"
+							:secure="model.secure"
+							:multiline="model.multiline"
+							@remove="remove"
+							@save="save"
+						/>
 					</transition>
 				</div>
 
@@ -28,9 +36,9 @@
 					size="20px"
 				/>
 			</div>
-		</td>
-		<td class="w-full">
-			<div class="relative w-full flex-1">
+		</div>
+		<div class="w-full table-cell align-middle">
+			<div class="relative w-full">
 				<InputText class="!pr-8" v-model="model.value" />
 				<div class="absolute top-1 left-1 pointer-events-none" v-if="model.secure">
 					<LockIcon class="w-1.5 text-gray-400" />
@@ -41,28 +49,25 @@
 					</TheClickable>
 				</div>
 			</div>
-		</td>
-	</tr>
+		</div> -->
+	</div>
 </template>
 
 <script setup lang="ts">
 
-import InputText from '~/components/ui/input/Text.vue'
-import TheClickable from '~/components/ui/Clickable.vue'
-import LockIcon from '~/assets/svg/lock.svg'
-import FieldPropertiesPopover from './FieldPropertiesPopover.vue'
-import { ref } from 'vue'
+import DraggableCol from './field-edit-row/1.Draggable.vue'
+import LabelCol from './field-edit-row/2.Label.vue'
+import ValueCol from './field-edit-row/3.Value.vue'
+import type { FieldProperties } from '~/components/account/secrets/FieldPropertiesPopover.vue'
 
-export type FieldModel = {
-	name: string
-	secure: boolean
-	multiline: boolean
+export type FieldModel = FieldProperties & {
 	value: string
+	sort: number
 }
 
-const [model] = defineModel<FieldModel>({ required: true })
+const emit = defineEmits<{ (e: 'remove'): void }>()
 
-const showPopover = ref(false)
+const model = defineModel<FieldModel>({ required: true })
 
 </script>
 
@@ -76,12 +81,6 @@ const showPopover = ref(false)
 		span, svg {
 			color: theme('colors.black');
 		}
-	}
-}
-
-.remove-field-btn {
-	&:hover {
-		background-color: #eaeaea;
 	}
 }
 
