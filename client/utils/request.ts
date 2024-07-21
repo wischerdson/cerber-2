@@ -78,7 +78,7 @@ export const makeRequest = <
 
 			return request as unknown as AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
 		},
-		sign(_authProvider, _stopIfCannotSign = false) {
+		sign(_authProvider, _stopIfCannotSign = true) {
 			authProvider = useAuth(_authProvider)
 			stopIfCannotSign = _stopIfCannotSign
 

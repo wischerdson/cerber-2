@@ -35,7 +35,7 @@ const heightChanged = () => {
 		return
 	}
 
-	$spacer.value.style.maxHeight = $slot.value.scrollHeight + 'px'
+	$spacer.value.style.maxHeight = $slot.value.getBoundingClientRect().height + 'px'
 }
 
 onMounted(() => {

@@ -1,6 +1,7 @@
 <template>
 	<div class="popover absolute top-full right-0 rounded-2xl mt-2">
 		<div class="popover-inner-content p-5">
+			<pre>{{ model }}</pre>
 			<h4 class="text-lg font-medium">Свойства поля</h4>
 			<form class="mt-6" @submit.prevent="emit('save', model)">
 				<div>
@@ -11,12 +12,12 @@
 					</InputText>
 				</div>
 				<div class="mt-4">
-					<TextArea class="mt-1" :rows="1" allow-shrink v-model="model.shortDescription">
+					<TextArea class="mt-1" :rows="1" allow-shrink v-model="shortDescription">
 						<template #label="{ id }">
 							<div class="flex items-center justify-between">
 								<label class="text-sm text-gray-700" :for="id">Короткое описание</label>
 								<div class="text-gray-400 text-xs">
-									{{ model.shortDescription ? model.shortDescription.length : 0 }}/140
+									{{ shortDescription.length }}/140
 								</div>
 							</div>
 						</template>
@@ -63,7 +64,7 @@ import TheClickable from '~/components/ui/Clickable.vue'
 import TheSwitch from '~/components/ui/Switch.vue'
 import TrashIcon from '~/assets/svg/Monochrome=trash.fill.svg'
 import LockIcon from '~/assets/svg/lock.svg'
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 
 export type FieldProperties = {
 	label: string
@@ -79,7 +80,12 @@ const emit = defineEmits<{
 	(e: 'save', properties: FieldProperties): void
 }>()
 
-const model = reactive(Object.assign({}, props))
+const model = reactive<FieldProperties>(Object.assign({}, props))
+
+const shortDescription = computed({
+	get: () => model.shortDescription || '',
+	set: v => model.shortDescription = v || null
+})
 
 </script>
 

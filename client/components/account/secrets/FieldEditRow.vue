@@ -1,9 +1,12 @@
 <template>
 	<div class="table-row">
-		<DraggableCol class="table-cell align-middle" />
-		<LabelCol class="table-cell align-middle" v-model="model" @remove="emit('remove')" />
-		<ValueCol class="table-cell align-middle" v-model="model" />
-		<!-- <div class="table-cell align-middle">
+		<div class="w-5 table-cell align-middle py-2">
+			<div class="-ml-0.5 inline-block" tabindex="-1">
+				<icon class="text-gray-300" name="material-symbols:drag-handle-rounded" size="24px" />
+			</div>
+		</div>
+
+		<div class="table-cell align-middle py-2">
 			<div class="h-7 flex items-center justify-end">
 				<div class="h-full relative">
 					<TheClickable
@@ -17,13 +20,10 @@
 
 					<transition :duration="500" @after-leave="onPopoverClosed">
 						<FieldPropertiesPopover
-							class="z-10"
+							class="z-20"
 							v-if="showPopover"
 							v-click-outside="() => showPopover = false"
-							:label="model.label"
-							:short-description="model.shortDescription"
-							:secure="model.secure"
-							:multiline="model.multiline"
+							v-bind="model"
 							@remove="remove"
 							@save="save"
 						/>
@@ -37,7 +37,8 @@
 				/>
 			</div>
 		</div>
-		<div class="w-full table-cell align-middle">
+
+		<div class="w-full table-cell align-middle py-2">
 			<div class="relative w-full">
 				<InputText class="!pr-8" v-model="model.value" />
 				<div class="absolute top-1 left-1 pointer-events-none" v-if="model.secure">
@@ -49,16 +50,18 @@
 					</TheClickable>
 				</div>
 			</div>
-		</div> -->
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 
-import DraggableCol from './field-edit-row/1.Draggable.vue'
-import LabelCol from './field-edit-row/2.Label.vue'
-import ValueCol from './field-edit-row/3.Value.vue'
 import type { FieldProperties } from '~/components/account/secrets/FieldPropertiesPopover.vue'
+import InputText from '~/components/ui/input/Text.vue'
+import TheClickable from '~/components/ui/Clickable.vue'
+import LockIcon from '~/assets/svg/lock.svg'
+import FieldPropertiesPopover from '~/components/account/secrets/FieldPropertiesPopover.vue'
+import { ref } from 'vue'
 
 export type FieldModel = FieldProperties & {
 	value: string
@@ -68,6 +71,22 @@ export type FieldModel = FieldProperties & {
 const emit = defineEmits<{ (e: 'remove'): void }>()
 
 const model = defineModel<FieldModel>({ required: true })
+
+const showPopover = ref(false)
+
+let shouldRemove = false
+
+const remove = () => {
+	showPopover.value = false
+	shouldRemove = true
+}
+
+const save = (properties: FieldProperties) => {
+	model.value = Object.assign(model.value, properties)
+	showPopover.value = false
+}
+
+const onPopoverClosed = () => shouldRemove && emit('remove')
 
 </script>
 
