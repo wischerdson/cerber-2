@@ -24,7 +24,7 @@ const config: Config = {
 					'gray-2': '#0c0c0c',
 					'gray-3': '#1d1d1d',
 				},
-				'primary-red': '#933131',
+				'primary-red': '#bf4c44',
 				gray: {
 					950: '#0d0d0d',
 					900: '#1a1a1a',

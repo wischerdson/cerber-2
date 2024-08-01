@@ -138,13 +138,17 @@
 		{
 			"name": "dflydev/dot-access-data",
 			"version": "v3.0.3",
+			"version": "v3.0.3",
 			"source": {
 				"type": "git",
 				"url": "https://github.com/dflydev/dflydev-dot-access-data.git",
 				"reference": "a23a2bf4f31d3518f3ecb38660c95715dfead60f"
+				"reference": "a23a2bf4f31d3518f3ecb38660c95715dfead60f"
 			},
 			"dist": {
 				"type": "zip",
+				"url": "https://api.github.com/repos/dflydev/dflydev-dot-access-data/zipball/a23a2bf4f31d3518f3ecb38660c95715dfead60f",
+				"reference": "a23a2bf4f31d3518f3ecb38660c95715dfead60f",
 				"url": "https://api.github.com/repos/dflydev/dflydev-dot-access-data/zipball/a23a2bf4f31d3518f3ecb38660c95715dfead60f",
 				"reference": "a23a2bf4f31d3518f3ecb38660c95715dfead60f",
 				"shasum": ""
@@ -207,7 +211,9 @@
 			"support": {
 				"issues": "https://github.com/dflydev/dflydev-dot-access-data/issues",
 				"source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.3"
+				"source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.3"
 			},
+			"time": "2024-07-08T12:26:09+00:00"
 			"time": "2024-07-08T12:26:09+00:00"
 		},
 		{
@@ -1167,6 +1173,7 @@
 				"nyholm/psr7": "^1.2",
 				"orchestra/testbench-core": "^9.1.5",
 				"pda/pheanstalk": "^5.0",
+				"phpstan/phpstan": "^1.11.5",
 				"phpstan/phpstan": "^1.11.5",
 				"phpunit/phpunit": "^10.5|^11.0",
 				"predis/predis": "^2.0.2",
@@ -6495,7 +6502,26 @@
 				"myclabs/deep-copy": "^1.12.0",
 				"phar-io/manifest": "^2.0.4",
 				"phar-io/version": "^3.2.1",
+				"myclabs/deep-copy": "^1.12.0",
+				"phar-io/manifest": "^2.0.4",
+				"phar-io/version": "^3.2.1",
 				"php": ">=8.1",
+				"phpunit/php-code-coverage": "^10.1.15",
+				"phpunit/php-file-iterator": "^4.1.0",
+				"phpunit/php-invoker": "^4.0.0",
+				"phpunit/php-text-template": "^3.0.1",
+				"phpunit/php-timer": "^6.0.0",
+				"sebastian/cli-parser": "^2.0.1",
+				"sebastian/code-unit": "^2.0.0",
+				"sebastian/comparator": "^5.0.1",
+				"sebastian/diff": "^5.1.1",
+				"sebastian/environment": "^6.1.0",
+				"sebastian/exporter": "^5.1.2",
+				"sebastian/global-state": "^6.0.2",
+				"sebastian/object-enumerator": "^5.0.0",
+				"sebastian/recursion-context": "^5.0.0",
+				"sebastian/type": "^4.0.0",
+				"sebastian/version": "^4.0.1"
 				"phpunit/php-code-coverage": "^10.1.15",
 				"phpunit/php-file-iterator": "^4.1.0",
 				"phpunit/php-invoker": "^4.0.0",

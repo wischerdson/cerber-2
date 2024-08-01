@@ -1,6 +1,6 @@
 <template>
 	<div class="relative">
-		<div class="spacer" :style="{ transition }" ref="$spacer"></div>
+		<div class="spacer" :style="{ transition: allowTranstion ? transition : '' }" ref="$spacer"></div>
 
 		<div class="absolute top-0 inset-x-0" ref="$slot">
 			<slot></slot>
@@ -24,6 +24,8 @@ const props = withDefaults(defineProps<{
 
 const $slot = ref<HTMLElement>()
 const $spacer = ref<HTMLElement>()
+const allowTranstion = ref(false)
+
 let observer: ResizeObserver
 
 const transition = computed(() => `max-height ${props.transitionDuration}ms ${props.transitionTimingFunction} ${props.transitionDelay}ms`)
@@ -33,12 +35,14 @@ const heightChanged = () => {
 		return
 	}
 
-	$spacer.value.style.maxHeight = $slot.value.scrollHeight + 'px'
+	$spacer.value.style.maxHeight = $slot.value.getBoundingClientRect().height + 'px'
 }
 
 onMounted(() => {
 	observer = new ResizeObserver(heightChanged)
 	observer.observe($slot.value as HTMLElement)
+
+	setTimeout(() => allowTranstion.value = true, 500)
 })
 
 onUnmounted(() => observer.disconnect())

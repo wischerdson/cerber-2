@@ -1,14 +1,38 @@
 <template>
 	<div>
 		<h2 class="font-bold text-gray-850 text-1.5xl tracking-wide">Новый доступ</h2>
-		<TheForm class="mt-6" name="" :fields="[
-			{ name: 'Веб-сайт', secure: false }, { name: 'Логин', secure: false }, { name: 'Пароль', secure: true }
-		]" notes="" />
+		<TheForm
+			class="mt-6"
+			name=""
+			notes=""
+			:fields="[]"
+			@save="save"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
 
+import type { Props } from './Form.vue'
 import TheForm from '~/components/account/secrets/Form.vue'
+import { create } from '~/repositories/secrets'
+
+const save = (model: Props) => {
+	create(model)
+}
+
+/*
+[
+	{ label: 'Веб-сайт', secure: false, multiline: false, value: '', shortDescription: null, sort: 1 },
+	{ label: 'Веб-сайт 1', secure: false, multiline: false, value: '', shortDescription: null, sort: 2 },
+	{ label: 'Веб-сайт 2', secure: false, multiline: false, value: '', shortDescription: null, sort: 3 },
+	{ label: 'Веб-сайт 3', secure: false, multiline: false, value: '', shortDescription: null, sort: 4 },
+	{ label: 'Веб-сайт 4', secure: false, multiline: false, value: '', shortDescription: null, sort: 5 },
+	{ label: 'Веб-сайт 5', secure: false, multiline: false, value: '', shortDescription: null, sort: 6 },
+	{ label: 'Веб-сайт 6', secure: false, multiline: false, value: '', shortDescription: null, sort: 7 },
+	// { name: 'Логин', secure: false, multiline: false, value: '' },
+	// { name: 'Пароль', secure: true, multiline: false, value: '' }
+]
+*/
 
 </script>

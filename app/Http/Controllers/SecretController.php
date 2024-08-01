@@ -18,7 +18,7 @@ class SecretController extends Controller
 		$request->validate([
 			'name' => 'required',
 			'fields' => ['required', 'array'],
-			'fields.*.name' => 'required',
+			'fields.*.label' => 'required',
 			'fields.*.short_description' => 'nullable|string|max:140',
 		]);
 
@@ -27,7 +27,7 @@ class SecretController extends Controller
 		foreach (array_values($request->fields) as $i => $field) {
 			$fieldModel = new SecretField(
 				collect($field)
-					->only('name', 'short_description', 'value', 'multiline', 'secure')
+					->only('label', 'short_description', 'value', 'multiline', 'secure')
 					->all()
 			);
 			$fieldModel->sort = ($i + 1)*10;

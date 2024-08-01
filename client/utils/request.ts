@@ -19,7 +19,7 @@ export interface AppRequest<DataT = any, ErrorT = any, ResponseT = any, RequestT
 	setHeader(name: string, value?: number | string | null): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	setBearerToken(token: string): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	asAsyncData(key: string, opts?: AsyncDataOptions<DataT>): AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
-	sign(authProvider: AuthType, strict: boolean): AppRequest<DataT, ErrorT, ResponseT, RequestT>
+	sign(authProvider: AuthType, strict?: boolean): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	shouldEncrypt(): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	send(): Promise<ResponseT>
 }
@@ -78,7 +78,7 @@ export const makeRequest = <
 
 			return request as unknown as AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
 		},
-		sign(_authProvider, _stopIfCannotSign = false) {
+		sign(_authProvider, _stopIfCannotSign = true) {
 			authProvider = useAuth(_authProvider)
 			stopIfCannotSign = _stopIfCannotSign
 

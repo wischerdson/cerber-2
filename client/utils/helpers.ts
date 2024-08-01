@@ -30,20 +30,6 @@ export const replaceView = (routeName: string) => {
 	}
 }
 
-export const forEachObjectDeep = function* (object: { [key: string]: any }) {
-	const stack = [object]
-
-	while (stack.length) {
-		const value = stack.pop()
-
-		if (typeof value === 'object') {
-			Object.values(value).forEach(v => stack.push(v))
-		} else {
-			yield value
-		}
-	}
-}
-
 export const uid = () => Date.now().toString(36) + Math.random().toString(36).substring(2)
 
 export const parseJwt = <T>(jwt: string): T => {

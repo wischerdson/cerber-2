@@ -16,13 +16,14 @@ return new class extends Migration
 			// $table->string('alias');
 			$table->string('name');
 			$table->text('notes')->nullable();
+			$table->boolean('is_uptodate')->default(true);
 			$table->timestamps();
 		});
 
 		Schema::create('secret_fields', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('secret_id')->references('id')->on('secrets')->cascadeOnDelete();
-			$table->string('name');
+			$table->string('label');
 			$table->string('short_description')->nullable();
 			$table->mediumText('value')->default('');
 			$table->boolean('multiline')->default(0);
