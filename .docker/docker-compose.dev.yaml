@@ -12,7 +12,7 @@ services:
 
   nginx:
     volumes:
-      - ./.docker/nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 80:80
       - 443:443
@@ -20,7 +20,7 @@ services:
   mariadb:
     image: mariadb:11.3
     volumes:
-      - ./.runtime/mariadb:/var/lib/mysql
+      - ../.runtime/mariadb:/var/lib/mysql
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
@@ -39,4 +39,4 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - ./.docker/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
+      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
