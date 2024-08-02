@@ -3,7 +3,7 @@ import { defineEncryptor, type Handshake } from '~/utils/encryptor'
 import { useLocalStorage } from '#imports'
 
 export default defineNuxtPlugin(async () => {
-	const [ handshake ] = useLocalStorage<Handshake>('encryption_handshake')
+	const [ handshake ] = useLocalStorage<Handshake>('encryption-handshake')
 
 	const encryptor = defineEncryptor(handshake)
 

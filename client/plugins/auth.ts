@@ -14,19 +14,23 @@ const defineDefaultUserAuthProvider = () => {
 	 */
 
 	const router = useRouter()
-	const [ authenticated ] = useCookieStorage<boolean>('default_authenticated', () => false)
-	const [ pair ] = useLocalStorage<JwtTokensPair | undefined>('user_auth', () => {
+	const [ authenticated ] = useCookieStorage<boolean>('default-authenticated', () => false)
+	const [ pair ] = useLocalStorage<JwtTokensPair | undefined>('user-auth', () => {
 		if (import.meta.server && authenticated.value) {
 			return { access_token: 'valid', refresh_token: 'valid' }
 		}
 	})
 
-	return defineJwtPairAuthProvider(pair, () => {
+	const provider = defineJwtPairAuthProvider(pair, () => {
 		authenticated.value = true
 	}, () => {
 		authenticated.value = false
 		router.replace({ force: true })
 	})
+
+	authenticated.value = provider.canSign()
+
+	return provider
 }
 
 export default defineNuxtPlugin(() => {

@@ -26,7 +26,7 @@ export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 
 		const publicKeyPem = pki.publicKeyToPem(clientKeypair.publicKey)
 
-		const { id: handshake_id, server_public_key } = await initEncryptionHandshake(publicKeyPem).send()
+		const { id: handshake_id, server_public_key } = await initEncryptionHandshake(publicKeyPem)
 
 		handshake.value = {
 			server_public_key,

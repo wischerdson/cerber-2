@@ -17,4 +17,5 @@ export const fetchUser = () => useGetReq<User>('/current-user')
 export const initEncryptionHandshake = (clientPublicKey: string) => {
 	return usePostReq<{ id: string, server_public_key: string }>('/handshake', clientPublicKey)
 		.setHeader('Content-Type', 'text/plain')
+		.send()
 }
