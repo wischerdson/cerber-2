@@ -56,7 +56,7 @@ getInitCommand() {
 
 	result="docker compose "
 	for i in ${dockerComposeFiles[@]}; do
-		result+="-f $path/$i "
+		result+="-f $path/.docker/$i "
 	done
 
 	echo $result
