@@ -1,7 +1,7 @@
 import type { CookieOptions } from 'nuxt/app'
 import type { Ref, WatchOptions } from 'vue'
 import { watch } from 'vue'
-import { defaultsDeep, kebabCase } from 'lodash-es'
+import { defaultsDeep, kebabCase, omit } from 'lodash-es'
 import { useCookie, useState } from 'nuxt/app'
 import { singletonClientOnly } from './singleton'
 
@@ -27,13 +27,13 @@ const guessJson = <T>(rawData: string | null | undefined, init?: () => T | null)
 	}
 }
 
-export function cookieStorageDriver<T>(init: () => T, config?: CookieOptions & { readonly?: false | undefined; }): StorageDriver<T>
-export function cookieStorageDriver<T>(init?: () => T, config?: CookieOptions & { readonly?: false | undefined; }): StorageDriver<T | null>
+export function cookieStorageDriver<T>(init: () => T, config?: Omit<CookieOptions, 'watch'> & { readonly?: false | undefined; }): StorageDriver<T>
+export function cookieStorageDriver<T>(init?: () => T, config?: Omit<CookieOptions, 'watch'> & { readonly?: false | undefined; }): StorageDriver<T | null>
 export function cookieStorageDriver<T>(
 	init?: () => T,
-	config: CookieOptions & { readonly?: false | undefined; } = {}
+	config: Omit<CookieOptions, 'watch'> & { readonly?: false | undefined; } = {}
 ): StorageDriver<T | null> {
-	const opts = defaultsDeep(config, {
+	const opts = defaultsDeep(omit(config, 'watch'), {
 		sameSite: 'strict',
 		maxAge: 2147483647
 	})

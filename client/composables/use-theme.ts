@@ -1,79 +1,99 @@
-import { useCookie, useState, watch } from "#imports"
+import type { Ref } from 'vue'
+import { computed, watch } from 'vue'
 import { singletonClientOnly } from '~/utils/singleton'
 
-export type ColorMode = 'system' | 'light' | 'dark'
+export type ThemeMode = 'system' | 'light' | 'dark'
+
+export type ColorScheme = 'light' | 'dark'
 
 export interface Theme {
-	mode: ColorMode
-	isDark: boolean
+	mode: ThemeMode
+	scheme: ColorScheme
 }
 
-export const useTheme = () => singletonClientOnly('theme', () => {
-	const STORAGE_KEY = 'app-color-mode'
-
-	const theme = useState<Theme>('theme', () => ({ mode: 'system', isDark: true }))
-
-	const cookie = useCookie(STORAGE_KEY, {
-		default: () => theme.value,
-		maxAge: 60 * 60 * 24 * 365,
-		sameSite: 'strict'
-	})
-
-	theme.value = cookie.value
-
+export const useTheme = (state: Ref<Theme>) => singletonClientOnly('theme', () => {
 	const darkModePreference = import.meta.client ? window.matchMedia('(prefers-color-scheme: dark)') : null
 
-	const isDark = () => {
-		if (theme.value.mode === 'system') {
-			if (darkModePreference) {
-				return darkModePreference.matches
-			}
-
-			return theme.value.isDark
+	const resolveScheme = (mode: ThemeMode) => {
+		if (mode === 'system') {
+			return darkModePreference && darkModePreference.matches ? 'dark' : 'light'
 		}
 
-		return theme.value.mode === 'dark'
+		return mode
 	}
 
-	const update = () => {
-		const _isDark = isDark()
+	const refreshStateScheme = () => state.value.scheme = resolveScheme(state.value.mode)
 
-		if (theme.value.isDark !== _isDark) {
-			document?.documentElement.classList.add('theme-changing')
-		}
+	const setMode = (mode: ThemeMode) => {
+		state.value.mode = mode
+		refreshStateScheme()
+	}
 
-		theme.value.isDark = _isDark
+	const scheme = computed(() => state.value.scheme)
 
-		cookie.value = theme.value
+	watch(() => state.value.scheme, () => {
+		const oldScheme = state.value.scheme
 
-		if (import.meta.server) {
+		if (import.meta.server || state.value.scheme == oldScheme) {
 			return
 		}
 
-		if (_isDark) {
-			document.documentElement.classList.add('dark')
-		} else {
-			document.documentElement.classList.remove('dark')
-		}
-	}
+		document.documentElement.classList.add('theme-changing')
+	})
 
 	const themeChangingTransitionEnd = () => {
 		document.documentElement.classList.remove('theme-changing')
 	}
 
-	const stopWatch = watch(theme, update, { immediate: true, deep: true })
+	if (import.meta.client) {
+		setMode(state.value.mode)
 
-	darkModePreference?.addEventListener('change', update)
-
-	if (document) {
-		document?.body.addEventListener('transitionend', themeChangingTransitionEnd)
+		darkModePreference?.addEventListener('change', () => {
+			if (state.value.mode === 'system') {
+				refreshStateScheme()
+			}
+		})
 	}
 
-	const destroy = () => {
-		stopWatch()
-		darkModePreference?.removeEventListener('change', update)
-		document?.body.removeEventListener('transitionend', themeChangingTransitionEnd)
-	}
+	document.body.addEventListener('transitionend', themeChangingTransitionEnd)
 
-	return { theme, destroy }
+
+
+
+	// const update = () => {
+	// 	const _isDark = isDark()
+
+	// 	if (state.value.isDark !== _isDark) {
+	// 		document?.documentElement.classList.add('theme-changing')
+	// 	}
+
+	// 	state.value.isDark = _isDark
+
+	// 	if (import.meta.server) {
+	// 		return
+	// 	}
+
+	// 	if (_isDark) {
+	// 		document.documentElement.classList.add('dark')
+	// 	} else {
+	// 		document.documentElement.classList.remove('dark')
+	// 	}
+	// }
+
+
+
+	// const stopWatch = watch(state, update, { immediate: true, deep: true })
+
+	// darkModePreference?.addEventListener('change', update)
+	// document?.body.addEventListener('transitionend', themeChangingTransitionEnd)
+
+	// const destroy = () => {
+	// 	stopWatch()
+	// 	darkModePreference?.removeEventListener('change', update)
+	// 	document?.body.removeEventListener('transitionend', themeChangingTransitionEnd)
+	// }
+
+	// state.value.isDark = isDark()
+
+	return { theme: state }
 })

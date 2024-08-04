@@ -1,35 +1,40 @@
 import type { WatchOptions } from 'vue'
 import type { CookieOptions } from 'nuxt/app'
 import type { DefinedStorage } from '~/utils/storages'
-import { defineStorage, cookieStorageDriver, localStorageDriver, dummyStorageDriver } from '~/utils/storages'
+import {
+	defineStorage, cookieStorageDriver, localStorageDriver, dummyStorageDriver
+} from '~/utils/storages'
 
-type _CookieOptions = CookieOptions & { readonly?: false | undefined; }
+type Watch = { watch?: WatchOptions | false }
+
+type CookieStorageConfig = Omit<CookieOptions, 'watch'> & { readonly?: false | undefined; } & Watch
+
+type LocalStorageConfig = Watch
 
 /****************** Cookie storage ******************/
 
-export function useCookieStorage<T>(key: string, init: () => T, cookieOptions?: _CookieOptions): DefinedStorage<T>
-export function useCookieStorage<T>(key: string, init?: () => T, cookieOptions?: _CookieOptions): DefinedStorage<T | null>
+export function useCookieStorage<T>(key: string, init: () => T, config?: CookieStorageConfig): DefinedStorage<T>
+export function useCookieStorage<T>(key: string, init?: () => T, config?: CookieStorageConfig): DefinedStorage<T | null>
 
 export function useCookieStorage<T>(
 	key: string,
 	init?: () => T,
-	cookieOptions: _CookieOptions = {},
-	watchOptions: WatchOptions | false = {}
+	config: CookieStorageConfig = {}
 ) {
-	return defineStorage(key, cookieStorageDriver(init, cookieOptions), watchOptions)
+	return defineStorage(key, cookieStorageDriver(init, config), config.watch)
 }
 
 /****************** Localstorage ******************/
 
-export function useLocalStorage<T>(key: string, init: () => T): DefinedStorage<T>
-export function useLocalStorage<T>(key: string, init?: () => T): DefinedStorage<T | null>
+export function useLocalStorage<T>(key: string, init: () => T, config?: LocalStorageConfig): DefinedStorage<T>
+export function useLocalStorage<T>(key: string, init?: () => T, config?: LocalStorageConfig): DefinedStorage<T | null>
 
 export function useLocalStorage<T>(
 	key: string,
 	init?: () => T,
-	watchOptions: WatchOptions | false = {}
+	config: LocalStorageConfig = {}
 ) {
 	const driver = import.meta.server ? dummyStorageDriver(init) : localStorageDriver(init)
 
-	return defineStorage(key, driver, watchOptions)
+	return defineStorage(key, driver, config.watch)
 }
