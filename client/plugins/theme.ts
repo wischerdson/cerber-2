@@ -1,17 +1,17 @@
 import { defineNuxtPlugin } from 'nuxt/app'
-import { useTheme } from '~/composables/use-theme'
+import { useTheme, type Theme } from '~/composables/use-theme'
 import { useCookieStorage } from '~/composables/use-storage'
 
 export default defineNuxtPlugin(async () => {
-	const [state] = useCookieStorage(
+	const [state] = useCookieStorage<Theme>(
 		'color-mode',
-		() => ({ mode: 'system', isDark: true }),
+		() => ({ mode: 'system', scheme: 'dark' }),
 		{ watch: { deep: true } }
 	)
 
-	const theme = useTheme(state)
-
 	return {
-		provide: { theme }
+		provide: {
+			theme: useTheme(state)
+		}
 	}
 })

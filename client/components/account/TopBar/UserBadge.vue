@@ -27,7 +27,7 @@
 					</div>
 					<div>
 						<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
-							<MoonIcon class="mr-3 h-4 w-4" v-if="theme.isDark" />
+							<MoonIcon class="mr-3 h-4 w-4" v-if="theme.scheme" />
 							<SunIcon class="mr-3 h-4 w-4" v-else />
 							<span>Оформление</span>
 							<icon
@@ -40,18 +40,18 @@
 						<HeightAnimation>
 							<transition>
 								<div class="submenu mt-3" v-if="themeSubmenu">
-									<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'light'">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode === 'light'"></div>
+									<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('light')">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode.value === 'light'"></div>
 										<SunIcon class="mr-3 h-4 w-4" />
 										<span>Светлое</span>
 									</TheClickable>
-									<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.mode = 'dark'">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode === 'dark'"></div>
+									<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.setMode('dark')">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode.value === 'dark'"></div>
 										<MoonIcon class="mr-3 h-4 w-4" />
 										<span>Темное</span>
 									</TheClickable>
-									<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.mode = 'system'">
-										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode === 'system'"></div>
+									<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('system')">
+										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode.value === 'system'"></div>
 										<ComputerIcon class="mr-3 h-4 w-4" />
 										<span>Как в системе</span>
 									</TheClickable>
@@ -96,23 +96,18 @@ import SunIcon from '~/assets/svg/Monochrome=sun.max.fill.svg'
 import MoonIcon from '~/assets/svg/Monochrome=moon.stars.fill.svg'
 import ComputerIcon from '~/assets/svg/Monochrome=desktopcomputer.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
-import { ref, onUnmounted, watch } from '#imports'
-import { useTheme } from '~/composables/use-theme'
+import { ref, watch, useNuxtApp } from '#imports'
 import { useAuth } from '~/composables/use-auth'
 
 const showMenu = ref(false)
 const themeSubmenu = ref(false)
 const $menu = ref<HTMLElement>()
 
-const { theme, destroy: destroyTheme } = useTheme()
+const theme = useNuxtApp().$theme
 
 watch(showMenu, () => themeSubmenu.value = false)
 
 const logout = () => useAuth('default').logout()
-
-onUnmounted(() => {
-	destroyTheme()
-})
 
 </script>
 

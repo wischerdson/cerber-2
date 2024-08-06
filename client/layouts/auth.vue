@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 
-import { useHead, useTheme } from '#imports'
+import { useHead, useNuxtApp } from '#imports'
 import ScreenSize from '~/components/dev/ScreenSize.vue'
 import { useNoindexHeader } from '~/composables/use-noindex-header'
 
@@ -15,7 +15,7 @@ useNoindexHeader()
 
 useHead({
 	htmlAttrs: {
-		class: useTheme().theme.value.isDark ? 'dark' : ''
+		class: useNuxtApp().$theme.scheme,
 	},
 	link: [
 		{ rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },

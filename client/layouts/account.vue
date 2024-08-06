@@ -15,18 +15,17 @@
 
 <script setup lang="ts">
 
-import { onMounted, ref, useHead } from '#imports'
+import { onMounted, ref, useHead, useNuxtApp } from '#imports'
 import ScreenSize from '~/components/dev/ScreenSize.vue'
 import TopBar from '~/components/account/TopBar.vue'
 import TheSpinner from '~/components/ui/Spinner.vue'
 import { useNoindexHeader } from '~/composables/use-noindex-header'
-import { useTheme } from '~/composables/use-theme'
 
 useNoindexHeader()
 
 useHead({
 	htmlAttrs: {
-		class: useTheme().theme.value.isDark ? 'dark' : '',
+		class: useNuxtApp().$theme.scheme,
 		lang: 'ru-RU'
 	},
 	link: [

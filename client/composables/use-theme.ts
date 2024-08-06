@@ -29,71 +29,23 @@ export const useTheme = (state: Ref<Theme>) => singletonClientOnly('theme', () =
 		refreshStateScheme()
 	}
 
-	const scheme = computed(() => state.value.scheme)
-
-	watch(() => state.value.scheme, () => {
-		const oldScheme = state.value.scheme
-
-		if (import.meta.server || state.value.scheme == oldScheme) {
-			return
-		}
-
-		document.documentElement.classList.add('theme-changing')
-	})
-
-	const themeChangingTransitionEnd = () => {
-		document.documentElement.classList.remove('theme-changing')
-	}
-
 	if (import.meta.client) {
 		setMode(state.value.mode)
 
-		darkModePreference?.addEventListener('change', () => {
-			if (state.value.mode === 'system') {
-				refreshStateScheme()
-			}
+		darkModePreference?.addEventListener('change', refreshStateScheme)
+
+		document.body.addEventListener('transitionend', () => {
+			document.documentElement.classList.remove('theme-changing')
+		})
+
+		watch(() => state.value.scheme, () => {
+			document.documentElement.classList.add('theme-changing')
 		})
 	}
 
-	document.body.addEventListener('transitionend', themeChangingTransitionEnd)
-
-
-
-
-	// const update = () => {
-	// 	const _isDark = isDark()
-
-	// 	if (state.value.isDark !== _isDark) {
-	// 		document?.documentElement.classList.add('theme-changing')
-	// 	}
-
-	// 	state.value.isDark = _isDark
-
-	// 	if (import.meta.server) {
-	// 		return
-	// 	}
-
-	// 	if (_isDark) {
-	// 		document.documentElement.classList.add('dark')
-	// 	} else {
-	// 		document.documentElement.classList.remove('dark')
-	// 	}
-	// }
-
-
-
-	// const stopWatch = watch(state, update, { immediate: true, deep: true })
-
-	// darkModePreference?.addEventListener('change', update)
-	// document?.body.addEventListener('transitionend', themeChangingTransitionEnd)
-
-	// const destroy = () => {
-	// 	stopWatch()
-	// 	darkModePreference?.removeEventListener('change', update)
-	// 	document?.body.removeEventListener('transitionend', themeChangingTransitionEnd)
-	// }
-
-	// state.value.isDark = isDark()
-
-	return { theme: state }
+	return {
+		mode: computed(() => state.value.mode),
+		scheme: computed(() => state.value.scheme),
+		setMode
+	}
 })
