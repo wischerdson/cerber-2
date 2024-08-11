@@ -64,9 +64,11 @@ definePageMeta({ layout: 'auth' })
 const pending = ref(false)
 const serverError = ref<string|null>()
 
+const router = useRouter()
+
 const { useField, validate, touchAll } = useValidation().defineRules(object({
-	login: string().required('Введите логин'),
-	password: string().required('Введите пароль')
+	login: string().required('Введите логин').default('admin'),
+	password: string().required('Введите пароль').default('123123')
 }))
 
 const sendForm = async () => {
@@ -83,7 +85,9 @@ const sendForm = async () => {
 		await useAuth('default').signIn(form.login, form.password)
 		serverError.value = null
 
-		useRouter().replace({ force: true })
+		// window.location.reload()
+
+		await router.replace({ force: true })
 	} catch (error: any) {
 		if (error.data && 'error_reason' in error.data) {
 			serverError.value = error.data.error_reason

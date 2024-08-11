@@ -3,9 +3,34 @@
 		<h2 class="font-bold text-gray-850 text-1.5xl tracking-wide">Новый доступ</h2>
 		<TheForm
 			class="mt-6"
-			name=""
-			notes=""
-			:fields="[]"
+			name="FTP"
+			notes="Работает только из-под корпоративного VPN"
+			:fields="[
+				{
+					label: 'Хост',
+					value: 'h04.twinscom.ru',
+					shortDescription: '',
+					secure: false,
+					multiline: false,
+					sort: 5
+				},
+				{
+					label: 'Логин',
+					value: 'root',
+					shortDescription: '',
+					secure: false,
+					multiline: false,
+					sort: 5
+				},
+				{
+					label: 'Пароль',
+					value: '123123',
+					shortDescription: 'Какое-то короткое описание для поля',
+					secure: true,
+					multiline: false,
+					sort: 5
+				}
+			]"
 			@save="save"
 		/>
 	</div>
