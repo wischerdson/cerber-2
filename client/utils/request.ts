@@ -42,13 +42,6 @@ export const makeRequest = <
 	let stopIfCannotSign: boolean = false
 	let shouldEncrypt: boolean = false
 
-	const encrypt = () => {
-		request.setHeader('X-Encrypted', 1)
-		request.setHeader('X-Handshake-ID', $encryptor.getHandshakeId())
-
-		options.body = $encryptor.encrypt(JSON.stringify(options.body))
-	}
-
 	const request: AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT> | Promise<DataT>, RequestT> = {
 		setOption(name, value) {
 			value === undefined ? delete options[name] : options[name] = value
@@ -103,7 +96,7 @@ export const makeRequest = <
 					}
 				}
 
-				shouldEncrypt && encrypt()
+				shouldEncrypt && $encryptor.encrypt(request)
 
 				const fetch = () => $fetch<DataT>(url, options)
 
