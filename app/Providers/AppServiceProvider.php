@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
 
 		env('DB_LOG_SQL_QUERIES', false) && $this->enableDbQueriesLogging();
 
-		$this->app->singleton(\App\Services\RsaEncryption::class);
+		$this->app->singleton(\App\Services\Encryption\RequestEncrypter::class);
 	}
 
 	/**

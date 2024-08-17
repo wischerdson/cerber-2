@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Services\RsaEncryption;
+use App\Services\Encryption\RequestEncrypter;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,8 +19,7 @@ class EncryptResponse
 		$response = $next($request);
 
 		$response->setContent(
-			app(RsaEncryption::class)
-				->encrypt($response->getContent())
+			app(RequestEncrypter::class)->encrypt($response->getContent())
 		);
 
 		$response->headers->set('X-Encrypted', '1');

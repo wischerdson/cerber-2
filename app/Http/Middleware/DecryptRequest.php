@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Services\RsaEncryption;
+use App\Services\Encryption\RequestEncrypter;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -21,14 +21,12 @@ class DecryptRequest
 			return $next($request);
 		}
 
-		return $next(
-			$this->decryptRequest($request)
-		);
+		return $next($this->decryptRequest($request));
 	}
 
 	private function decryptRequest(Request $request): Request
 	{
-		$content = app(RsaEncryption::class)->decrypt($request->getContent());
+		$content = app(RequestEncrypter::class)->decrypt($request->getContent());
 
 		$json = $request->isJson() ? (array) json_decode($content, true) : [];
 
