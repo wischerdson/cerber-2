@@ -13,6 +13,8 @@ export type AsyncDataResponse<DataT, ErrorT = FetchError> = AsyncData<PickFrom<D
 
 export type Options<DataT, RequestT extends NitroFetchRequest> = AsyncDataOptions<DataT> & NitroFetchOptions<RequestT>
 
+export type Intercepter<RequestT extends AppRequest> = (request: RequestT) => RequestT
+
 export interface AppRequest<DataT = any, ErrorT = any, ResponseT = any, RequestT extends NitroFetchRequest = NitroFetchRequest> {
 	setOption<K extends keyof Options<DataT, RequestT>>(name: K, value: Options<DataT, RequestT>[K]): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	getOption<K extends keyof Options<DataT, RequestT>>(name: K): Options<DataT, RequestT>[K]
@@ -21,7 +23,8 @@ export interface AppRequest<DataT = any, ErrorT = any, ResponseT = any, RequestT
 	asAsyncData(key: string, opts?: AsyncDataOptions<DataT>): AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
 	sign(authProvider: AuthType, strict?: boolean): AppRequest<DataT, ErrorT, ResponseT, RequestT>
 	shouldEncrypt(): AppRequest<DataT, ErrorT, ResponseT, RequestT>
-	send(): Promise<ResponseT>
+	useInterceptor(intercepter: Intercepter<AppRequest<DataT, ErrorT, ResponseT, RequestT>>): AppRequest<DataT, ErrorT, ResponseT, RequestT>
+	send(): Promise<DataT | ErrorT>
 }
 
 export const makeRequest = <
@@ -41,6 +44,7 @@ export const makeRequest = <
 	let authProvider: AuthProvider
 	let stopIfCannotSign: boolean = false
 	let shouldEncrypt: boolean = false
+	let intercepters: Intercepter<AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT> | Promise<DataT>, RequestT>>[] = []
 
 	const request: AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT> | Promise<DataT>, RequestT> = {
 		setOption(name, value) {
@@ -82,18 +86,13 @@ export const makeRequest = <
 
 			return request
 		},
+		useInterceptor(intercepter) {
+			return request
+		},
 		send() {
-			return new Promise(async (resolve, reject) => {
-				if (authProvider) {
-					try {
-						await authProvider.sign(request)
-					} catch (reason) {
-						authProvider.logout()
-
-						if (stopIfCannotSign) {
-							return null
-						}
-					}
+			return new Promise((resolve, reject) => {
+				if (authProvider && !authProvider.sign(request) && stopIfCannotSign) {
+					return reject()
 				}
 
 				shouldEncrypt && $encryptor.encrypt(request)
@@ -101,11 +100,11 @@ export const makeRequest = <
 				const fetch = () => $fetch<DataT>(url, options)
 
 				try {
-					const result = await asyncDataKey ?
+					const result = asyncDataKey ?
 						useAsyncData<DataT, ErrorT>(asyncDataKey, fetch, options) :
 						fetch()
 
-					resolve(result)
+					result.then(value => resolve(value))
 				} catch (error) {
 					reject(error)
 				}

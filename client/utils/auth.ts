@@ -13,7 +13,7 @@ export interface AuthProvider {
 	sign(request: AppRequest): Promise<boolean>
 	canSign(): boolean
 	signIn(login: string, password: string): Promise<unknown>
-	logout(): void
+	logout(needRevoke?: boolean): void
 	saveSignature(signature: JwtTokensPair): void
 }
 
@@ -22,51 +22,55 @@ export const defineJwtPairAuthProvider = (pair: Ref<JwtTokensPair | null | undef
 		pair.value = signature
 	}
 
-	const canSign: AuthProvider['canSign'] = () => {
-		if (!pair.value) {
-			return false
-		}
+	const canSign: AuthProvider['canSign'] = () => !!pair.value
 
-		if (pair.value.refresh_token !== 'valid' && isJwtExpired(pair.value.refresh_token)) {
-			return false
-		}
+	const refreshTokensPair = async () => {
+		try {
+			const newPair = await issueTokensPairViaRefreshToken(
+				(pair.value as JwtTokensPair).refresh_token
+			)
 
-		return true
+			saveSignature(pick(newPair, ['access_token', 'refresh_token']))
+
+			return true
+		} catch (reason: any) {
+			if (reason.data && reason.data.error_reason === 'auth_credentials_error') {
+				logout(false)
+
+				return false
+			}
+
+			console.error('Error occured while tokens pair issuing')
+
+			throw reason
+		}
 	}
 
 	const sign: AuthProvider['sign'] = async (request) => {
 		if (!canSign()) {
+			logout(false)
+
 			return false
 		}
 
 		pair.value = pair.value as JwtTokensPair
 
-		if (isJwtExpired(pair.value.access_token)) {
-			try {
-				const newPair = await issueTokensPairViaRefreshToken(pair.value.refresh_token)
+		if (isJwtExpired(pair.value.access_token) && await refreshTokensPair()) {
+			request.setBearerToken(pair.value.access_token)
 
-				saveSignature(pick(newPair, ['access_token', 'refresh_token']))
-			} catch (reason: any) {
-				if (reason.data && reason.data.error_reason === 'auth_credentials_error') {
-					return false
-				}
-
-				console.error('Error occured while tokens pair issuing')
-
-				throw reason
-			}
+			return true
 		}
 
-		request.setBearerToken(pair.value.access_token)
-
-		return true
+		return false
 	}
 
-	const logout: AuthProvider['logout'] = async () => {
-		const request = revokeSession()
+	const logout: AuthProvider['logout'] = async (needRevoke = true) => {
+		if (needRevoke) {
+			const request = revokeSession()
 
-		if (await sign(request)) {
-			try { await request.send() } catch {}
+			if (await sign(request)) {
+				try { await request.send() } catch {}
+			}
 		}
 
 		pair.value = null
