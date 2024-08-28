@@ -1,7 +1,6 @@
 <template>
 	<div class="popover absolute top-full right-0 rounded-2xl mt-2">
 		<div class="popover-inner-content p-5">
-			<pre>{{ model }}</pre>
 			<h4 class="text-lg font-medium">Свойства поля</h4>
 			<form class="mt-6" @submit.prevent="emit('save', model)">
 				<div>
