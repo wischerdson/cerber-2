@@ -35,7 +35,7 @@ class RsaEncrypter
 			$plaintext,
 			$encrypted,
 			$this->handshake->client_public_key,
-			OPENSSL_PKCS1_OAEP_PADDING
+			OPENSSL_PKCS1_PADDING
 		);
 
 		return base64_encode($encrypted);
@@ -49,7 +49,7 @@ class RsaEncrypter
 			base64_decode($base64),
 			$decrypted,
 			$this->handshake->server_private_key,
-			OPENSSL_PKCS1_OAEP_PADDING
+			OPENSSL_PKCS1_PADDING
 		);
 
 		return $decrypted;

@@ -1,5 +1,7 @@
 import type { Ref } from 'vue'
-import { pki, util } from 'node-forge'
+import type { Bytes } from 'node-forge'
+import type { AppRequest } from './request'
+import { pki, util as forgeUtil, random as forgeRandom, cipher as forgeCipher, hmac as forgeHmac } from 'node-forge'
 import { initEncryptionHandshake } from '~/repositories/user'
 
 export type Handshake = {
@@ -10,6 +12,10 @@ export type Handshake = {
 
 export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 	let keypair: pki.rsa.KeyPair | undefined = void 0
+
+	const key = forgeRandom.getBytesSync(16)
+	const iv = forgeRandom.getBytesSync(12)
+	const cipher = forgeCipher.createCipher('AES-GCM', key)
 
 	const getHandshakeOrThrow = () => {
 		if (handshake.value) {
@@ -35,7 +41,7 @@ export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 		}
 	}
 
-	const getKeypair = () => {
+	const getRsaKeypair = () => {
 		if (keypair) {
 			return keypair
 		}
@@ -54,9 +60,34 @@ export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 		}
 	}
 
-	const encrypt = (data: string) => util.encode64(getKeypair().publicKey.encrypt(data, 'RSA-OAEP'))
+	const computeMac = (value: Bytes) => {
+		const hmac = forgeHmac.create()
 
-	const decrypt = (data: string) => getKeypair().privateKey.decrypt(data)
+		hmac.start('sha256', key)
+		hmac.update(iv + value)
 
-	return { initHandshake, initHandshakeIfNeeded, getHandshakeId, encrypt, decrypt }
+		return hmac.digest().getBytes();
+	}
+
+	const encrypt = (data: string) => {
+		cipher.start({ iv, tagLength: 128 })
+		cipher.update(forgeUtil.createBuffer(data, 'utf8'))
+		cipher.finish()
+
+		const value = cipher.output.getBytes()
+
+		const payload = JSON.stringify({
+			iv: forgeUtil.encode64(iv),
+			value: forgeUtil.encode64(value),
+			mac: forgeUtil.encode64(computeMac(value)),
+			tag: forgeUtil.encode64(cipher.mode.tag.getBytes())
+		})
+
+		return { payload, key }
+
+	}
+
+	const decrypt = (data: string) => getRsaKeypair().privateKey.decrypt(data)
+
+	return { initHandshake, initHandshakeIfNeeded, getHandshakeId, encrypt, decrypt, getRsaKeypair }
 }

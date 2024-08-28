@@ -33,7 +33,7 @@ export type ClientSecret = {
 export const create = (secret: ClientSecret) => {
 	return usePostReq(
 		'/secrets', clientToServerSecret(secret)
-	).sign('default').shouldEncrypt().send()
+	).sign().shouldEncrypt().send()
 }
 
 const clientToServerSecretField = (field: ClientSecretField): ServerSecretField => {

@@ -13,7 +13,7 @@ export type Credentials = { [key: string]: string }
 const issueTokensPair = (grantType: GrantType, credentials: Credentials) => {
 	return usePostReq<TokensPairIssuingResponse>('/auth/token', {
 		grant_type: grantType, ...credentials
-	}).send()
+	}).shouldEncrypt().send()
 }
 
 export const issueTokensPairViaPasswordGrant = (login: string, password: string) => {

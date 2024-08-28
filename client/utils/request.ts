@@ -1,57 +1,72 @@
 import type { NitroFetchRequest, NitroFetchOptions } from 'nitropack'
-import type { AsyncDataOptions, AsyncData, NuxtError } from 'nuxt/app'
-import type { FetchError } from 'ofetch'
-import type { KeysOf, PickFrom } from '#app/composables/asyncData'
-import type { AuthProvider } from './auth'
-import type { AuthType } from '~/composables/use-auth'
-import { useAuth } from '~/composables/use-auth'
 import { apiBaseUrl } from '~/utils/helpers'
 import { defaults } from 'lodash-es'
-import { useAsyncData, useNuxtApp } from 'nuxt/app'
 
-export type AsyncDataResponse<DataT, ErrorT = FetchError> = AsyncData<PickFrom<DataT, KeysOf<DataT>> | null, ErrorT | NuxtError<ErrorT> | null>
+type Interceptors<RequestT extends NitroFetchRequest> = {
+	onRequest: Options<RequestT>['onRequest']
+	onRequestError: Options<RequestT>['onRequestError']
+	onResponse: Options<RequestT>['onResponse']
+	onResponseError: Options<RequestT>['onResponseError']
+}
 
-export type Options<DataT, RequestT extends NitroFetchRequest> = AsyncDataOptions<DataT> & NitroFetchOptions<RequestT>
+type Options<RequestT extends NitroFetchRequest> = NitroFetchOptions<RequestT> & {
+	headers: Headers
+}
 
-export interface AppRequest<DataT = any, ErrorT = any, ResponseT = any, RequestT extends NitroFetchRequest = NitroFetchRequest> {
-	setOption<K extends keyof Options<DataT, RequestT>>(name: K, value: Options<DataT, RequestT>[K]): AppRequest<DataT, ErrorT, ResponseT, RequestT>
-	getOption<K extends keyof Options<DataT, RequestT>>(name: K): Options<DataT, RequestT>[K]
-	setHeader(name: string, value?: number | string | null): AppRequest<DataT, ErrorT, ResponseT, RequestT>
-	setBearerToken(token: string): AppRequest<DataT, ErrorT, ResponseT, RequestT>
-	asAsyncData(key: string, opts?: AsyncDataOptions<DataT>): AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
-	sign(authProvider: AuthType, strict?: boolean): AppRequest<DataT, ErrorT, ResponseT, RequestT>
-	shouldEncrypt(): AppRequest<DataT, ErrorT, ResponseT, RequestT>
-	send(): Promise<ResponseT>
+export type InitRequestOptions<RequestT extends NitroFetchRequest> = Omit<
+	Options<RequestT>,
+	(keyof Interceptors<RequestT>) | 'headers'
+> & { headers?: Headers }
+
+export interface AppRequest<
+	DataT = unknown,
+	ResponseT extends Promise<DataT> = Promise<DataT>,
+	RequestT extends NitroFetchRequest = NitroFetchRequest
+> {
+	setOption<K extends keyof Options<RequestT>>(name: K, value: Options<RequestT>[K]): AppRequest<DataT, ResponseT, RequestT>
+	getOption<K extends keyof Options<RequestT>>(name: K): Options<RequestT>[K]
+	setHeader(name: string, value: number | string | null): AppRequest<DataT, ResponseT, RequestT>
+	getHeader(name: string): string | null
+	setBearerToken(token: string): AppRequest<DataT, ResponseT, RequestT>
+	onRequest(interceptor: Interceptors<RequestT>['onRequest']): AppRequest<DataT, ResponseT, RequestT>
+	onResponse(interceptor: Interceptors<RequestT>['onResponse']): AppRequest<DataT, ResponseT, RequestT>
+	onRequestError(interceptor: Interceptors<RequestT>['onRequestError']): AppRequest<DataT, ResponseT, RequestT>
+	onResponseError(interceptor: Interceptors<RequestT>['onResponseError']): AppRequest<DataT, ResponseT, RequestT>
+	send: () => ResponseT
 }
 
 export const makeRequest = <
 	DataT = unknown,
-	ErrorT = FetchError | null,
 	RequestT extends NitroFetchRequest = NitroFetchRequest
-> (url: RequestT, opts?: NitroFetchOptions<RequestT>) => {
-	const options = defaults<unknown, Options<DataT, RequestT>>(opts, {
-		headers: {},
+>(url: RequestT, opts?: InitRequestOptions<RequestT>) => {
+	const options = defaults<unknown, Options<RequestT>>(opts, {
+		headers: new Headers(),
 		baseURL: apiBaseUrl(),
-		mode: 'cors'
+		mode: 'cors',
+		onRequest (ctx) {
+			interceptors.onRequest.forEach(cb => typeof cb === 'function' && cb(ctx))
+		},
+		onRequestError (ctx) {
+			interceptors.onRequestError.forEach(cb => typeof cb === 'function' && cb(ctx))
+		},
+		onResponse (ctx) {
+			interceptors.onResponse.forEach(cb => typeof cb === 'function' && cb(ctx))
+		},
+		onResponseError (ctx) {
+			interceptors.onResponseError.forEach(cb => typeof cb === 'function' && cb(ctx))
+		}
 	})
 
-	const { $encryptor } = useNuxtApp()
-
-	let asyncDataKey: string
-	let authProvider: AuthProvider
-	let stopIfCannotSign: boolean = false
-	let shouldEncrypt: boolean = false
-
-	const encrypt = () => {
-		request.setHeader('X-Encrypted', 1)
-		request.setHeader('X-Handshake-ID', $encryptor.getHandshakeId())
-
-		options.body = $encryptor.encrypt(JSON.stringify(options.body))
+	const interceptors: { [key in keyof Interceptors<RequestT>]: Interceptors<RequestT>[key][] } = {
+		onResponse: [],
+		onRequest: [],
+		onResponseError: [],
+		onRequestError: [],
 	}
 
-	const request: AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT> | Promise<DataT>, RequestT> = {
+	const request: AppRequest<DataT, Promise<DataT>, RequestT> = {
 		setOption(name, value) {
-			value === undefined ? delete options[name] : options[name] = value
+			value === void 0 ? delete options[name] : options[name] = value
 
 			return request
 		},
@@ -59,66 +74,42 @@ export const makeRequest = <
 			return options[name]
 		},
 		setHeader(name, value) {
-			request.setOption('headers', Object.assign({ [name]: value }, options.headers))
+			value === null ? options.headers.delete(name) : options.headers.set(name, value.toString())
 
 			return request
+		},
+		getHeader(name) {
+			return options.headers.get(name)
 		},
 		setBearerToken(token) {
 			request.setHeader('Authorization', `Bearer ${token}`)
 
 			return request
 		},
-		asAsyncData(key, asyncDataOpts) {
-			asyncDataKey = key
-
-			Object.assign(options, {
-				immediate: true,
-				server: true
-			}, asyncDataOpts)
-
-			return request as unknown as AppRequest<DataT, ErrorT, AsyncDataResponse<DataT, ErrorT>, RequestT>
-		},
-		sign(_authProvider, _stopIfCannotSign = true) {
-			authProvider = useAuth(_authProvider)
-			stopIfCannotSign = _stopIfCannotSign
+		onRequest(interceptor) {
+			interceptors.onRequest.push(interceptor)
 
 			return request
 		},
-		shouldEncrypt() {
-			shouldEncrypt = true
+		onResponse(interceptor) {
+			interceptors.onResponse.push(interceptor)
+
+			return request
+		},
+		onRequestError(interceptor) {
+			interceptors.onRequestError.push(interceptor)
+
+			return request
+		},
+		onResponseError(interceptor) {
+			interceptors.onResponseError.push(interceptor)
 
 			return request
 		},
 		send() {
-			return new Promise(async (resolve, reject) => {
-				if (authProvider) {
-					try {
-						await authProvider.sign(request)
-					} catch (reason) {
-						authProvider.logout()
-
-						if (stopIfCannotSign) {
-							return null
-						}
-					}
-				}
-
-				shouldEncrypt && encrypt()
-
-				const fetch = () => $fetch<DataT>(url, options)
-
-				try {
-					const result = await asyncDataKey ?
-						useAsyncData<DataT, ErrorT>(asyncDataKey, fetch, options) :
-						fetch()
-
-					resolve(result)
-				} catch (error) {
-					reject(error)
-				}
-			})
+			return $fetch<DataT>(url, options)
 		}
 	}
 
-	return request as AppRequest<DataT, ErrorT, Promise<DataT>, RequestT>
+	return request
 }
