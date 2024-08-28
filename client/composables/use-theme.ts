@@ -30,7 +30,7 @@ export const useTheme = (state: Ref<Theme>) => singletonClientOnly('theme', () =
 	}
 
 	if (import.meta.client) {
-		setMode(state.value.mode)
+		refreshStateScheme()
 
 		darkModePreference?.addEventListener('change', refreshStateScheme)
 

@@ -2,28 +2,35 @@ import type { AppRequest } from '~/utils/request'
 import { useNuxtApp } from '#app'
 import { defaults } from 'lodash-es'
 
-export type RawAuthProvider = Parameters<ReturnType<typeof useNuxtApp>['$resolveAuthProvider']>[0]
-
-export type AuthDecoratorParameters = {
-	provider?: RawAuthProvider,
+type AuthDecoratorParameters = {
+	provider?: Parameters<ReturnType<typeof useNuxtApp>['$resolveAuthProvider']>[0],
 	ignoreErrors?: boolean
 }
 
-export const authRequestDecorator = <T extends AppRequest>(request: T, parameters?: AuthDecoratorParameters): T => {
-	const { ignoreErrors, provider } = defaults(parameters, {
-		provider: 'default',
-		ignoreErrors: false
-	})
+export type AuthDecoratedRequest<T extends AppRequest> = T & { sign: (parameters?: AuthDecoratorParameters) => AuthDecoratedRequest<T> }
 
-	const authProvider = useNuxtApp().$resolveAuthProvider(provider)
+export const authRequestDecorator = <T extends AppRequest>(request: T): AuthDecoratedRequest<T> => {
+	const decoratedRequest: AuthDecoratedRequest<T> = {
+		...request,
+		sign(parameters) {
+			const { ignoreErrors, provider } = defaults(parameters, {
+				provider: 'default',
+				ignoreErrors: false
+			})
+			const authProvider = useNuxtApp().$resolveAuthProvider(provider)
+			const originalSend = request.send
 
-	request.send = () => {
-		if (authProvider && !authProvider.sign(request) && !ignoreErrors) {
-			return new Promise((_, reject) => reject(null))
+			request.send = () => {
+				if (authProvider && !authProvider.sign(request) && !ignoreErrors) {
+					return new Promise((_, reject) => reject(null))
+				}
+
+				return originalSend()
+			}
+
+			return decoratedRequest
 		}
-
-		return request.send()
 	}
 
-	return request
+	return decoratedRequest
 }

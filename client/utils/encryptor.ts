@@ -1,6 +1,5 @@
 import type { Ref } from 'vue'
 import type { Bytes } from 'node-forge'
-import type { AppRequest } from './request'
 import { pki, util as forgeUtil, random as forgeRandom, cipher as forgeCipher, hmac as forgeHmac } from 'node-forge'
 import { initEncryptionHandshake } from '~/repositories/user'
 
