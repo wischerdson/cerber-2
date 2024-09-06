@@ -55,13 +55,13 @@ export const defineJwtPairAuthProvider = (pair: Ref<JwtTokensPair | null | undef
 
 		pair.value = pair.value as JwtTokensPair
 
-		if (isJwtExpired(pair.value.access_token) && await refreshTokensPair()) {
-			request.setBearerToken(pair.value.access_token)
-
-			return true
+		if (isJwtExpired(pair.value.access_token) && !(await refreshTokensPair())) {
+			return false
 		}
 
-		return false
+		request.setBearerToken(pair.value.access_token)
+
+		return true
 	}
 
 	const logout: AuthProvider['logout'] = async (needRevoke = true) => {

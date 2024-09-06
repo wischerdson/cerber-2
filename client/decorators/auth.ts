@@ -7,29 +7,29 @@ type AuthDecoratorParameters = {
 	ignoreErrors?: boolean
 }
 
-export type AuthDecoratedRequest<T extends AppRequest> = T & { sign: (parameters?: AuthDecoratorParameters) => AuthDecoratedRequest<T> }
+export type AuthDecoratedRequest<ObjectT, ReturnT> = ObjectT & { sign: (parameters?: AuthDecoratorParameters) => ObjectT & ReturnT }
 
-export const authRequestDecorator = <T extends AppRequest>(request: T): AuthDecoratedRequest<T> => {
-	const decoratedRequest: AuthDecoratedRequest<T> = {
-		...request,
-		sign(parameters) {
-			const { ignoreErrors, provider } = defaults(parameters, {
-				provider: 'default',
-				ignoreErrors: false
-			})
-			const authProvider = useNuxtApp().$resolveAuthProvider(provider)
-			const originalSend = request.send
+export const authRequestDecorator = <T extends AppRequest, ReturnT>(request: T): ReturnT => {
+	const decoratedRequest = request as unknown as AuthDecoratedRequest<T, ReturnT>
 
-			request.send = () => {
-				if (authProvider && !authProvider.sign(request) && !ignoreErrors) {
-					return new Promise((_, reject) => reject(null))
-				}
+	decoratedRequest.sign = (parameters) => {
+		const context = defaults<unknown, Required<AuthDecoratorParameters>>(parameters, {
+			provider: 'default',
+			ignoreErrors: false
+		})
 
-				return originalSend()
+		const provider = useNuxtApp().$resolveAuthProvider(context.provider)
+		const originalSend = request.send
+
+		decoratedRequest.send = () => {
+			if (provider && !provider.sign(request) && !context.ignoreErrors) {
+				return new Promise((_, reject) => reject(null))
 			}
 
-			return decoratedRequest
+			return originalSend()
 		}
+
+		return decoratedRequest
 	}
 
 	return decoratedRequest

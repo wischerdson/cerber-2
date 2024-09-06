@@ -4,14 +4,14 @@
 			<h4 class="text-lg font-medium">Свойства поля</h4>
 			<form class="mt-6" @submit.prevent="emit('save', model)">
 				<div>
-					<InputText class="mt-1" v-model="model.label">
+					<InputText class="mt-1" v-model.lazy="model.label">
 						<template #label="{ id }">
 							<label class="text-sm text-gray-700" :for="id">Этикетка</label>
 						</template>
 					</InputText>
 				</div>
 				<div class="mt-4">
-					<TextArea class="mt-1" :rows="1" allow-shrink v-model="shortDescription">
+					<TextArea class="mt-1" :rows="1" allow-shrink v-model.lazy="shortDescription">
 						<template #label="{ id }">
 							<div class="flex items-center justify-between">
 								<label class="text-sm text-gray-700" :for="id">Короткое описание</label>
@@ -44,12 +44,6 @@
 				<TheClickable class="text-primary-red" title="Удалить поле" @click="emit('remove')">
 					<TrashIcon class="w-5 h-5" />
 				</TheClickable>
-				<TheClickable
-					class="h-8 bg-gray-50 border border-gray-150 text-slate-800 px-4 rounded-md text-sm"
-					@click="emit('save', model)"
-				>
-					<span>Сохранить</span>
-				</TheClickable>
 			</div>
 		</div>
 	</div>
@@ -57,13 +51,13 @@
 
 <script setup lang="ts">
 
-import InputText from '~/components/ui/input/Text.vue'
+import InputText from '~/components/ui/input/Text'
 import TextArea from '~/components/ui/input/TextArea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import TheSwitch from '~/components/ui/Switch.vue'
 import TrashIcon from '~/assets/svg/Monochrome=trash.fill.svg'
 import LockIcon from '~/assets/svg/lock.svg'
-import { reactive, computed } from 'vue'
+import { computed } from 'vue'
 
 export type FieldProperties = {
 	label: string
@@ -72,18 +66,16 @@ export type FieldProperties = {
 	multiline: boolean
 }
 
-const props = defineProps<FieldProperties>()
-
 const emit = defineEmits<{
 	(e: 'remove'): void
 	(e: 'save', properties: FieldProperties): void
 }>()
 
-const model = reactive<FieldProperties>(Object.assign({}, props))
+const model = defineModel<FieldProperties>({ required: true })
 
 const shortDescription = computed({
-	get: () => model.shortDescription || '',
-	set: v => model.shortDescription = v || null
+	get: () => model.value.shortDescription || '',
+	set: v => model.value.shortDescription = v || null
 })
 
 </script>

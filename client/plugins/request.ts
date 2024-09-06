@@ -1,6 +1,5 @@
 import { defineNuxtPlugin } from 'nuxt/app'
-import { encryptRequestDecorator, decryptResponseDecorator } from '~/decorators/crypt'
-import { authRequestDecorator } from '~/decorators/auth'
+import { encryptRequestDecorator, decryptResponseDecorator, authRequestDecorator } from '~/decorators/request'
 import { makeRequest } from '~/utils/request'
 
 type Args<DataT> = Parameters<typeof makeRequest<DataT>>

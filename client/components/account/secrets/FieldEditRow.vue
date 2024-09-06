@@ -23,9 +23,8 @@
 							class="z-20"
 							v-if="showPopover"
 							v-click-outside="() => showPopover = false"
-							v-bind="model"
+							v-model="model"
 							@remove="remove"
-							@save="save"
 						/>
 					</transition>
 				</div>
@@ -57,7 +56,7 @@
 <script setup lang="ts">
 
 import type { FieldProperties } from '~/components/account/secrets/FieldPropertiesPopover.vue'
-import InputText from '~/components/ui/input/Text.vue'
+import InputText from '~/components/ui/input/Text'
 import TheClickable from '~/components/ui/Clickable.vue'
 import LockIcon from '~/assets/svg/lock.svg'
 import FieldPropertiesPopover from '~/components/account/secrets/FieldPropertiesPopover.vue'
@@ -79,11 +78,6 @@ let shouldRemove = false
 const remove = () => {
 	showPopover.value = false
 	shouldRemove = true
-}
-
-const save = (properties: FieldProperties) => {
-	model.value = Object.assign(model.value, properties)
-	showPopover.value = false
 }
 
 const onPopoverClosed = () => shouldRemove && emit('remove')

@@ -1,28 +1,20 @@
 <template>
-	<slot name="label" :id="$input?.id"></slot>
+	<slot name="label" :id="id"></slot>
 	<input
-		v-uid
+		:id="id"
 		class="form-control size-base"
 		type="text"
 		autocomplete="off"
 		v-model="model"
 		v-bind="useAttrs()"
-		ref="$input"
 	>
 </template>
 
 <script setup lang="ts">
 
-import { ref, useAttrs } from '#imports'
+import { useAttrs, useId } from '#imports'
 
-const props = defineProps<{ value?: string|number }>()
-
-const $input = ref<HTMLElement>()
-
-const [model] = defineModel()
-
-if (props.value) {
-	model.value = props.value
-}
+const id = useId()
+const model = defineModel<string>()
 
 </script>
