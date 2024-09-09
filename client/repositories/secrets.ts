@@ -1,4 +1,4 @@
-import { usePostReq } from '~/composables/use-request'
+import { useGetReq, usePostReq } from '~/composables/use-request'
 
 export type ServerSecretField = {
 	label: string
@@ -12,8 +12,13 @@ export type ServerSecretField = {
 export type ServerSecret = {
 	name: string
 	notes: string
+	is_uptodate: boolean
 	fields: ServerSecretField[]
+	created_at: number
+	updated_at: number
 }
+
+export type ServerSecretForWrite = Omit<ServerSecret, 'created_at' | 'updated_at'>
 
 export type ClientSecretField = {
 	label: string
@@ -27,13 +32,23 @@ export type ClientSecretField = {
 export type ClientSecret = {
 	name: string
 	notes: string
+	isUptodate: boolean
 	fields: ClientSecretField[]
+	createdAt: Date
+	updatedAt: Date
 }
 
-export const create = (secret: ClientSecret) => {
+export const createSecret = (secret: ClientSecret) => {
 	return usePostReq(
 		'/secrets', clientToServerSecret(secret)
 	).sign().shouldEncrypt().send()
+}
+
+export const fetchSecrets = async () => {
+	const serverSecrets = await useGetReq<ServerSecret[]>('/secrets').sign().send();
+	const clientSecrets = serverSecrets.map(s => serverToClientSecret(s))
+
+	return clientSecrets
 }
 
 const clientToServerSecretField = (field: ClientSecretField): ServerSecretField => {
@@ -47,11 +62,12 @@ const clientToServerSecretField = (field: ClientSecretField): ServerSecretField 
 	}
 }
 
-const clientToServerSecret = (secret: ClientSecret): ServerSecret => {
+const clientToServerSecret = (secret: ClientSecret): ServerSecretForWrite => {
 	return {
 		name: secret.name,
 		notes: secret.notes,
-		fields: secret.fields.map(clientToServerSecretField)
+		is_uptodate: secret.isUptodate,
+		fields: secret.fields.map(clientToServerSecretField),
 	}
 }
 
@@ -70,6 +86,9 @@ const serverToClientSecret = (secret: ServerSecret): ClientSecret => {
 	return {
 		name: secret.name,
 		notes: secret.notes,
-		fields: secret.fields.map(serverToClientSecretField)
+		isUptodate: secret.is_uptodate,
+		fields: secret.fields.map(serverToClientSecretField),
+		createdAt: new Date(secret.created_at * 1000),
+		updatedAt: new Date(secret.updated_at * 1000),
 	}
 }

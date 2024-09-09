@@ -15,7 +15,7 @@
 
 				<div class="mt-8">
 					<div>
-						<SecretList />
+						<SecretList :secrets="secretsStore.secrets" />
 					</div>
 
 					<hr class="my-5 border-gray-100">
@@ -26,11 +26,11 @@
 				</div>
 			</ContentTile>
 
-			<ContentTile class="w-full" v-if="secretsStore.mode.value === 'create'">
+			<ContentTile class="w-full" v-if="secretsStore.mode === 'create'">
 				<SecretCreate />
 			</ContentTile>
-			<ContentTile class="w-full" v-if="secretsStore.mode.value === 'view'">
-				<SecretView />
+			<ContentTile class="w-full" v-if="secretsStore.mode === 'view'">
+				<SecretView :secret="secretsStore.secretForView" v-if="secretsStore.secretForView" />
 			</ContentTile>
 		</div>
 	</DefaultPageView>
@@ -42,12 +42,12 @@ import DefaultPageView from '~/components/ui/DefaultPageView.vue'
 import ContentTile from '~/components/ui/ContentTile.vue'
 import Sidebar from '~/components/account/LeftSidebarWithGroups.vue'
 import SecretView from '~/components/account/secrets/View.vue'
-import SecretEdit from '~/components/account/secrets/Edit.vue'
 import SecretCreate from '~/components/account/secrets/Create.vue'
 import SecretList from '~/components/account/secrets/list/SecretList.vue'
 import GroupList from '~/components/account/secrets/list/GroupList.vue'
 import { definePageMeta, useHead } from '#imports'
 import { useSecretsStore } from '~/store/secrets'
+import { onMounted } from 'vue'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -55,10 +55,8 @@ useHead({ title: 'Cerber - Доступы' })
 
 const secretsStore = useSecretsStore()
 
+onMounted(() => {
+	secretsStore.fetch()
+})
+
 </script>
-
-<style scoped lang="scss">
-
-.a {}
-
-</style>

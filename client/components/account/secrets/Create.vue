@@ -40,10 +40,10 @@
 
 import type { Props } from './Form.vue'
 import TheForm from '~/components/account/secrets/Form.vue'
-import { create } from '~/repositories/secrets'
+import { createSecret } from '~/repositories/secrets'
 
 const save = (model: Props) => {
-	create(model)
+	createSecret(model)
 }
 
 /*

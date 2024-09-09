@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -41,7 +42,13 @@ class SecretField extends Model
 	public function value(): Attribute
 	{
 		return Attribute::make(
-			get: fn (string $value) => $this->secure ? Crypt::decryptString($value) : $value,
+			get: function (string $value) {
+				try {
+					return $this->secure ? Crypt::decryptString($value) : $value;
+				} catch (DecryptException $e) {
+					return $value;
+				}
+			},
 			set: fn (string $value) => $this->secure ? Crypt::encryptString($value) : $value
 		);
 	}

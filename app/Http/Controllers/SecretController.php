@@ -10,7 +10,9 @@ class SecretController extends Controller
 {
 	public function index()
 	{
-		return Secret::with('fields')->get();
+		$secrets = Secret::with('fields')->get();
+
+		return $secrets;
 	}
 
 	public function create(Request $request)
@@ -27,10 +29,11 @@ class SecretController extends Controller
 		foreach (array_values($request->fields) as $i => $field) {
 			$fieldModel = new SecretField(
 				collect($field)
-					->only('label', 'short_description', 'value', 'multiline', 'secure')
+					->only('label', 'short_description', 'multiline', 'secure')
 					->all()
 			);
 			$fieldModel->sort = ($i + 1)*10;
+			$fieldModel->value = $field['value'];
 
 			$secret->fields()->save($fieldModel);
 		}

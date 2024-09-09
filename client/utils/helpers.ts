@@ -51,12 +51,17 @@ export const isJwtExpired = (jwt: string): boolean => {
 	return false
 }
 
-export const isUrl = (string: string): boolean => {
+export const hasHttpProtocol = (url: string): boolean => {
 	const httpSchemeRegExp = /^https?:\/\//i
+
+	return httpSchemeRegExp.test(url)
+}
+
+export const isUrl = (string: string): boolean => {
 	const domainRegExp = /^(?!-)[A-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-z]{2,6}($|\/)/i
 	const ipv4RegExp = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}($|\/)/i
 
-	return httpSchemeRegExp.test(string) ||
+	return hasHttpProtocol(string) ||
 		domainRegExp.test(string) ||
 		ipv4RegExp.test(string)
 }

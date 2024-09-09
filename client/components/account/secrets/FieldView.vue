@@ -1,26 +1,19 @@
 <template>
-	<div class="pt-5 secret-field" :class="{ secure, visible }">
+	<div class="pt-5 secret-field" :class="{ secure: field.secure, visible }">
 		<div class="-mt-5">
 			<div class="flex">
-				<span class="text-sm text-gray-700 mb-1">{{ label }}</span>
-				<!-- <TheClickable
-					v-if="isUrl"
-					tag="a"
-					class="underline text-blue-500 -mt-0.5 ml-4 inline-block"
-					target="_blank"
-					:href="content"
-				>перейти</TheClickable> -->
+				<span class="text-sm text-gray-700 mb-1">{{ field.label }}</span>
 			</div>
 		</div>
 		<div class="flex space-x-2">
 			<div class="w-full flex-1 relative rounded-lg py-3 px-3 bg-gray-50">
-				<span class="secret-field-content">{{ content }}</span>
+				<span class="secret-field-content">{{ field.value }}</span>
 
 				<div class="absolute inset-0 pr-12 p-2 pointer-events-none">
-					<SpoilerContent class="spoiler w-full h-full" v-if="secure" />
+					<SpoilerContent class="spoiler w-full h-full" v-if="field.secure" />
 				</div>
 
-				<div class="absolute right-0 inset-y-0 z-10">
+				<div class="absolute right-0 inset-y-0 z-10 flex">
 					<TheClickable
 						class="copy-content-btn w-10 h-10 flex items-center justify-center rounded-lg"
 						@click="copy"
@@ -37,35 +30,49 @@
 				</transition>
 			</div>
 
-			<TheClickable class="show-spoiler-content-btn w-7 self-stretch flex items-center justify-center" v-if="secure" @click="forceVisible = !forceVisible">
+			<TheClickable class="show-spoiler-content-btn w-7 self-stretch flex items-center justify-center" v-if="field.secure" @click="forceVisible = !forceVisible">
 				<EyeSlashIcon class="w-5 text-gray-500 -mt-px" v-if="forceVisible" />
 				<EyeIcon class="w-5 text-gray-500" v-else />
 			</TheClickable>
+			<TheClickable
+				class="w-7 self-stretch flex items-center justify-center"
+				title="Перейти по ссылке"
+				tag="a"
+				target="_blank"
+				:href="url"
+				v-if="isUrl"
+			>
+				<icon class="text-blue-500" name="tabler:external-link" size="20px" />
+			</TheClickable>
 		</div>
-		<p class="text-xs mt-1 pb-2 tracking-wide text-gray-500 leading-snug">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto dolorum aut fuga eveniet necessitatibus illo, est at quasi voluptatese?</p>
+		<p class="text-xs mt-1 pb-2 tracking-wide text-gray-500 leading-snug">{{ field.shortDescription }}</p>
 	</div>
 </template>
 
 <script setup lang="ts">
 
+import type { SecretField } from '~/store/secrets'
 import { computed, ref } from 'vue'
-import { isUrl as _isUrl } from '~/utils/helpers'
+import { isUrl as _isUrl, hasHttpProtocol } from '~/utils/helpers'
 import EyeIcon from '~/assets/svg/Monochrome=eye.fill.svg'
 import EyeSlashIcon from '~/assets/svg/Monochrome=eye.slash.fill.svg'
 import TheClickable from '~/components/ui/Clickable.vue'
 import SpoilerContent from '~/components/ui/SpoilerContent.vue'
 
-const props = defineProps<{
-	label: string
-	content: string
-	secure: boolean
-}>()
+interface FieldViewProps {
+	field: SecretField
+}
+
+const props = defineProps<FieldViewProps>()
 
 const forceVisible = ref(false)
 const showCopiedBadge = ref(false)
 
-const isUrl = computed(() => _isUrl(props.content))
-const visible = computed(() => !props.secure || forceVisible.value)
+const isUrl = computed(() => _isUrl(props.field.value))
+const url = computed(() => {
+	return hasHttpProtocol(props.field.value) ? props.field.value : `https://${props.field.value}`
+})
+const visible = computed(() => !props.field.secure || forceVisible.value)
 
 const copy = () => {
 	showCopiedBadge.value = true
