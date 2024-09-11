@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 
-import type { Secret } from '~/store/secrets'
+import type { Secret } from '~/repositories/adapters/secret-adapter'
 import TheClickable from '~/components/ui/Clickable.vue'
 import TrashIcon from '~/assets/svg/Monochrome=trash.fill.svg'
 import CustomFieldView from '~/components/account/secrets/FieldView.vue'

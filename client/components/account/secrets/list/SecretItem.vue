@@ -24,9 +24,10 @@
 
 <script setup lang="ts">
 
+import type { Secret } from '~/repositories/adapters/secret-adapter'
 import TheClickable from '~/components/ui/Clickable.vue'
 import { computed } from 'vue'
-import { useSecretsStore, type Secret } from '~/store/secrets'
+import { useSecretsStore } from '~/store/secrets'
 
 const props = defineProps<{
 	secret: Secret

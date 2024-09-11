@@ -45,13 +45,13 @@
 				<icon class="text-blue-500" name="tabler:external-link" size="20px" />
 			</TheClickable>
 		</div>
-		<p class="text-xs mt-1 pb-2 tracking-wide text-gray-500 leading-snug">{{ field.shortDescription }}</p>
+		<p class="text-xs mt-1 pb-2 tracking-wide text-gray-500 leading-snug" v-if="field.shortDescription">{{ field.shortDescription }}</p>
 	</div>
 </template>
 
 <script setup lang="ts">
 
-import type { SecretField } from '~/store/secrets'
+import type { SecretField } from '~/repositories/adapters/secret-adapter'
 import { computed, ref } from 'vue'
 import { isUrl as _isUrl, hasHttpProtocol } from '~/utils/helpers'
 import EyeIcon from '~/assets/svg/Monochrome=eye.fill.svg'

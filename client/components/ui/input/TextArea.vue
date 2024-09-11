@@ -3,7 +3,7 @@
 	<textarea
 		class="form-control"
 		:class="`size-${size}`"
-		:style="{ resize: allowShrink ? 'none' : '' }"
+		:style="{ resize: allowShrink ? 'none' : void 0 }"
 		v-uid
 		v-bind="useAttrs()"
 		autocomplete="off"
@@ -50,7 +50,7 @@ const setHeight = () => {
 	}
 }
 
-const [model] = defineModel({
+const [model] = defineModel<string | number | null | undefined>({
 	set: value => {
 		setHeight()
 

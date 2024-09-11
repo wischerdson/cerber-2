@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 
-import InputText from '~/components/ui/input/Text'
+import InputText from '~/components/ui/input/Text.vue'
 import TextArea from '~/components/ui/input/TextArea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import TheSwitch from '~/components/ui/Switch.vue'

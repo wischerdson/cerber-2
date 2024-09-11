@@ -1,10 +1,7 @@
+import type { Secret } from '~/repositories/adapters/secret-adapter'
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { uid } from '~/utils/helpers'
-import { fetchSecrets, type ClientSecret, type ClientSecretField } from '~/repositories/secrets'
-
-export type Secret = ClientSecret & { clientCode: string }
-export type SecretField = ClientSecretField & { clientCode: string }
+import { fetchSecrets } from '~/repositories/secrets'
 
 export const useSecretsStore = defineStore('secrets', () => {
 	const mode = ref<'create' | 'view' | null>(null)
@@ -23,13 +20,7 @@ export const useSecretsStore = defineStore('secrets', () => {
 	const fetch = async () => {
 		const data = await fetchSecrets()
 
-		if (data) {
-			secrets.value = data.map(s => {
-				(s as Secret).clientCode = uid()
-
-				return s
-			}) as Secret[]
-		}
+		secrets.value = data
 	}
 
 	return {

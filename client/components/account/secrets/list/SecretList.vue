@@ -25,10 +25,11 @@
 
 <script setup lang="ts">
 
+import type { Secret } from '~/repositories/adapters/secret-adapter'
 import SecretItem from '~/components/account/secrets/list/SecretItem.vue'
 import AbstractList from '~/components/account/secrets/list/AbstractList.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
-import { useSecretsStore, type Secret } from '~/store/secrets'
+import { useSecretsStore } from '~/store/secrets'
 
 interface SecretListProps {
 	secrets: Secret[]

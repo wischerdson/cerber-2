@@ -56,7 +56,7 @@
 <script setup lang="ts">
 
 import type { FieldProperties } from '~/components/account/secrets/FieldPropertiesPopover.vue'
-import InputText from '~/components/ui/input/Text'
+import InputText from '~/components/ui/input/Text.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import LockIcon from '~/assets/svg/lock.svg'
 import FieldPropertiesPopover from '~/components/account/secrets/FieldPropertiesPopover.vue'

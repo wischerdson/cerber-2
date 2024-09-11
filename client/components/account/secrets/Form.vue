@@ -13,7 +13,7 @@
 					<TransitionGroup class="table w-full relative" tag="div" name="field-list">
 						<FieldEditRow
 							v-for="(field, idx) in model.fields"
-							:key="field.label + field.sort"
+							:key="field.clientCode"
 							v-model="model.fields[idx]"
 							@remove="model.fields.splice(idx, 1)"
 						/>
@@ -49,18 +49,17 @@
 
 <script setup lang="ts">
 
-import type { FieldModel } from '~/components/account/secrets/FieldEditRow.vue'
+import type { SecretForCreate } from '~/repositories/adapters/secret-adapter'
 import InputText from '~/components/ui/input/Text.vue'
 import TextArea from '~/components/ui/input/TextArea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import FieldEditRow from '~/components/account/secrets/FieldEditRow.vue'
-import { reactive, toRaw } from 'vue'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
+import { reactive, toRaw } from 'vue'
+import { uid } from '~/utils/helpers'
 
-export type Props = {
-	name: string
-	notes: string
-	fields: FieldModel[]
+export interface Props extends SecretForCreate {
+
 }
 
 const emit = defineEmits<{ (e: 'save', model: Props): void }>()
@@ -77,7 +76,8 @@ const addField = () => model.fields.push({
 	multiline: false,
 	value: '',
 	shortDescription: null,
-	sort: model.fields.length
+	sort: model.fields.length,
+	clientCode: uid()
 })
 
 </script>

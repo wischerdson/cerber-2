@@ -34,5 +34,5 @@ export const useDeleteReq = <
 	DataT,
 	RequestT extends NitroFetchRequest = NitroFetchRequest
 >(request: RequestT, options: InitRequestOptions<RequestT> = {}) => {
-	return useNuxtApp().$makeRequest<DataT>(request, { method: 'GET', ...options })
+	return useNuxtApp().$makeRequest<DataT>(request, { method: 'DELETE', ...options })
 }

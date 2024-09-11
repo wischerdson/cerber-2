@@ -5,6 +5,8 @@
 			class="mt-6"
 			name="FTP"
 			notes="Работает только из-под корпоративного VPN"
+			:is-uptodate="true"
+			clientCode="hehe0"
 			:fields="[
 				{
 					label: 'Хост',
@@ -12,7 +14,8 @@
 					shortDescription: '',
 					secure: false,
 					multiline: false,
-					sort: 5
+					sort: 5,
+					clientCode: 'hehe1'
 				},
 				{
 					label: 'Логин',
@@ -20,7 +23,8 @@
 					shortDescription: '',
 					secure: false,
 					multiline: false,
-					sort: 5
+					sort: 5,
+					clientCode: 'hehe2'
 				},
 				{
 					label: 'Пароль',
@@ -28,7 +32,8 @@
 					shortDescription: 'Какое-то короткое описание для поля',
 					secure: true,
 					multiline: false,
-					sort: 5
+					sort: 5,
+					clientCode: 'hehe3'
 				}
 			]"
 			@save="save"
@@ -45,19 +50,5 @@ import { createSecret } from '~/repositories/secrets'
 const save = (model: Props) => {
 	createSecret(model)
 }
-
-/*
-[
-	{ label: 'Веб-сайт', secure: false, multiline: false, value: '', shortDescription: null, sort: 1 },
-	{ label: 'Веб-сайт 1', secure: false, multiline: false, value: '', shortDescription: null, sort: 2 },
-	{ label: 'Веб-сайт 2', secure: false, multiline: false, value: '', shortDescription: null, sort: 3 },
-	{ label: 'Веб-сайт 3', secure: false, multiline: false, value: '', shortDescription: null, sort: 4 },
-	{ label: 'Веб-сайт 4', secure: false, multiline: false, value: '', shortDescription: null, sort: 5 },
-	{ label: 'Веб-сайт 5', secure: false, multiline: false, value: '', shortDescription: null, sort: 6 },
-	{ label: 'Веб-сайт 6', secure: false, multiline: false, value: '', shortDescription: null, sort: 7 },
-	// { name: 'Логин', secure: false, multiline: false, value: '' },
-	// { name: 'Пароль', secure: true, multiline: false, value: '' }
-]
-*/
 
 </script>

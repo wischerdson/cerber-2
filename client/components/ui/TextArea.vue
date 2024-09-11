@@ -45,7 +45,7 @@
 
 import type { TextareaHTMLAttributes } from 'vue'
 import type { FieldContext } from '~/composables/use-validation'
-import { useAttrs, ref, onMounted, onUnmounted } from '#imports'
+import { useAttrs, ref } from '#imports'
 import ExclamationMark from '~/assets/svg/Monochrome=exclamationmark.circle.fill.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 
