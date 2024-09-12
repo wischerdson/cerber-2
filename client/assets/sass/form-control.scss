@@ -48,8 +48,9 @@ html.dark .form-control {
 	}
 }
 
-html body .form-control.invalid {
+.form-control.invalid {
 	background-color: rgba(#9d2a23, .1);
+	border-color: #9d2a23;
 
 	&:focus {
 		&.invalid {

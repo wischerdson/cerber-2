@@ -1,6 +1,6 @@
 <template>
 	<div class="pt-11 pb-16 relative">
-		<div class="flex flex-col items-center text-dark-gray-1">
+		<div class="flex flex-col items-center dark:text-dark-gray-1 text-gray-600">
 			<CerberLogo class="w-24" />
 			<CerberTextLogo class="w-44 mt-4" />
 		</div>
@@ -10,7 +10,7 @@
 		</div>
 
 		<div class="mt-28">
-			<div class="max-w-sm bg-dark-gray-2/50 backdrop-blur-xl rounded-2xl mx-auto py-7">
+			<div class="tile max-w-sm dark:bg-dark-gray-2/50 bg-white/50 backdrop-blur-xl rounded-[20px] mx-auto py-7">
 				<div class="text-center">
 					<h1 class="text-2xl font-medium">Войти</h1>
 				</div>
@@ -37,7 +37,7 @@
 								:loading="pending"
 								type="submit"
 							>
-								<icon name="material-symbols:arrow-forward-rounded" size="32px" />
+								<icon name="material-symbols:arrow-forward-rounded" size="28px" />
 							</TheButton>
 						</div>
 					</div>
@@ -98,3 +98,11 @@ const sendForm = async () => {
 }
 
 </script>
+
+<style lang="scss" scoped>
+
+.tile {
+	box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.07);
+}
+
+</style>

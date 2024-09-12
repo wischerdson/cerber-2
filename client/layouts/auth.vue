@@ -38,9 +38,14 @@ useHead({
 <style lang="scss">
 
 body {
+	background-color: #fbfbfd;
+	color: #000;
+	font-family: theme('fontFamily.sans');
+}
+
+html.dark {
 	background-color: #000;
 	color: #fff;
-	font-family: theme('fontFamily.sans');
 }
 
 </style>

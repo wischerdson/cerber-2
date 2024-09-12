@@ -85,6 +85,10 @@ const changeOpacityTransition = (e: Event) => {
 }
 
 .btn-primary {
+	background-color: theme('colors.gray.100');
+}
+
+html.dark .btn-primary {
 	background-color: theme('colors.dark.gray-3');
 }
 
