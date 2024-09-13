@@ -30,8 +30,8 @@ export const authRequestDecorator = <T extends AppRequest>(request: T) => {
 		const provider = useNuxtApp().$resolveAuthProvider(context.provider)
 		const originalSend = request.send
 
-		decoratedRequest.send = () => {
-			if (provider && !provider.sign(request) && !context.ignoreErrors) {
+		decoratedRequest.send = async () => {
+			if (provider && !(await provider.sign(request)) && !context.ignoreErrors) {
 				return new Promise((_, reject) => reject(null))
 			}
 
