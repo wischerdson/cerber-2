@@ -39,6 +39,11 @@ class RequestEncrypter
 		return $this->getAesEncrypter()->decryptString($payload);
 	}
 
+	public function setAesEncrypter(AesEncrypter $encrypter): void
+	{
+		$this->aesEncrypter = $encrypter;
+	}
+
 	public function getAesEncrypter(): AesEncrypter
 	{
 		if (isset($this->aesEncrypter)) {

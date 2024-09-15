@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Services\Encryption\RequestEncrypter;
 use Closure;
+use Illuminate\Encryption\Encrypter as AesEncrypter;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,12 +19,29 @@ class EncryptResponse
 	{
 		$response = $next($request);
 
+		$encrypter = $this->getRequestEncrypter();
+
 		$response->setContent(
-			app(RequestEncrypter::class)->encrypt($response->getContent())
+			$encrypter->encrypt($response->getContent())
 		);
 
+		$aesKey = $encrypter->getAesEncrypter()->getKey();
+
+		$response->headers->set('X-Key', $encrypter->getRsaEncrypter()->encrypt($aesKey));
 		$response->headers->set('X-Encrypted', '1');
 
 		return $response;
+	}
+
+	private function getRequestEncrypter(): RequestEncrypter
+	{
+		$requestEncrypter = app(RequestEncrypter::class);
+
+		$aesKey = AesEncrypter::generateKey(RequestEncrypter::$cipher);
+		$aesEncrypter = new AesEncrypter($aesKey, RequestEncrypter::$cipher);
+
+		$requestEncrypter->setAesEncrypter($aesEncrypter);
+
+		return $requestEncrypter;
 	}
 }

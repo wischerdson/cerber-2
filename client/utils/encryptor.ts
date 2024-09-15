@@ -9,6 +9,13 @@ export type Handshake = {
 	handshake_id: string
 }
 
+export type EncryptedPayload = {
+	iv: string
+	mac: string
+	tag: string
+	value: string
+}
+
 export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 	let keypair: pki.rsa.KeyPair | undefined = void 0
 
@@ -83,10 +90,33 @@ export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 		})
 
 		return { payload, key }
-
 	}
 
-	const decrypt = (data: string) => getRsaKeypair().privateKey.decrypt(data)
+	const decrypt = (key: string, { iv, tag, value }: EncryptedPayload) => {
+		const decipher = forgeCipher.createDecipher('AES-GCM', key)
+		const ivBuffer = forgeUtil.createBuffer().putBytes(
+			forgeUtil.decode64(iv)
+		)
+		const tagBuffer = forgeUtil.createBuffer().putBytes(
+			forgeUtil.decode64(tag)
+		)
+		const valueBuffer = forgeUtil.createBuffer().putBytes(
+			forgeUtil.decode64(value)
+		)
+
+		decipher.start({
+			iv: ivBuffer,
+			tag: tagBuffer
+		})
+
+		decipher.update(valueBuffer);
+
+		if (!decipher.finish()) {
+			throw new Error('Cannot decrypt server response');
+		}
+
+		return decipher.output.data
+	}
 
 	return { initHandshake, initHandshakeIfNeeded, getHandshakeId, encrypt, decrypt, getRsaKeypair }
 }
