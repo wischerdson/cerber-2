@@ -1,6 +1,6 @@
 <template>
 	<AbstractList name="Доступы" add-item-title="Добавить доступ" @add="secretsStore.setModeCreate">
-		<ul class="secret-list" v-if="true">
+		<ul class="secret-list" v-if="secrets.length">
 			<SecretItem
 				v-for="secret in secrets"
 				:secret="secret"
@@ -16,8 +16,8 @@
 		</ul>
 		<div class="text-center" v-else>
 			<div class="text-sm text-gray-500">Ни одного доступа еще нет</div>
-			<TheClickable class="h-7 rounded-full bg-slate-900 px-5 mt-3 inline-flex items-center mx-auto" @click="secretsStore.setModeCreate">
-				<span class="text-white text-sm font-medium">Добавить</span>
+			<TheClickable class="h-7 rounded-full bg-gray-800 px-5 mt-3 inline-flex items-center mx-auto" @click="secretsStore.setModeCreate">
+				<span class="text-white text-sm">Добавить</span>
 			</TheClickable>
 		</div>
 	</AbstractList>

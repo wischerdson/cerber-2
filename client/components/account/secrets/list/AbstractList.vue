@@ -1,7 +1,7 @@
 <template>
 	<div class="list" :class="{ shown }">
 		<div class="flex justify-between">
-			<TheClickable class="show-hide-btn flex items-center justify-center text-gray-700" @click="shown = !shown">
+			<TheClickable class="show-hide-btn flex items-center justify-center text-gray-700 dark:text-gray-550" @click="shown = !shown">
 				<span class="text-sm">{{ name }}</span>
 				<icon
 					class="chevron-right -mb-0.5 ml-1 -mr-2"
@@ -79,6 +79,15 @@ const shown = ref(props.showOnInit !== false)
 	&:hover {
 		color: theme('colors.gray.900');
 		background-color: #eaeaea;
+	}
+}
+
+html.dark {
+	.add-btn {
+		&:hover {
+			color: theme('colors.gray.100');
+			background-color: rgba(#fff, .1);
+		}
 	}
 }
 

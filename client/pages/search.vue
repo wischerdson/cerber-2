@@ -35,7 +35,7 @@
 import DefaultPageView from '~/components/ui/DefaultPageView.vue'
 import ContentTile from '~/components/ui/ContentTile.vue'
 import Sidebar from '~/components/account/LeftSidebarWithGroups.vue'
-import SecretView from '~/components/account/secrets/View.vue'
+import SecretView from '~/components/account/secrets/Detail.vue'
 import SecretList from '~/components/account/secrets/list/SecretList.vue'
 import GroupList from '~/components/account/secrets/list/GroupList.vue'
 import { definePageMeta, useHead, useRoute, ref } from '#imports'

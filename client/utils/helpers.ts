@@ -8,6 +8,7 @@ export const storageUrl = (path: string) => {
 
 export const apiBaseUrl = () => {
 	const config = useRuntimeConfig()
+
 	return import.meta.server ? config.apiBaseUrl : config.public.apiBaseUrl
 }
 

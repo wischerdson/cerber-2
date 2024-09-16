@@ -4,7 +4,7 @@
 			<Sidebar />
 			<ContentTile class="w-full">
 				<div>
-					<div class="text-xs mb-2 text-gray-400">
+					<div class="text-xs mb-2 text-gray-400 dark:text-gray-600">
 						Пространство
 					</div>
 					<div class="flex items-center -ml-1.5">
@@ -18,7 +18,7 @@
 						<SecretList :secrets="secretsStore.secrets" />
 					</div>
 
-					<hr class="my-5 border-gray-100">
+					<hr class="my-5 border-gray-100 dark:border-gray-900">
 
 					<div>
 						<GroupList />
@@ -41,7 +41,7 @@
 import DefaultPageView from '~/components/ui/DefaultPageView.vue'
 import ContentTile from '~/components/ui/ContentTile.vue'
 import Sidebar from '~/components/account/LeftSidebarWithGroups.vue'
-import SecretView from '~/components/account/secrets/View.vue'
+import SecretView from '~/components/account/secrets/Detail.vue'
 import SecretCreate from '~/components/account/secrets/Create.vue'
 import SecretList from '~/components/account/secrets/list/SecretList.vue'
 import GroupList from '~/components/account/secrets/list/GroupList.vue'

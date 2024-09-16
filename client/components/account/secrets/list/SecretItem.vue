@@ -2,13 +2,13 @@
 	<li class="secret-item" :class="{ irrelevant: !secret.isUptodate }">
 		<TheClickable class="flex items-center space-x-3 rounded-lg py-1.5 px-2 -ml-1.5" @click="secretsStore.viewSecret(secret)">
 			<div class="relative">
-				<div class="secret-icon w-8 h-8 flex items-center justify-center bg-gray-50 rounded-lg" v-if="!icon || icon.type === 'letter'">
-					<span class="text-gray-700 font-medium text-lg select-none">{{ firstLetter }}</span>
+				<div class="secret-icon w-8 h-8 flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg" v-if="!icon || icon.type === 'letter'">
+					<span class="text-gray-700 dark:text-gray-550 font-medium text-lg select-none">{{ firstLetter }}</span>
 				</div>
 				<div class="secret-icon w-8 h-8 flex items-center justify-center rounded-lg overflow-hidden" v-else-if="icon.type === 'img'">
 					<img class="w-full h-full object-contain" :src="icon.value" />
 				</div>
-				<div class="secret-icon w-8 h-8 flex items-center justify-center bg-gray-50 rounded-lg" v-else-if="icon.type === 'icones'">
+				<div class="secret-icon w-8 h-8 flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg" v-else-if="icon.type === 'icones'">
 					<component is="icon" class="text-gray-700" :name="icon.value" size="22px" />
 				</div>
 				<div class="absolute top-4 bottom-0 -left-2.5 -right-2.5 h-0.5 bg-red-500 z-10 -rotate-45 rounded-full" v-if="!secret.isUptodate"></div>
@@ -56,6 +56,14 @@ const secretsStore = useSecretsStore()
 	&.irrelevant {
 		.secret-icon, .secret-name {
 			opacity: .6;
+		}
+	}
+}
+
+html.dark {
+	.secret-item {
+		.clickable:hover {
+			background-color: rgba(#fff, .1);
 		}
 	}
 }
