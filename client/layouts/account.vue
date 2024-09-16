@@ -4,7 +4,7 @@
 		<ScreenSize />
 		<slot></slot>
 
-		<div class="fixed inset-0 z-40 flex items-center justify-center dark:bg-black bg-white" v-if="showLoader">
+		<div class="fixed inset-0 z-40 flex items-center justify-center dark:bg-black bg-white" v-if="loaderStore.showLoader">
 			<TheSpinner class="relative z-10" size="38" />
 			<div class="absolute bottom-0 -z-10 inset-x-0 pointer-events-none flex justify-center">
 				<!-- <img class="w-full dark:opacity-10 opacity-20 -z-10" src="/images/blurs-footer.png"> -->
@@ -15,11 +15,12 @@
 
 <script setup lang="ts">
 
-import { onMounted, ref, useHead, useNuxtApp } from '#imports'
+import { onMounted, useHead, useNuxtApp } from '#imports'
 import ScreenSize from '~/components/dev/ScreenSize.vue'
 import TopBar from '~/components/account/TopBar.vue'
 import TheSpinner from '~/components/ui/Spinner.vue'
 import { useNoindexHeader } from '~/composables/use-noindex-header'
+import { useAccountLayoutLoaderStore } from '~/store/loaders'
 
 useNoindexHeader()
 
@@ -46,11 +47,11 @@ useHead({
 	]
 })
 
-const showLoader = ref(true)
+const loaderStore = useAccountLayoutLoaderStore()
 
-onMounted(() => {
-	showLoader.value = false
-})
+loaderStore.addPromise(new Promise<void>(resolve => {
+	onMounted(resolve)
+}))
 
 </script>
 

@@ -48,6 +48,7 @@ import GroupList from '~/components/account/secrets/list/GroupList.vue'
 import { definePageMeta, useHead } from '#imports'
 import { useSecretsStore } from '~/store/secrets'
 import { onMounted } from 'vue'
+import { useAccountLayoutLoaderStore } from '~/store/loaders'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -55,8 +56,13 @@ useHead({ title: 'Cerber - Доступы' })
 
 const secretsStore = useSecretsStore()
 
-onMounted(() => {
-	secretsStore.fetch()
-})
+const loaderStore = useAccountLayoutLoaderStore()
+
+loaderStore.addPromise(new Promise<void>(resolve => {
+	onMounted(async () => {
+		await secretsStore.fetch()
+		resolve()
+	})
+}))
 
 </script>
