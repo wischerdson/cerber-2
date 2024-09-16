@@ -1,7 +1,7 @@
 <template>
-	<div class="spaces-switch p-1 relative">
+	<div class="spaces-switch p-1 relative" ref="$root">
 		<div
-			class="highlighter bg-white dark:bg-gray-800 rounded-full absolute inset-y-1 left-0 z-0"
+			class="highlighter bg-white dark:bg-white/15 rounded-full absolute inset-y-1 left-0 z-0"
 			:style="{
 				transition: highlighter.transition ? '' : 'none',
 				transform: `translateX(${highlighter.x}px)`,
@@ -9,32 +9,25 @@
 			}"
 		></div>
 		<ul class="flex relative z-10">
-			<li>
-				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-white" data-space="private" @click="changeSpace('private')">
-					<icon class="mr-1.5" name="material-symbols:person-rounded" size="20px" />
-					<span>Личное</span>
-				</TheClickable>
-			</li>
-			<li>
-				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-gray-250" data-space="work" @click="changeSpace('work')">
-					<icon class="mr-1.5" name="material-symbols:attach-money-rounded" size="20px" />
-					<span>Коммерческие проекты</span>
-				</TheClickable>
-			</li>
-			<li>
-				<TheClickable class="switch-item h-[42px] flex items-center px-5 dark:text-gray-250" data-space="stuff" @click="changeSpace('stuff')">
-					<BriefcaseIcon class="w-5 h-5 mr-1.5" />
-					<span>Компания</span>
-				</TheClickable>
+			<li v-for="space in spaces" :key="space.clientCode">
+				<button
+					class="switch-item h-[42px] flex items-center px-5"
+					:class="{ active: space.clientCode === activeSpace }"
+					:data-space="space.clientCode"
+					@click="activeSpace = space.clientCode"
+				>
+					<icon class="mr-1.5" :name="space.icon" size="20px" />
+					<span>{{ space.name }}</span>
+				</button>
 			</li>
 			<li class="ml-3">
-				<TheClickable
-					class="switch-item show-more-btn bg-white border1 border-gray-200 dark:border-gray-800 dark:text-gray-250 h-[42px] flex justify-center items-center w-[42px] rounded-full"
-					@click="emit('expandManager')"
+				<button
+					class="show-more-btn bg-white dark:bg-transparent dark:text-gray-250 h-[42px] flex justify-center items-center w-[42px] rounded-full"
+					@click=""
 				>
 					<icon size="24px" name="material-symbols:add-rounded" v-if="false"/>
 					<icon size="20px" name="ion:ellipsis-horizontal" />
-				</TheClickable>
+				</button>
 			</li>
 		</ul>
 	</div>
@@ -42,33 +35,36 @@
 
 <script setup lang="ts">
 
-import TheClickable from '~/components/ui/Clickable.vue'
-import { getCurrentInstance, onMounted, ref } from '#imports'
-import BriefcaseIcon from '~/assets/svg/Monochrome=briefcase.fill.svg'
+import { onMounted, ref, watch } from '#imports'
 
 const highlighter = ref({ x: 0, width: 0, transition: false })
-const $root = getCurrentInstance()?.vnode.el as HTMLElement
+const activeSpace = ref(1)
+const $root = ref<HTMLElement>()
 
-const changeSpace = (space: string) => {
-	moveHighlighter(space)
-}
+const spaces = ref([
+	{ clientCode: 1, name: 'Личное', icon: 'material-symbols:person-rounded' },
+	{ clientCode: 2, name: 'Коммерческие проекты', icon: 'material-symbols:attach-money-rounded' },
+	{ clientCode: 3, name: 'Компания', icon: 'material-symbols:person-rounded' },
+])
 
-const moveHighlighter = (space: string) => {
-	const $switchItem = $root?.querySelector(`[data-space="${space}"]`)
+watch(activeSpace, space => moveHighlighter(space))
+
+const moveHighlighter = (space: string | number) => {
+	const $switchItem = $root.value?.querySelector(`[data-space="${space}"]`)
 
 	if (!$switchItem) {
 		return
 	}
 
 	const itemBounds = $switchItem.getBoundingClientRect()
-	const rootBounds = $root.getBoundingClientRect()
+	const rootBounds = ($root.value as HTMLElement).getBoundingClientRect()
 
 	highlighter.value.width = itemBounds.width
 	highlighter.value.x = itemBounds.x - rootBounds.x
 }
 
 onMounted(() => {
-	moveHighlighter('private')
+	moveHighlighter(1)
 	setTimeout(() => highlighter.value.transition = true, 100)
 })
 
@@ -77,7 +73,12 @@ onMounted(() => {
 <style scoped lang="scss">
 
 .switch-item {
-	transition: color .15s ease;
+	transition: color .2s ease;
+	color: theme('colors.gray.600');
+
+	&.active {
+		color: #000;
+	}
 }
 
 .highlighter {
@@ -87,6 +88,24 @@ onMounted(() => {
 
 .show-more-btn {
 	box-shadow: 0 0 6px 0 rgba(#000, 6%);
+}
+
+html.dark {
+	.highlighter {
+		box-shadow: 0 0 20px 0 rgba(#fff, .15);
+	}
+
+	.switch-item {
+		color: theme('colors.gray.400');
+
+		&.active {
+			color: #fff;
+		}
+	}
+
+	.show-more-btn {
+		border: 1px solid theme('colors.gray.800')
+	}
 }
 
 </style>

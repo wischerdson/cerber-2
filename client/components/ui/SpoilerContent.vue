@@ -1,12 +1,13 @@
 <template>
-	<div v-uid ref="$spoiler"></div>
+	<div :id="id"></div>
 </template>
 
 <script setup lang="ts">
 
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
+import { useId } from 'vue'
 
-const $spoiler = ref<HTMLElement>()
+const id = useId()
 
 const config = {
 	particles: {
@@ -84,7 +85,7 @@ onMounted(() => {
 	}
 
 	// @ts-ignore
-	window.particlesJS($spoiler.value.id, config)
+	window.particlesJS(id, config)
 })
 
 </script>

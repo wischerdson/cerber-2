@@ -2,12 +2,14 @@
 	<section class="top-bar">
 		<div class="container relative z-20">
 			<div class="flex py-2">
-				<NuxtLink class="flex-1" to="/">
-					<TheClickable class="flex items-end">
-						<CerberLogo class="h-12 dark:text-white/60 text-black/70" />
-						<CerberTextLogo class="h-2.5 dark:text-white/40 text-black/70 -translate-x-4" />
+				<div class="flex-1">
+					<TheClickable>
+						<NuxtLink class="flex items-end" to="/">
+							<CerberLogo class="h-12 dark:text-white/70 text-black/70" />
+							<CerberTextLogo class="h-2.5 dark:text-white/70 text-black/70 -translate-x-4" />
+						</NuxtLink>
 					</TheClickable>
-				</NuxtLink>
+				</div>
 				<div class="items-center">
 					<SpacesManager />
 				</div>

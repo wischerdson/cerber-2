@@ -1,8 +1,6 @@
 <template>
 	<div class="spaces-manager">
-		<div class="background dark:bg-gray-850/40 bg-gray-50 rounded-full">
-			<SpacesSwitch class="pointer-events-auto" />
-		</div>
+		<SpacesSwitch class="pointer-events-auto" />
 	</div>
 </template>
 
@@ -14,5 +12,16 @@ import SpacesSwitch from '~/components/account/TopBar/SpacesSwitch.vue'
 
 <style lang="scss" scoped>
 
+.spaces-manager {
+	border-radius: 9999px;
+	background-color: theme('colors.gray.50');
+	position: relative;
+}
+
+html.dark {
+	.spaces-manager {
+		background: linear-gradient(145deg, rgba(#fff, .0875), rgba(#fff, 0.05), rgba(#fff, 0.05));
+	}
+}
 
 </style>
