@@ -18,9 +18,6 @@ class AuthController extends Controller
 
 	public function user()
 	{
-		return [
-			'user' => Auth::user(),
-			'session' => Auth::currentSession()
-		];
+		return Auth::user();
 	}
 }

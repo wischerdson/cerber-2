@@ -10,8 +10,8 @@
 			</div>
 			<div class="ml-3">
 				<div>
-					<span class="text-black/85 dark:text-white/85">Даниил </span>
-					<span class="text-black/50 dark:text-white/50">О.</span>
+					<span class="text-black/85 dark:text-white/85">{{ userStore.user?.firstName }}&nbsp;</span>
+					<span class="text-black/50 dark:text-white/50">{{ lastNameFirstLetter }}.</span>
 				</div>
 			</div>
 			<div class="ml-3">
@@ -96,18 +96,31 @@ import SunIcon from '~/assets/svg/Monochrome=sun.max.fill.svg'
 import MoonIcon from '~/assets/svg/Monochrome=moon.stars.fill.svg'
 import ComputerIcon from '~/assets/svg/Monochrome=desktopcomputer.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
-import { ref, watch, useNuxtApp } from '#imports'
+import { ref, watch, useNuxtApp, onMounted, computed } from '#imports'
 import { useAuth } from '~/composables/use-auth'
+import { useUserStore } from '~/store/user'
+import { useAccountLayoutLoaderStore } from '~/store/loaders'
+
+const userStore = useUserStore()
+const loaderStore = useAccountLayoutLoaderStore()
 
 const showMenu = ref(false)
 const themeSubmenu = ref(false)
 const $menu = ref<HTMLElement>()
 
 const theme = useNuxtApp().$theme
+const lastNameFirstLetter = computed(() => userStore.user?.lastName.slice(0, 1).toUpperCase())
 
 watch(showMenu, () => themeSubmenu.value = false)
 
 const logout = () => useAuth('default').logout()
+
+loaderStore.addPromise(new Promise<void>(resolve => {
+	onMounted(async () => {
+		await userStore.fetch()
+		resolve()
+	})
+}))
 
 </script>
 
