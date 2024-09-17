@@ -17,17 +17,27 @@ const isOn = defineModel<boolean>()
 <style scoped lang="scss">
 
 .ui-switch {
-	transition: background-color .2s ease;
+	transition: background-color .25s ease, box-shadow .25s ease;
 
 	.handle {
-		animation: .2s linear forwards;
+		animation: .25s cubic-bezier(.4,0,.2,1) forwards;
+		transition: margin-left .25s ease, width .25s ease;
+	}
+
+	&:active .handle {
+		width: 23px;
 	}
 
 	&.on {
-		background-color: theme('colors.black');
+		background-color: theme('colors.blue.500');
+		box-shadow: 0 0 18px -5px theme('colors.blue.500/6');
 
 		.handle {
 			animation-name: switch-on;
+		}
+
+		&:active .handle {
+			margin-left: -3px;
 		}
 	}
 
@@ -39,26 +49,22 @@ const isOn = defineModel<boolean>()
 }
 
 @keyframes switch-on {
-	0% {
-		transform: scaleX(1) translateX(0);
+	from {
+		transform: translateX(0);
 	}
-	50% {
-		transform: scaleX(1.3) translateX(8px);
-	}
-	100% {
-		transform: scaleX(1) translateX(16px);
+
+	to {
+		transform: translateX(16px);
 	}
 }
 
 @keyframes switch-off {
-	0% {
-		transform: scaleX(1) translateX(16px);
+	from {
+		transform: translateX(16px);
 	}
-	50% {
-		transform: scaleX(1.3) translateX(8px);
-	}
-	100% {
-		transform: scaleX(1) translateX(0);
+
+	to {
+		transform: translateX(0);
 	}
 }
 
