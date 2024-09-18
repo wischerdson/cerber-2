@@ -10,7 +10,7 @@
 			:fields="[
 				{
 					label: 'Хост',
-					value: 'h04.twinscom.ru',
+					value: 'somesite.ru',
 					shortDescription: '',
 					secure: false,
 					multiline: false,

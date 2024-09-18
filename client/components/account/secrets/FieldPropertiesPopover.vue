@@ -4,11 +4,7 @@
 			<h4 class="text-lg font-medium">Свойства поля</h4>
 			<form class="mt-6" @submit.prevent="emit('save', model)">
 				<div>
-					<InputText class="mt-1" v-model.lazy="model.label">
-						<template #label="{ id }">
-							<label class="text-sm text-gray-700" :for="id">Этикетка</label>
-						</template>
-					</InputText>
+					<UiInput v-model.lazy="model.label" label="Этикетка" />
 				</div>
 				<div class="mt-4">
 					<TextArea class="mt-1" :rows="1" allow-shrink v-model.lazy="shortDescription">
@@ -51,7 +47,7 @@
 
 <script setup lang="ts">
 
-import InputText from '~/components/ui/input/Text.vue'
+import UiInput from '~/components/ui/Input.vue'
 import TextArea from '~/components/ui/input/TextArea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import TheSwitch from '~/components/ui/Switch.vue'

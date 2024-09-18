@@ -2,11 +2,7 @@
 	<div>
 		<div class="space-y-2 mt-4">
 			<div>
-				<InputText class="mt-1" v-model="model.name">
-					<template #label="{ id }">
-						<label class="text-sm text-gray-700" :for="id">Название</label>
-					</template>
-				</InputText>
+				<UiInput v-model="model.name" label="Название" />
 			</div>
 			<div>
 				<HeightAnimation>
@@ -19,12 +15,12 @@
 						/>
 					</TransitionGroup>
 				</HeightAnimation>
-				<div class="bg-white mt-2 relative z-10">
+				<div class="bg-white mt-2 relative z-10 flex justify-center">
 					<TheClickable class="flex items-center h-9" tabindex="-1" @click="addField">
 						<div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center mr-2.5" >
 							<icon class="text-white" name="material-symbols:add-rounded" size="20px" />
 						</div>
-						<span class="text-sm text-gray-800">Добавить поле</span>
+						<span>Добавить поле</span>
 					</TheClickable>
 				</div>
 			</div>
@@ -50,7 +46,7 @@
 <script setup lang="ts">
 
 import type { SecretForCreate } from '~/repositories/adapters/secret-adapter'
-import InputText from '~/components/ui/input/Text.vue'
+import UiInput from '~/components/ui/Input.vue'
 import TextArea from '~/components/ui/input/TextArea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import FieldEditRow from '~/components/account/secrets/FieldEditRow.vue'

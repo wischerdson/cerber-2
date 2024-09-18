@@ -75,7 +75,7 @@ onMounted(() => {
 
 .switch-item {
 	transition: color .2s ease;
-	color: theme('colors.gray.600');
+	color: theme('colors.gray.800');
 
 	&.active {
 		color: #000;
@@ -93,7 +93,7 @@ onMounted(() => {
 
 html.dark {
 	.switch-item {
-		color: theme('colors.gray.400');
+		color: rgba(#fff, .7);
 
 		&.active {
 			color: #fff;
