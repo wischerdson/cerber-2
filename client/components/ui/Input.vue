@@ -39,7 +39,7 @@
 <script setup lang="ts">
 
 import type { FieldContext } from '~/composables/use-validation'
-import { computed, useAttrs, useId, withDefaults, defineProps } from 'vue'
+import { computed, useAttrs, useId } from 'vue'
 import IconExclamationMark from '~/assets/svg/Monochrome=exclamationmark.circle.fill.svg'
 import UiLabel from './Label.vue'
 import UiValidationError from './ValidationError.vue'
@@ -122,12 +122,13 @@ const classes = computed(() => {
 	border-radius: 8px;
 	border: 1px solid rgba(#000, .16);
 	display: block;
-	transition: .15s ease;
+	transition-duration: .15s;
+	transition-timing-function: ease;
 	transition-property: border-color, background-color;
 	width: 100%;
 
 	&:focus {
-		border-color: rgba(#000, 1);
+		border-color: #000;
 	}
 }
 
@@ -141,7 +142,7 @@ const classes = computed(() => {
 	border-color: rgba(#ef4444, .5);
 
 	&:focus {
-		border-color: rgba(#ef4444, 1);
+		border-color: #ef4444;
 	}
 }
 

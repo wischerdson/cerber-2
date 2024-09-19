@@ -180,11 +180,6 @@ a, label, button, input, select {
 	-webkit-appearance: none;
 }
 
-/* Prevent resizing textareas horizontally by default. */
-textarea {
-	resize: vertical;
-}
-
 ::-webkit-file-upload-button {
 	-webkit-appearance: button;
 	font: inherit;
@@ -200,7 +195,7 @@ img, svg, video, canvas, audio, iframe, embed, object {
 	vertical-align: middle; /* 2 */
 }
 
-button, input, optgroup, select, textarea {
+button, optgroup, select {
 	font-family: inherit;
 	font-size: 100%;
 	font-weight: inherit;

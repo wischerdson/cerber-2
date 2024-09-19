@@ -1,79 +1,96 @@
 <template>
-	<div class="form-group">
-		<label class="form-label" :for="$textarea?.id" v-if="!disableLabel">
-			<slot name="label"></slot>
-		</label>
-		<div class="relative">
+	<div>
+		<slot name="before" :id="id"></slot>
+		<UiLabel v-if="label" class="mb-1.5" :for="id">{{ label }}</UiLabel>
+		<div class="relative" v-if="validationField">
 			<textarea
-				class="form-control"
-				:class="[
-					{ invalid: validationField?.hasErrors() },
-					`size-${size}`
-				]"
-				type="text"
-				v-uid
+				:class="classes"
+				:id="id"
 				autocomplete="off"
-				v-bind="useAttrs()"
 				:rows="rows"
 				v-model="model"
-				v-on:[validationTouchEvent]="validationField && validationField.touch()"
 				ref="$textarea"
+				v-on:[validationTouchEvent]="validationField && validationField.touch()"
+				v-bind="useAttrs()"
 			></textarea>
 			<div class="absolute inset-0 pointer-events-none">
-				<slot name="layer-above-field"></slot>
 				<transition>
-					<div class="absolute right-0 inset-y-0 flex items-center px-2" v-if="validationField && validationField.hasErrors()">
-						<ExclamationMark class="text-[#bf4c44] w-5 h-5" />
+					<div class="ui-textarea__exclamation-mark-icon absolute right-0 inset-y-0 flex items-center px-2" v-if="validationField.hasErrors()">
+						<IconExclamationMark class="text-red-500 w-5 h-5" />
 					</div>
 				</transition>
 			</div>
 		</div>
-		<div class="form-text">
-			<slot name="post-scriptum"></slot>
-		</div>
-		<HeightAnimation>
-			<transition>
-				<div class="validation-error text-sm text-[#bf4c44] mt-1" v-if="validationField && validationField.hasErrors()">
-					<span class="tracking-wide font-light">{{ validationField.getError() }}</span>
-				</div>
-			</transition>
-		</HeightAnimation>
+		<textarea
+			v-else
+			:class="classes"
+			:id="id"
+			autocomplete="off"
+			:rows="rows"
+			v-model="model"
+			ref="$textarea"
+			v-bind="useAttrs()"
+		></textarea>
+		<UiValidationError class="mt-1" v-if="validationField" :show="validationField.hasErrors()">
+			{{ validationField.getError() }}
+		</UiValidationError>
+		<slot name="after" :id="id"></slot>
 	</div>
 </template>
 
 <script setup lang="ts">
 
-import type { TextareaHTMLAttributes } from 'vue'
 import type { FieldContext } from '~/composables/use-validation'
-import { useAttrs, ref } from '#imports'
-import ExclamationMark from '~/assets/svg/Monochrome=exclamationmark.circle.fill.svg'
-import HeightAnimation from '~/components/ui/HeightAnimation.vue'
+import { computed, useAttrs, useId, ref, onMounted } from 'vue'
+import IconExclamationMark from '~/assets/svg/Monochrome=exclamationmark.circle.fill.svg'
+import UiLabel from './Label.vue'
+import UiValidationError from './ValidationError.vue'
 
-interface Props extends /* @vue-ignore */ TextareaHTMLAttributes {
-	disableLabel?: boolean
+export interface InputProps {
+	allowShrink?: boolean
+	autoHeight?: boolean
+	invalid?: boolean
+	label?: string
+	nonStyled?: boolean
+	rows?: number
+	size?: 'base' | null
 	validationField?: FieldContext<any>
 	validationTouchEvent?: string
-	size?: 'base' | 'lg'
-	autoHeight?: boolean
-	allowShrink?: boolean
-	rows?: number
 }
-
-const $textarea = ref<HTMLElement>()
 
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(defineProps<Props>(), {
-	validationTouchEvent: 'change',
-	disableLabel: false,
-	size: 'base',
-	autoHeight: true,
+const id = useId()
+
+const props = withDefaults(defineProps<InputProps>(), {
 	allowShrink: false,
-	rows: 3
+	autoHeight: true,
+	invalid: false,
+	nonStyled: false,
+	rows: 3,
+	size: 'base',
+	validationTouchEvent: 'change'
 })
 
-const [model] = defineModel({
+const $textarea = ref<HTMLElement>()
+
+const setHeight = () => {
+	if (!$textarea.value) {
+		return
+	}
+
+	const tx = ($textarea.value as HTMLElement)
+
+	if (tx.scrollHeight > tx.offsetHeight || props.allowShrink) {
+		tx.style.height = '0'
+		tx.style.height = `${tx.scrollHeight + 2}px`
+	}
+}
+
+const model = defineModel({
 	set(value) {
+		setHeight()
+
 		if (props.validationField) {
 			props.validationField.setValue(value)
 		}
@@ -85,6 +102,87 @@ const [model] = defineModel({
 	}
 })
 
+const classes = computed(() => {
+	if (props.nonStyled) {
+		return 'ui-textarea--non-styled'
+	}
 
+	const list = ['ui-textarea']
+	props.size && list.push(`ui-textarea--${props.size}`)
+
+	if (props.invalid || props.validationField?.hasErrors()) {
+		list.push(`ui-textarea--invalid`)
+	}
+
+	return list
+})
+
+onMounted(() => setHeight())
 
 </script>
+
+<style lang="scss">
+
+.ui-textarea--non-styled {
+	appearance: none;
+	background-color: rgba(#000, 0);
+	background-image: none;
+	border-radius: 0;
+	border-width: 0;
+	color: inherit;
+	font-family: inherit;
+	font-size: 1rem;
+	font-weight: inherit;
+	letter-spacing: inherit;
+	line-height: inherit;
+	margin: 0;
+	padding: 0;
+	resize: vertical;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.ui-textarea {
+	@extend .ui-textarea--non-styled;
+
+	border-radius: 8px;
+	border: 1px solid rgba(#000, .16);
+	display: block;
+	line-height: 1.25;
+	transition-duration: .15s;
+	transition-timing-function: ease;
+	transition-property: border-color, background-color;
+	width: 100%;
+
+	&:focus {
+		border-color: #000;
+	}
+}
+
+.ui-textarea--base {
+	min-height: 36px;
+	padding: 7px 12px;
+}
+
+.ui-textarea--invalid {
+	background-color: rgba(#ef4444, .1);
+	border-color: rgba(#ef4444, .5);
+
+	&:focus {
+		border-color: #ef4444;
+	}
+}
+
+.ui-textarea__exclamation-mark-icon {
+	&.v-enter-active, &.v-leave-active {
+		transition: opacity .25s ease;
+	}
+
+	&.v-enter-from, &.v-leave-to {
+		opacity: 0;
+	}
+}
+
+</style>

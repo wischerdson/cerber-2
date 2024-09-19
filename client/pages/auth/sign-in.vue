@@ -15,8 +15,8 @@
 					<h1 class="text-2xl font-medium">Войти</h1>
 				</div>
 				<form class="px-8 mt-10 space-y-6" @submit.prevent="sendForm" autocomplete="off">
-					<TextField :validation-field="useField('login')" label="Логин" />
-					<TextField type="password" :validation-field="useField('password')" label="Пароль" />
+					<UiInput :validation-field="useField('login')" label="Логин" />
+					<UiInput type="password" :validation-field="useField('password')" label="Пароль" />
 
 					<div>
 						<TheAlert
@@ -47,7 +47,7 @@
 
 import CerberTextLogo from '~/assets/svg/cerber-text-logo.svg'
 import CerberLogo from '~/assets/svg/cerber-logo.svg'
-import TextField from '~/components/ui/Input.vue'
+import UiInput from '~/components/ui/Input.vue'
 import TheButton from '~/components/ui/Button.vue'
 import TheAlert from '~/components/ui/Alert.vue'
 import { useValidation } from '~/composables/use-validation'

@@ -33,6 +33,7 @@ withDefaults(defineProps<{ borderRadius?: number }>(), {
 	mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#862e2e 0 0);
 	-webkit-mask-composite: xor;
 	mask-composite: exclude;
+	pointer-events: none;
 }
 
 html.dark .content-tile {

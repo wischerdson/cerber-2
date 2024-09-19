@@ -1,5 +1,5 @@
 <template>
-	<InputText
+	<UiInput
 		v-model="model"
 		type="tel"
 	/>
@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 
-import InputText from './Text.vue'
+import UiInput from './Input.vue'
 import { AsYouType, formatIncompletePhoneNumber } from 'libphonenumber-js'
 
 const asYouType = new AsYouType('RU')

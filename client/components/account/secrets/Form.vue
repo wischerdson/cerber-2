@@ -27,11 +27,7 @@
 		</div>
 
 		<div class="mt-4">
-			<TextArea class="mt-1" v-model="model.notes">
-				<template #label="{ id }">
-					<label class="text-sm text-gray-700" :for="id">Заметки</label>
-				</template>
-			</TextArea>
+			<UiTextarea v-model="model.notes" label="Заметки" />
 		</div>
 
 		<div class="flex items-center justify-end mt-4 space-x-4">
@@ -47,7 +43,7 @@
 
 import type { SecretForCreate } from '~/repositories/adapters/secret-adapter'
 import UiInput from '~/components/ui/Input.vue'
-import TextArea from '~/components/ui/input/TextArea.vue'
+import UiTextarea from '~/components/ui/Textarea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import FieldEditRow from '~/components/account/secrets/FieldEditRow.vue'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
