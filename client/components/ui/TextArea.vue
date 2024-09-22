@@ -114,6 +114,10 @@ const classes = computed(() => {
 		list.push(`ui-textarea--invalid`)
 	}
 
+	if (props.allowShrink) {
+		list.push(`ui-textarea--non-resizable`)
+	}
+
 	return list
 })
 
@@ -159,6 +163,10 @@ onMounted(() => setHeight())
 	&:focus {
 		border-color: #000;
 	}
+}
+
+.ui-textarea--non-resizable {
+	resize: none;
 }
 
 .ui-textarea--base {

@@ -1,21 +1,26 @@
 <template>
 	<div>
-		<div class="space-y-2 mt-4">
+		<div class="mt-4">
 			<div>
 				<UiInput v-model="model.name" label="Название" />
 			</div>
 			<div>
 				<HeightAnimation>
-					<TransitionGroup class="table w-full relative" tag="div" name="field-list">
+					<TransitionGroup class="w-full relative" tag="div" name="field-list">
 						<FieldEditRow
+							class="mt-5"
 							v-for="(field, idx) in model.fields"
 							:key="field.clientCode"
 							v-model="model.fields[idx]"
+							:first="idx === 0"
+							:last="idx === model.fields.length - 1"
 							@remove="model.fields.splice(idx, 1)"
+							@up="swapFields(idx, -1)"
+							@down="swapFields(idx, 1)"
 						/>
 					</TransitionGroup>
 				</HeightAnimation>
-				<div class="bg-white mt-2 relative z-10 flex justify-center">
+				<div class="bg-white mt-4 relative z-10 flex justify-center">
 					<TheClickable class="flex items-center h-9" tabindex="-1" @click="addField">
 						<div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center mr-2.5" >
 							<icon class="text-white" name="material-symbols:add-rounded" size="20px" />
@@ -68,9 +73,14 @@ const addField = () => model.fields.push({
 	multiline: false,
 	value: '',
 	shortDescription: null,
-	sort: model.fields.length,
 	clientCode: uid()
 })
+
+const swapFields = (idx: number, direction: -1 | 1) => {
+	const tmp = model.fields[idx]
+	model.fields[idx] = model.fields[idx + direction]
+	model.fields[idx + direction] = tmp
+}
 
 </script>
 
@@ -83,19 +93,15 @@ const addField = () => model.fields.push({
 }
 
 .field-list-leave-active {
-	transition: transform .3s ease;
-}
-
-.field-list-enter-from {
-	opacity: 0;
-	transform: translateY(-20px);
-}
-
-.field-list-leave-active {
 	position: absolute;
-	z-index: 0;
-	left: 0;
-	right: 0;
+	width: 100%;
+	transition: transform .3s ease, opacity .3s ease;
+}
+
+.field-list-enter-from,
+.field-list-leave-to {
+	opacity: 0;
+	transform: scale(.8);
 }
 
 </style>

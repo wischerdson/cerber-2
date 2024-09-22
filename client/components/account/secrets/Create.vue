@@ -1,6 +1,11 @@
 <template>
 	<div>
-		<h2 class="font-bold text-gray-850 text-1.5xl tracking-wide">Новый доступ</h2>
+		<div class="flex items-center space-x-3">
+			<div class="bg-black/5 w-9 h-9 flex items-center justify-center rounded-lg">
+				<span class="text-2xl font-medium">?</span>
+			</div>
+			<h2 class="font-bold text-gray-850 text-1.5xl tracking-wide">Новый доступ</h2>
+		</div>
 		<TheForm
 			class="mt-6"
 			name="FTP"
@@ -14,7 +19,6 @@
 					shortDescription: '',
 					secure: false,
 					multiline: false,
-					sort: 5,
 					clientCode: 'hehe1'
 				},
 				{
@@ -22,8 +26,7 @@
 					value: 'root',
 					shortDescription: '',
 					secure: false,
-					multiline: false,
-					sort: 5,
+					multiline: true,
 					clientCode: 'hehe2'
 				},
 				{
@@ -32,7 +35,6 @@
 					shortDescription: 'Какое-то короткое описание для поля',
 					secure: true,
 					multiline: false,
-					sort: 5,
 					clientCode: 'hehe3'
 				}
 			]"

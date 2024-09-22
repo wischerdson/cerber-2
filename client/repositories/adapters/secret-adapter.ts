@@ -38,7 +38,6 @@ export interface SecretField {
 	value: string
 	secure: boolean
 	multiline: boolean
-	sort: number
 	clientCode: string
 }
 
@@ -58,14 +57,14 @@ export interface ServerSecretFieldForCreate extends Omit<ServerSecretField, 'id'
 
 }
 
-export const clientToServerSecretFieldForCreate = (field: SecretFieldForCreate): ServerSecretFieldForCreate => {
+export const clientToServerSecretFieldForCreate = (field: SecretFieldForCreate, idx: number): ServerSecretFieldForCreate => {
 	return {
 		label: field.label,
 		short_description: field.shortDescription,
 		value: field.value,
 		secure: field.secure,
 		multiline: field.multiline,
-		sort: field.sort
+		sort: idx
 	}
 }
 
@@ -86,7 +85,6 @@ export const serverToClientSecretField = (field: ServerSecretField): SecretField
 		value: field.value,
 		secure: field.secure,
 		multiline: field.multiline,
-		sort: field.sort,
 		clientCode: uid()
 	}
 }

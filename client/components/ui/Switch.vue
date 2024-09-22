@@ -29,8 +29,7 @@ const isOn = defineModel<boolean>()
 	}
 
 	&.on {
-		background-color: theme('colors.blue.500');
-		box-shadow: 0 0 18px -5px theme('colors.blue.500/6');
+		background-color: #000;
 
 		.handle {
 			animation-name: switch-on;
