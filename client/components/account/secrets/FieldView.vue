@@ -145,8 +145,6 @@ const copy = () => {
 	}
 
 	&:hover {
-
-
 		svg {
 			color: theme('colors.gray.700');
 		}

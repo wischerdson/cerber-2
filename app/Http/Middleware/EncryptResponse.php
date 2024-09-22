@@ -19,6 +19,10 @@ class EncryptResponse
 	{
 		$response = $next($request);
 
+		if (config('app.disable_http_encryption')) {
+			return $response;
+		}
+
 		$encrypter = $this->getRequestEncrypter();
 
 		$response->setContent(

@@ -48,7 +48,12 @@ export const encryptRequestDecorator = <T extends AppRequest>(request: T) => {
 	const decoratedRequest = request as DecoratedRequest<T>
 
 	decoratedRequest.shouldEncrypt = () => {
-		const { $encryptor } = useNuxtApp()
+		const { $encryptor, $config } = useNuxtApp()
+
+		if ($config.public.disableHttpEncryption) {
+			return decoratedRequest
+		}
+
 		const originalSend = request.send
 
 		decoratedRequest.send = () => {

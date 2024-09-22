@@ -185,4 +185,5 @@ return [
 		// 'Example' => App\Facades\Example::class,
 	])->toArray(),
 
+	'disable_http_encryption' => env('APP_DISABLE_HTTP_ENCRYPTION', false)
 ];

@@ -21,7 +21,8 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			storageBaseUrl: process.env.STORAGE_URL,
-			apiBaseUrl: process.env.CLIENT_API_URL
+			apiBaseUrl: process.env.CLIENT_API_URL,
+			disableHttpEncryption: process.env.DISABLE_HTTP_ENCRYPTION
 		},
 		apiBaseUrl: process.env.SERVER_API_URL
 	},
