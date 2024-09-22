@@ -51,6 +51,13 @@ export default defineNuxtConfig({
 	],
 
 	vite: {
-		plugins: [svgLoader({ defaultImport: 'component' })]
+		plugins: [svgLoader({ defaultImport: 'component' })],
+		css: {
+			preprocessorOptions: {
+				scss: {
+					api: 'modern'
+				}
+			}
+		}
 	}
 })

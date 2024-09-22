@@ -1,15 +1,14 @@
 <template>
 	<div class="search relative" :class="{ focused }">
-		<input
-			class="search-field pl-8 pr-7 h-10"
-			type="text"
-			autocomplete="off"
+		<UiInput
+			class="search-input block !pl-8 !pr-7 h-10"
+			non-styled
 			placeholder="Поиск"
 			v-model="searchQuery"
-			ref="$input"
+			ref="input"
 			@focus="focused = true"
 			@blur="focused = false"
-		>
+		/>
 		<div class="absolute inset-0 pointer-events-none">
 			<div class="h-full flex justify-between items-center pl-2 pr-4">
 				<icon class="text-black/60 dark:text-white/50" size="18px" name="ph:magnifying-glass" />
@@ -30,17 +29,22 @@
 <script setup lang="ts">
 
 import Clickable from '~/components/ui/Clickable.vue'
-import { ref, computed, onMounted, onUnmounted } from '#imports'
-import { useTypingDetector } from '~/composables/use-typing-detector';
+import UiInput from '~/components/ui/Input.vue'
+import { ref, computed, onMounted, onUnmounted, useTemplateRef } from '#imports'
+import { useTypingDetector } from '~/composables/use-typing-detector'
 
 const searchQuery = ref('')
 const showClearBtn = computed(() => !!searchQuery.value.length)
 const focused = ref(false)
-const $input = ref<HTMLInputElement>()
+const uiInput = useTemplateRef('input')
 let stopTypingDetection: () => void
 
 onMounted(() => {
-	stopTypingDetection = useTypingDetector(() => $input.value?.focus())
+	const $input = uiInput.value?.$el.querySelector('input') as HTMLElement
+
+	if ($input) {
+		stopTypingDetection = useTypingDetector(() => $input.focus())
+	}
 })
 
 onUnmounted(() => stopTypingDetection())
@@ -77,7 +81,7 @@ onUnmounted(() => stopTypingDetection())
 	}
 }
 
-.search-field {
+:deep(.search-input) {
 	width: 100%;
 	border-radius: inherit;
 }

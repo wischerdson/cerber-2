@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 
-import { useAttrs, defineProps } from 'vue'
+import { useAttrs } from 'vue'
 import UiHeightAnimation from './HeightAnimation.vue'
 
 export interface ValidationErrorProps {

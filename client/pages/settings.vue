@@ -38,6 +38,8 @@ definePageMeta({ middleware: 'auth', layout: 'account' })
 
 <style lang="scss" scoped>
 
+@use "sass:color";
+
 .menu-item {
 	@apply dark:text-gray-300 text-gray-600 flex w-full h-9 rounded-md items-center px-4;
 
@@ -53,7 +55,7 @@ definePageMeta({ middleware: 'auth', layout: 'account' })
 html.dark {
 	.menu-item {
 		&:hover {
-			background-color: darken(#fff, 85%);
+			background-color: color.scale(#fff, $lightness: -85%);
 		}
 	}
 }

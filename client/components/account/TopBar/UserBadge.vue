@@ -126,6 +126,8 @@ loaderStore.addPromise(new Promise<void>(resolve => {
 
 <style lang="scss" scoped>
 
+@use "sass:color";
+
 .user-pill {
 	transition: background-color .15s ease;
 
@@ -137,7 +139,7 @@ loaderStore.addPromise(new Promise<void>(resolve => {
 html.dark {
 	.user-pill {
 		&:hover, &.menu-is-shown {
-			background-color: darken(#fff, 91%);
+			background-color: color.scale(#fff, $lightness: -85%);
 		}
 	}
 }
@@ -164,10 +166,10 @@ html.dark {
 
 html.dark {
 	.menu {
-		background-color: darken(#fff, 91%);
+		background-color: color.scale(#fff, $lightness: -91%);
 
 		.arrow-top {
-			color: darken(#fff, 91%);
+			color: color.scale(#fff, $lightness: -91%);
 		}
 	}
 }
@@ -189,7 +191,7 @@ html.dark {
 html.dark {
 	.menu-item {
 		&:hover {
-			background-color: darken(#fff, 85%);
+			background-color: color.scale(#fff, $lightness: -85%);
 		}
 	}
 }
