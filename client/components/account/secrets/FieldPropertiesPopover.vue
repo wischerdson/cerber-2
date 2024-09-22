@@ -13,14 +13,18 @@
 				<div class="mt-6 space-y-4">
 					<div class="flex items-center justify-between">
 						<div class="flex items-center space-x-2">
-							<LockIcon class="w-3 ml-1 mr-1.5 text-gray-500" />
+							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] bg-green-600/10">
+								<LockIcon class="w-2.5 text-green-600" />
+							</div>
 							<div class="tracking-wide">Защищенное</div>
 						</div>
 						<UiSwitch v-model="model.secure" />
 					</div>
 					<div class="flex items-center justify-between">
 						<div class="flex items-center space-x-2">
-							<icon class="text-gray-500" name="material-symbols:wrap-text-rounded" size="22px" />
+							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] bg-gray-600/10">
+								<icon class="text-black" name="material-symbols:wrap-text-rounded" size="20px" />
+							</div>
 							<div class="tracking-wide">Многострочное</div>
 						</div>
 						<UiSwitch v-model="model.multiline" />

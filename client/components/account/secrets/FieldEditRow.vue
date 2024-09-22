@@ -1,73 +1,94 @@
 <template>
-	<div class="table-row">
-		<div class="w-5 table-cell align-middle py-2">
-			<div class="-ml-0.5 inline-block" tabindex="-1">
-				<icon class="text-gray-300" name="material-symbols:drag-handle-rounded" size="24px" />
-			</div>
-		</div>
-
-		<div class="table-cell align-middle py-2">
-			<div class="h-7 flex items-center justify-end">
-				<div class="h-full relative">
-					<TheClickable
-						class="field-properties-btn h-full rounded-md px-1.5"
-						title="Изменить свойства поля"
-						tabindex="-1"
-						@click="showPopover = true"
-					>
-						<span class="text-sm font-medium text-gray-700 whitespace-nowrap">{{ model.label }}</span>
-					</TheClickable>
-
-					<transition :duration="500" @after-leave="onPopoverClosed">
-						<FieldPropertiesPopover
-							class="z-20"
-							v-if="showPopover"
-							v-click-outside="() => showPopover = false"
-							v-model="model"
-							@remove="remove"
-						/>
-					</transition>
-				</div>
-
-				<icon
-					class="text-gray-500 -ml-0.5"
-					name="material-symbols:chevron-right-rounded"
-					size="20px"
+	<div>
+		<div class="relative">
+			<transition :duration="500" @after-leave="onPopoverClosed">
+				<FieldPropertiesPopover
+					class="z-20"
+					v-if="showPopover"
+					v-click-outside="() => showPopover = false"
+					v-model="model"
+					@remove="remove"
 				/>
-			</div>
-		</div>
+			</transition>
+			<component :is="model.multiline ? UiTextarea : UiInput">
+				<template #before="{ id }">
+					<div class="flex items-end mb-1.5">
+						<div class="flex items-center gap-1.5">
 
-		<div class="w-full table-cell align-middle py-2">
-			<div class="relative w-full">
-				<InputText class="!pr-8" v-model="model.value" />
-				<div class="absolute top-1 left-1 pointer-events-none" v-if="model.secure">
-					<LockIcon class="w-1.5 text-gray-400" />
-				</div>
-				<div class="absolute inset-y-0 right-0 flex items-center pr-2 z-10">
-					<TheClickable class="generate-btn w-6 h-6 flex items-center justify-center rounded-md" title="Сгенерировать" tabindex="-1">
-						<icon class="text-gray-500" name="material-symbols:magic-button" />
-					</TheClickable>
-				</div>
+							<UiClickable
+								class="button-next-to-label flex items-center justify-center w-[22px] h-[22px] rounded-[5px] bg-black/5 text-red-500"
+								title="Удалить поле"
+								@click="emit('remove')"
+							>
+								<icon name="material-symbols:close-rounded" size="18px" />
+							</UiClickable>
+							<UiClickable
+								class="button-next-to-label flex items-center justify-center w-[22px] h-[22px] rounded-[5px] bg-black/5"
+								title="Изменить свойства поля"
+								@click="showPopover = true"
+							>
+								<PencilIcon class="w-3" />
+							</UiClickable>
+							<UiLabel :for="id">{{ model.label }}</UiLabel>
+							<LockIcon class="w-2 pt-px text-green-700" v-if="model.secure" />
+						</div>
+						<div class="flex ml-auto">
+							<UiClickable
+								class="change-position-button flex items-center justify-center w-5 h-5 rounded-[5px] text-black/50"
+								:class="{ disabled: first }"
+								title="Передвинуть наверх"
+								@click="emit('up')"
+							>
+								<icon name="material-symbols:keyboard-arrow-up-rounded" size="20px" />
+							</UiClickable>
+							<UiClickable
+								class="change-position-button flex items-center justify-center w-5 h-5 rounded-[5px] text-black/50"
+								:class="{ disabled: last }"
+								title="Передвинуть вниз"
+								@click="emit('down')"
+							>
+								<icon name="material-symbols:keyboard-arrow-down-rounded" size="20px" />
+							</UiClickable>
+						</div>
+					</div>
+				</template>
+			</component>
+
+			<div class="absolute top-0 right-0 flex items-center mt-7 pr-2 pt-1.5 z-10">
+				<UiClickable class="generate-btn w-6 h-6 flex items-center justify-center rounded-md" title="Сгенерировать" tabindex="-1">
+					<icon class="text-gray-500" name="material-symbols:magic-button" />
+				</UiClickable>
 			</div>
 		</div>
+		<p class="text-xs mt-1 tracking-wide text-gray-500 leading-snug" v-if="model.shortDescription">
+			{{ model.shortDescription }}
+		</p>
 	</div>
 </template>
 
 <script setup lang="ts">
 
 import type { FieldProperties } from '~/components/account/secrets/FieldPropertiesPopover.vue'
-import InputText from '~/components/ui/input/Text.vue'
-import TheClickable from '~/components/ui/Clickable.vue'
+import UiInput from '~/components/ui/Input.vue'
+import UiTextarea from '~/components/ui/Textarea.vue'
+import UiLabel from '~/components/ui/Label.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
 import LockIcon from '~/assets/svg/lock.svg'
+import PencilIcon from '~/assets/svg/Monochrome=applepencil.gen1.svg'
 import FieldPropertiesPopover from '~/components/account/secrets/FieldPropertiesPopover.vue'
 import { ref } from 'vue'
 
 export type FieldModel = FieldProperties & {
 	value: string
-	sort: number
 }
 
-const emit = defineEmits<{ (e: 'remove'): void }>()
+const emit = defineEmits<{
+	(e: 'remove'): void
+	(e: 'up'): void
+	(e: 'down'): void
+}>()
+
+defineProps<{ first: boolean, last: boolean }>()
 
 const model = defineModel<FieldModel>({ required: true })
 
@@ -86,14 +107,34 @@ const onPopoverClosed = () => shouldRemove && emit('remove')
 
 <style lang="scss" scoped>
 
-.field-properties-btn,
 .generate-btn {
+	backdrop-filter: blur(4px);
+	background-color: rgba(#fff, .7);
+
 	&:hover {
 		background-color: #eaeaea;
 
 		span, svg {
 			color: theme('colors.black');
 		}
+	}
+}
+
+.button-next-to-label {
+	&:hover {
+		background-color: rgba(#000, .1);
+	}
+}
+
+.change-position-button {
+	&:not(.disabled):hover {
+		background-color: rgba(#000, .05);
+		color: #000;
+	}
+
+	&.disabled {
+		pointer-events: none;
+		color: rgba(#000, .15);
 	}
 }
 
