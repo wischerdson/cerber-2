@@ -10,20 +10,19 @@
 					@remove="remove"
 				/>
 			</transition>
-			<component :is="model.multiline ? UiTextarea : UiInput">
+			<component :is="model.multiline ? UiTextarea : UiInput" v-model="model.value">
 				<template #before="{ id }">
 					<div class="flex items-end mb-1.5">
 						<div class="flex items-center gap-1.5">
-
 							<UiClickable
-								class="button-next-to-label flex items-center justify-center w-[22px] h-[22px] rounded-[5px] bg-black/5 text-red-500"
+								class="button-next-to-label flex items-center justify-center w-[22px] h-[22px] rounded-[5px] bg-black/5 dark:bg-white/10 text-red-500"
 								title="Удалить поле"
 								@click="emit('remove')"
 							>
 								<icon name="material-symbols:close-rounded" size="18px" />
 							</UiClickable>
 							<UiClickable
-								class="button-next-to-label flex items-center justify-center w-[22px] h-[22px] rounded-[5px] bg-black/5"
+								class="button-next-to-label flex items-center justify-center w-[22px] h-[22px] rounded-[5px] bg-black/5 dark:bg-white/10"
 								title="Изменить свойства поля"
 								@click="showPopover = true"
 							>
@@ -34,7 +33,7 @@
 						</div>
 						<div class="flex ml-auto">
 							<UiClickable
-								class="change-position-button flex items-center justify-center w-5 h-5 rounded-[5px] text-black/50"
+								class="change-position-button flex items-center justify-center w-5 h-5 rounded-[5px] text-black/50 dark:text-white/50"
 								:class="{ disabled: first }"
 								title="Передвинуть наверх"
 								@click="emit('up')"
@@ -42,7 +41,7 @@
 								<icon name="material-symbols:keyboard-arrow-up-rounded" size="20px" />
 							</UiClickable>
 							<UiClickable
-								class="change-position-button flex items-center justify-center w-5 h-5 rounded-[5px] text-black/50"
+								class="change-position-button flex items-center justify-center w-5 h-5 rounded-[5px] text-black/50 dark:text-white/50"
 								:class="{ disabled: last }"
 								title="Передвинуть вниз"
 								@click="emit('down')"
@@ -54,7 +53,7 @@
 				</template>
 			</component>
 
-			<div class="absolute top-0 right-0 flex items-center mt-7 pr-2 pt-1.5 z-10">
+			<div class="absolute top-0 right-0 flex items-center mt-7 pr-1.5 pt-1.5 z-10">
 				<UiClickable class="generate-btn w-6 h-6 flex items-center justify-center rounded-md" title="Сгенерировать" tabindex="-1">
 					<icon class="text-gray-500" name="material-symbols:magic-button" />
 				</UiClickable>
@@ -126,6 +125,27 @@ const onPopoverClosed = () => shouldRemove && emit('remove')
 	}
 }
 
+html.dark {
+	.generate-btn {
+		backdrop-filter: blur(4px);
+		background-color: rgba(#000, .5);
+
+		&:hover {
+			background-color: rgba(#fff, .15);
+
+			span, svg {
+				color: theme('colors.white');
+			}
+		}
+	}
+
+	.button-next-to-label {
+		&:hover {
+			background-color: rgba(#fff, .2);
+		}
+	}
+}
+
 .change-position-button {
 	&:not(.disabled):hover {
 		background-color: rgba(#000, .05);
@@ -135,6 +155,19 @@ const onPopoverClosed = () => shouldRemove && emit('remove')
 	&.disabled {
 		pointer-events: none;
 		color: rgba(#000, .15);
+	}
+}
+
+html.dark {
+	.change-position-button {
+		&:not(.disabled):hover {
+			background-color: rgba(#fff, .1);
+			color: #fff;
+		}
+
+		&.disabled {
+			color: rgba(#fff, .15);
+		}
 	}
 }
 

@@ -193,4 +193,12 @@ onMounted(() => setHeight())
 	}
 }
 
+html.dark .ui-textarea {
+	border: 1px solid rgba(#fff, .2);
+
+	&:focus {
+		border-color: rgba(#fff, .5);
+	}
+}
+
 </style>

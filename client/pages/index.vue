@@ -27,7 +27,7 @@
 			</ContentTile>
 
 			<ContentTile class="w-full" v-if="secretsStore.mode === 'create'">
-				<SecretCreate />
+				<SecretCreate @cancel="secretsStore.resetMode()" />
 			</ContentTile>
 			<ContentTile class="w-full" v-if="secretsStore.mode === 'view'">
 				<SecretView :secret="secretsStore.secretForView" v-if="secretsStore.secretForView" />

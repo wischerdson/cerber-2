@@ -29,10 +29,9 @@ class SecretController extends Controller
 		foreach (array_values($request->fields) as $i => $field) {
 			$fieldModel = new SecretField(
 				collect($field)
-					->only('label', 'short_description', 'multiline', 'secure')
+					->only('label', 'short_description', 'multiline', 'secure', 'sort')
 					->all()
 			);
-			$fieldModel->sort = ($i + 1)*10;
 			$fieldModel->value = $field['value'];
 
 			$secret->fields()->save($fieldModel);

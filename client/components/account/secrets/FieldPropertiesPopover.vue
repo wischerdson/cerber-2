@@ -1,6 +1,6 @@
 <template>
 	<div class="popover absolute top-5 left-0 rounded-2xl mt-2">
-		<div class="popover-inner-content p-5">
+		<div class="popover-inner-content p-5 pb-7">
 			<h4 class="text-lg font-medium">Свойства поля</h4>
 			<form class="mt-6" @submit.prevent="emit('save', model)">
 				<div>
@@ -13,8 +13,8 @@
 				<div class="mt-6 space-y-4">
 					<div class="flex items-center justify-between">
 						<div class="flex items-center space-x-2">
-							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] bg-green-600/10">
-								<LockIcon class="w-2.5 text-green-600" />
+							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] bg-gradient-to-b from-green-500 to-green-600">
+								<LockIcon class="w-2.5 text-white" />
 							</div>
 							<div class="tracking-wide">Защищенное</div>
 						</div>
@@ -22,8 +22,8 @@
 					</div>
 					<div class="flex items-center justify-between">
 						<div class="flex items-center space-x-2">
-							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] bg-gray-600/10">
-								<icon class="text-black" name="material-symbols:wrap-text-rounded" size="20px" />
+							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] bg-gradient-to-b from-blue-500 to-blue-600">
+								<icon class="text-white" name="material-symbols:wrap-text-rounded" size="20px" />
 							</div>
 							<div class="tracking-wide">Многострочное</div>
 						</div>
@@ -67,14 +67,10 @@ const shortDescription = computed({
 <style scoped lang="scss">
 
 .popover {
-	width: 320px;
+	width: 380px;
 	box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.1);
 	background-color: #fff;
 
-	@supports (backdrop-filter: blur(18px)) {
-		background-color: rgba(#fff, 0.75);
-		backdrop-filter: blur(18px) saturate(1.5);
-	}
 
 	&.v-enter-active {
 		transform-origin: top left;

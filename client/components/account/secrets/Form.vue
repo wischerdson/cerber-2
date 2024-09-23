@@ -20,7 +20,7 @@
 						/>
 					</TransitionGroup>
 				</HeightAnimation>
-				<div class="bg-white mt-4 relative z-10 flex justify-center">
+				<div class="mt-4 relative z-10 flex justify-center">
 					<TheClickable class="flex items-center h-9" tabindex="-1" @click="addField">
 						<div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center mr-2.5" >
 							<icon class="text-white" name="material-symbols:add-rounded" size="20px" />
@@ -34,13 +34,6 @@
 		<div class="mt-4">
 			<UiTextarea v-model="model.notes" label="Заметки" />
 		</div>
-
-		<div class="flex items-center justify-end mt-4 space-x-4">
-			<TheClickable class="h-8">
-				<span class="text-gray-700 text-sm font-medium">Отменить</span>
-			</TheClickable>
-			<TheClickable class="h-8 bg-blue-100 text-blue-800 px-4 rounded-md text-sm" @click="emit('save', toRaw(model))">Сохранить</TheClickable>
-		</div>
 	</div>
 </template>
 
@@ -52,22 +45,13 @@ import UiTextarea from '~/components/ui/Textarea.vue'
 import TheClickable from '~/components/ui/Clickable.vue'
 import FieldEditRow from '~/components/account/secrets/FieldEditRow.vue'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
-import { reactive, toRaw } from 'vue'
 import { uid } from '~/utils/helpers'
 
-export interface Props extends SecretForCreate {
+const model = defineModel<SecretForCreate>({ required: true })
 
-}
+let fieldsCount = model.value.fields.length
 
-const emit = defineEmits<{ (e: 'save', model: Props): void }>()
-
-const props = defineProps<Props>()
-
-const model = reactive<Props>(Object.assign({}, props))
-
-let fieldsCount = model.fields.length
-
-const addField = () => model.fields.push({
+const addField = () => model.value.fields.push({
 	label: `Поле #${++fieldsCount}`,
 	secure: false,
 	multiline: false,
@@ -77,9 +61,9 @@ const addField = () => model.fields.push({
 })
 
 const swapFields = (idx: number, direction: -1 | 1) => {
-	const tmp = model.fields[idx]
-	model.fields[idx] = model.fields[idx + direction]
-	model.fields[idx + direction] = tmp
+	const tmp = model.value.fields[idx]
+	model.value.fields[idx] = model.value.fields[idx + direction]
+	model.value.fields[idx + direction] = tmp
 }
 
 </script>
@@ -90,6 +74,14 @@ const swapFields = (idx: number, direction: -1 | 1) => {
 .field-list-enter-active {
 	transition: transform .3s ease, opacity .3s ease;
 	background-color: #fff;
+}
+
+html.dark {
+	.field-list-move,
+	.field-list-enter-active {
+		background-color: rgba(#000, 0);
+		backdrop-filter: blur(20px);
+	}
 }
 
 .field-list-leave-active {

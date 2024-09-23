@@ -8,9 +8,13 @@
 
 .ui-label {
 	-webkit-tap-highlight-color: rgba(#000, 0);
-	color: rgba(#000, .55);
+	color: rgba(#000, .65);
 	display: block;
 	font-size: .875rem;
+}
+
+html.dark .ui-label {
+	color: rgba(#fff, .65);
 }
 
 </style>

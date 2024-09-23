@@ -132,6 +132,14 @@ const classes = computed(() => {
 	}
 }
 
+html.dark .ui-input {
+	border: 1px solid rgba(#fff, .2);
+
+	&:focus {
+		border-color: rgba(#fff, .5);
+	}
+}
+
 .ui-input--base {
 	height: 36px;
 	padding: 0 12px;

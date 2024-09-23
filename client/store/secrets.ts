@@ -10,6 +10,8 @@ export const useSecretsStore = defineStore('secrets', () => {
 
 	const setModeCreate = () => mode.value = 'create'
 
+	const resetMode = () => mode.value = null
+
 	const viewSecret = (secret: Secret) => {
 		secretForView.value = secret
 		mode.value = 'view'
@@ -27,6 +29,6 @@ export const useSecretsStore = defineStore('secrets', () => {
 		mode: computed(() => mode.value),
 		secrets: computed(() => secrets.value),
 		secretForView: computed(() => secretForView.value),
-		setModeCreate, viewSecret, unsetMode, fetch
+		setModeCreate, viewSecret, resetMode, unsetMode, fetch
 	}
 })
