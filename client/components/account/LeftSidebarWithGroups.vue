@@ -4,49 +4,68 @@
 			<Search />
 		</div>
 		<div class="mt-4">
-			<TheClickable class="menu-item">
+			<UiClickable class="menu-item">
 				<ClockIcon class="mr-2 h-4 w-4" />
 				<span>Недавние</span>
-			</TheClickable>
-			<TheClickable class="menu-item">
+			</UiClickable>
+			<UiClickable class="menu-item">
 				<icon class="mr-1 -ml-0.5 -mt-0.5" size="22px" name="material-symbols:star-rounded" />
 				<span>Избранные</span>
-			</TheClickable>
+			</UiClickable>
 		</div>
-		<hr class="mx-4 mt-4 border-gray-150 dark:border-gray-850">
+		<hr class="mt-4 border-gray-150 dark:border-gray-850">
 		<div class="mt-4 pb-4">
 			<div class="flex items-center justify-between mb-2">
 				<h2 class="text-sm text-gray-400 dark:text-gray-750">Группы</h2>
-				<TheClickable class="add-group-btn rounded-md text-gray-500" title="Добавить новую группу">
+				<UiClickable class="add-group-btn rounded-md text-gray-500" title="Добавить новую группу">
 					<icon size="24px" name="material-symbols:add-rounded" />
-				</TheClickable>
+				</UiClickable>
 			</div>
-			<TheClickable class="menu-item">
-				<icon
-					class="chevron-right text-gray-500 -ml-2"
-					name="material-symbols:chevron-right-rounded"
-					size="22px"
-				/>
-				<span>Какая-то группа</span>
-				<!-- <icon class="ml-auto" size="18px" name="svg-spinners:90-ring-with-bg" /> -->
-			</TheClickable>
-			<TheClickable class="menu-item">
-				<icon
-					class="chevron-right text-gray-500 -ml-2"
-					name="material-symbols:chevron-right-rounded"
-					size="22px"
-				/>
-				<span>Lorem ipsum dolor sit</span>
-			</TheClickable>
+
+			<ul class="grid grid-cols-3 gap-2.5 gap-y-5">
+				<li>
+					<SecretGroup name="Название группы" :preview="[
+						['letter', 'ftp'],
+						['img', 'https://panteric.ru/files/gallery/58/apple_180x180/panteric_1717161911.png'],
+						['img', 'https://www.apple.com/favicon.ico'],
+						['letter', 'ssh'],
+						['letter', 'ftp'],
+						['letter', 'ftp'],
+						['img', 'https://odekolon-shop.ru/image/catalog/4-100x100.png'],
+					]"/>
+				</li>
+				<li>
+					<SecretGroup name="Lorem ipsum dolor sit" :preview="[
+						['letter', 'А'],
+						['img', 'https://panteric.ru/files/gallery/58/apple_180x180/panteric_1717161911.png'],
+					]"/>
+				</li>
+				<li>
+					<SecretGroup name="Lorem ipsum, dolor sit amet consectetur" :preview="[
+						['img', 'https://odekolon-shop.ru/image/catalog/4-100x100.png'],
+						['img', 'https://panteric.ru/files/gallery/58/apple_180x180/panteric_1717161911.png'],
+						['img', 'https://www.apple.com/favicon.ico'],
+					]"/>
+				</li>
+				<li>
+					<SecretGroup name="Deserve" :preview="[
+						['letter', 'ftp'],
+						['letter', 'ssh'],
+						['letter', 'ftp'],
+						['letter', 'ftp'],
+					]"/>
+				</li>
+			</ul>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 
-import TheClickable from '~/components/ui/Clickable.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
 import Search from '~/components/account/Search.vue'
 import ClockIcon from '~/assets/svg/Monochrome=clock.fill.svg'
+import SecretGroup from './secrets/SecretGroup.vue'
 
 </script>
 
