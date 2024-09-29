@@ -13,6 +13,5 @@ Route::delete('auth/session', [AuthController::class, 'revokeSession']);
 Route::middleware('auth')->group(function () {
 	Route::get('auth/user', [AuthController::class, 'user']);
 
-	Route::get('secrets', [SecretController::class, 'index'])->middleware('encrypt-response');
-	Route::post('secrets', [SecretController::class, 'create']);
+	Route::apiResource('secrets', SecretController::class)->middleware('encrypt-response');
 });

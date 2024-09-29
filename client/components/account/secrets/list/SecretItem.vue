@@ -1,16 +1,12 @@
 <template>
 	<li class="secret-item" :class="{ irrelevant: !secret.isUptodate }">
-		<TheClickable class="flex items-center space-x-3 rounded-lg py-1.5 px-2 -ml-1.5" @click="secretsStore.viewSecret(secret)">
+		<UiClickable class="flex items-center space-x-3 rounded-lg py-1.5 px-2 -ml-1.5" @click="loadSecretDetails(secret.clientCode)">
 			<div class="relative">
-				<div class="secret-icon w-8 h-8 flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg" v-if="!icon || icon.type === 'letter'">
-					<span class="text-gray-700 dark:text-gray-550 font-medium text-lg select-none">{{ firstLetter }}</span>
-				</div>
-				<div class="secret-icon w-8 h-8 flex items-center justify-center rounded-lg overflow-hidden" v-else-if="icon.type === 'img'">
-					<img class="w-full h-full object-contain" :src="icon.value" />
-				</div>
-				<div class="secret-icon w-8 h-8 flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg" v-else-if="icon.type === 'icones'">
-					<component is="icon" class="text-gray-700" :name="icon.value" size="22px" />
-				</div>
+				<SecretIcon class="secret-icon w-8 h-8" :icon="['letter', secret.name]">
+					<div class="absolute inset-0 flex items-center justify-center rounded-lg backdrop-blur-md bg-white/50" v-if="pending">
+						<UiSpinner size="18px" />
+					</div>
+				</SecretIcon>
 				<div class="absolute top-4 bottom-0 -left-2.5 -right-2.5 h-0.5 bg-red-500 z-10 -rotate-45 rounded-full" v-if="!secret.isUptodate"></div>
 			</div>
 			<div>
@@ -18,27 +14,35 @@
 					<span class="secret-name">{{ secret.name }}</span>
 				</div>
 			</div>
-		</TheClickable>
+		</UiClickable>
 	</li>
 </template>
 
 <script setup lang="ts">
 
-import type { Secret } from '~/repositories/adapters/secret-adapter'
-import TheClickable from '~/components/ui/Clickable.vue'
-import { computed } from 'vue'
+import type { SecretPreview } from '~/repositories/adapters/secret-adapter'
+import UiClickable from '~/components/ui/Clickable.vue'
+import UiSpinner from '~/components/ui/Spinner.vue'
+import SecretIcon from '~/components/account/secrets/SecretIcon.vue'
+import { ref } from 'vue'
 import { useSecretsStore } from '~/store/secrets'
 
 const props = defineProps<{
-	secret: Secret
-	icon?: {
-		type: 'img' | 'icones' | 'letter'
-		value?: string
-	}
+	secret: SecretPreview
 }>()
 
-const firstLetter = computed(() => props.secret.name.slice(0, 1).toUpperCase())
 const secretsStore = useSecretsStore()
+const pending = ref(false)
+
+const loadSecretDetails = async (clientCode: string) => {
+	if (pending.value) {
+		return
+	}
+
+	pending.value = true
+	await secretsStore.viewSecretDetails(clientCode)
+	pending.value = false
+}
 
 </script>
 
@@ -58,6 +62,10 @@ const secretsStore = useSecretsStore()
 			opacity: .6;
 		}
 	}
+}
+
+:deep(.secret-icon--has-background) {
+	@apply bg-gray-50 dark:bg-gray-900;
 }
 
 html.dark {

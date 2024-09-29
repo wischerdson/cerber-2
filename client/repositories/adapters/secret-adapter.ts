@@ -1,5 +1,13 @@
 import { uid } from '~/utils/helpers'
 
+export interface ServerSecretPreview {
+	id: number
+	name: string
+	is_uptodate: boolean
+	created_at: number
+	updated_at: number
+}
+
 export interface ServerSecret {
 	id: number
 	name: string
@@ -20,19 +28,22 @@ export interface ServerSecretField {
 	sort: number
 }
 
-export interface Secret {
+export interface SecretPreview {
 	id: number
 	name: string
-	notes: string
 	isUptodate: boolean
-	fields: SecretField[]
 	clientCode: string
 	createdAt: Date
 	updatedAt: Date
 }
 
+export interface Secret extends SecretPreview {
+	notes: string
+	fields: SecretField[]
+}
+
 export interface SecretField {
-	id: number,
+	id: number
 	label: string
 	shortDescription: string | null
 	value: string
@@ -96,6 +107,17 @@ export const serverToClientSecret = (secret: ServerSecret): Secret => {
 		notes: secret.notes,
 		isUptodate: secret.is_uptodate,
 		fields: secret.fields.map(serverToClientSecretField),
+		clientCode: uid(),
+		createdAt: new Date(secret.created_at * 1000),
+		updatedAt: new Date(secret.updated_at * 1000),
+	}
+}
+
+export const serverToClientSecretPreview = (secret: ServerSecretPreview): SecretPreview => {
+	return {
+		id: secret.id,
+		name: secret.name,
+		isUptodate: secret.is_uptodate,
 		clientCode: uid(),
 		createdAt: new Date(secret.created_at * 1000),
 		updatedAt: new Date(secret.updated_at * 1000),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SecretPreviewResource;
 use App\Models\Secret;
 use App\Models\SecretField;
 use Illuminate\Http\Request;
@@ -10,9 +11,17 @@ class SecretController extends Controller
 {
 	public function index()
 	{
-		$secrets = Secret::with('fields')->get();
+		$secrets = Secret::all();
 
-		return $secrets;
+		return SecretPreviewResource::collection($secrets);
+	}
+
+	public function show(int $secretId)
+	{
+		return Secret::query()
+			->where('id', $secretId)
+			->with('fields')
+			->firstOrFail();
 	}
 
 	public function create(Request $request)
