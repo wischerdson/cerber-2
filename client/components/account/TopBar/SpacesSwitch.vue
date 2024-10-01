@@ -21,13 +21,13 @@
 				</button>
 			</li>
 			<li class="ml-3">
-				<TheClickable
+				<UiClickable
 					class="show-more-btn bg-white dark:bg-transparent dark:text-gray-250 h-[42px] flex justify-center items-center w-[42px] rounded-full"
 					@click=""
 				>
 					<icon size="24px" name="material-symbols:add-rounded" v-if="false"/>
 					<icon size="20px" name="ion:ellipsis-horizontal" />
-				</TheClickable>
+				</UiClickable>
 			</li>
 		</ul>
 	</div>
@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 
-import TheClickable from '~/components/ui/Clickable.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
 import { onMounted, ref, watch } from '#imports'
 
 const highlighter = ref({ x: 0, width: 0, transition: false })

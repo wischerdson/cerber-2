@@ -3,7 +3,7 @@
 		<UiClickable class="flex items-center space-x-3 rounded-lg py-1.5 px-2 -ml-1.5" @click="loadSecretDetails(secret.clientCode)">
 			<div class="relative">
 				<SecretIcon class="secret-icon w-8 h-8" :icon="['letter', secret.name]">
-					<div class="absolute inset-0 flex items-center justify-center rounded-lg backdrop-blur-md bg-white/50" v-if="pending">
+					<div class="absolute inset-0 flex items-center justify-center rounded-lg backdrop-blur-md bg-white/50 dark:bg-black/50" v-if="pending">
 						<UiSpinner size="18px" />
 					</div>
 				</SecretIcon>
@@ -27,7 +27,7 @@ import SecretIcon from '~/components/account/secrets/SecretIcon.vue'
 import { ref } from 'vue'
 import { useSecretsStore } from '~/store/secrets'
 
-const props = defineProps<{
+defineProps<{
 	secret: SecretPreview
 }>()
 

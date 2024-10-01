@@ -2,12 +2,17 @@
 	<div :id="id"></div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="js">
 
-import { onMounted } from 'vue'
-import { useId } from 'vue'
+import { onMounted, onBeforeUnmount, useId, watch, computed } from 'vue'
+import { useNuxtApp } from '#imports'
 
 const id = useId()
+const { $theme } = useNuxtApp()
+let pjsInstance
+
+const color = computed(() => $theme.scheme.value === 'light' ? '#000' : '#fff')
+const size = computed(() => $theme.scheme.value === 'light' ? 1 : 0.75)
 
 const config = {
 	particles: {
@@ -18,7 +23,7 @@ const config = {
 				value_area: 800
 			}
 		},
-		color: { value: '#000' },
+		color: { value: color.value },
 		shape: {
 			type: 'circle',
 			stroke: {
@@ -29,7 +34,7 @@ const config = {
 		},
 		opacity: {
 			anim: {
-				enable: true,
+				enable: false,
 				speed: 2,
 				opacity_min: 0.5
 			},
@@ -37,10 +42,10 @@ const config = {
 			random: true
 		},
 		size: {
-			value: 1.4,
+			value: size.value,
 			random: false,
 			anim: {
-				enable: true,
+				enable: false,
 				speed: 3,
 				size_min: 0.1,
 				sync: false
@@ -79,13 +84,25 @@ const config = {
 	retina_detect: true
 }
 
+watch($theme.scheme, () => {
+	pjsInstance.particles.color.value = color.value
+	pjsInstance.tmp.obj.size_value = size.value
+
+	pjsInstance.fn.particlesRefresh()
+})
+
 onMounted(() => {
 	if (!('particlesJS' in window)) {
 		console.error('particlesJS is not defined')
 	}
 
-	// @ts-ignore
 	window.particlesJS(id, config)
+	pjsInstance = window.pJSDom.pop().pJS
+})
+
+onBeforeUnmount(() => {
+	cancelAnimationFrame(pjsInstance.fn.drawAnimFrame)
+   pjsInstance.canvas.el.remove()
 })
 
 </script>

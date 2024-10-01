@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="flex items-center space-x-3">
-			<div class="bg-black/5 dark:bg-white/10 w-9 h-9 flex items-center justify-center rounded-lg">
+			<div class="text-gray-850 dark:text-white/75 bg-black/5 dark:bg-white/10 w-9 h-9 flex items-center justify-center rounded-lg">
 				<span class="text-2xl font-medium">?</span>
 			</div>
 			<h2 class="font-bold text-gray-850 dark:text-gray-200 text-1.5xl tracking-wide">Новый доступ</h2>
@@ -12,8 +12,8 @@
 		/>
 
 		<div class="flex justify-end mt-6 space-x-4">
-			<UiClickable class="text-gray-700" @click="emit('cancel')">Отменить</UiClickable>
-			<UiClickable class="h-10 bg-black text-white px-5 rounded-lg relative" @click="save">
+			<UiClickable class="text-gray-700 dark:text-gray-300" @click="emit('cancel')">Отменить</UiClickable>
+			<UiClickable class="h-10 bg-black text-white dark:bg-white dark:text-black px-5 rounded-lg relative" @click="save">
 				<div class="absolute inset-0 flex items-center justify-center" v-if="pending">
 					<UiSpinner size="24px" />
 				</div>

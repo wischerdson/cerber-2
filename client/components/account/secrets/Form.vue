@@ -21,12 +21,12 @@
 					</TransitionGroup>
 				</HeightAnimation>
 				<div class="mt-4 relative z-10 flex justify-center">
-					<TheClickable class="flex items-center h-9" tabindex="-1" @click="addField">
+					<UiClickable class="flex items-center h-9" tabindex="-1" @click="addField">
 						<div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center mr-2.5" >
 							<icon class="text-white" name="material-symbols:add-rounded" size="20px" />
 						</div>
 						<span>Добавить поле</span>
-					</TheClickable>
+					</UiClickable>
 				</div>
 			</div>
 		</div>
@@ -42,7 +42,7 @@
 import type { SecretForCreate } from '~/repositories/adapters/secret-adapter'
 import UiInput from '~/components/ui/Input.vue'
 import UiTextarea from '~/components/ui/Textarea.vue'
-import TheClickable from '~/components/ui/Clickable.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
 import FieldEditRow from '~/components/account/secrets/FieldEditRow.vue'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 import { uid } from '~/utils/helpers'

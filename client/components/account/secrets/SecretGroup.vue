@@ -48,7 +48,7 @@ const props = defineProps<SecretGroupProps>()
 
 html.dark {
 	.secret-icon {
-		:deep(span) {
+		:deep(span), :deep(svg) {
 			color: rgba(#fff, .5);
 		}
 	}
@@ -65,7 +65,7 @@ html.dark {
 
 html.dark {
 	.secret-icon--mini {
-		:deep(span) {
+		:deep(span), :deep(svg) {
 			color: rgba(#fff, .5);
 		}
 	}

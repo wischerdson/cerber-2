@@ -1,17 +1,17 @@
 <template>
 	<div class="list" :class="{ shown }">
 		<div class="flex justify-between">
-			<TheClickable class="show-hide-btn flex items-center justify-center text-gray-700 dark:text-gray-550" @click="shown = !shown">
+			<UiClickable class="show-hide-btn flex items-center justify-center text-gray-700 dark:text-gray-550" @click="shown = !shown">
 				<span class="text-sm">{{ name }}</span>
 				<icon
 					class="chevron-right -mb-0.5 ml-1 -mr-2"
 					name="material-symbols:chevron-right-rounded"
 					size="22px"
 				/>
-			</TheClickable>
-			<TheClickable class="add-btn rounded-md text-gray-700" :title="addItemTitle" @click="emits('add')">
+			</UiClickable>
+			<UiClickable class="add-btn rounded-md text-gray-700" :title="addItemTitle" @click="emits('add')">
 				<icon size="20px" name="material-symbols:add-rounded" />
-			</TheClickable>
+			</UiClickable>
 		</div>
 
 		<HeightAnimation>
@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 
-import TheClickable from '~/components/ui/Clickable.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 import { ref } from 'vue'
 

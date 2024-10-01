@@ -11,9 +11,9 @@
 		</ul>
 		<div class="text-center" v-else>
 			<div class="text-sm text-gray-500">Группы отсутствуют</div>
-			<TheClickable class="h-7 rounded-full bg-slate-900 px-5 mt-3 inline-flex items-center mx-auto">
+			<UiClickable class="h-7 rounded-full bg-slate-900 px-5 mt-3 inline-flex items-center mx-auto">
 				<span class="text-white text-sm font-medium">Добавить</span>
-			</TheClickable>
+			</UiClickable>
 		</div>
 	</AbstractList>
 </template>
@@ -22,6 +22,6 @@
 
 import GroupItem from '~/components/account/secrets/list/GroupItem.vue'
 import AbstractList from '~/components/account/secrets/list/AbstractList.vue'
-import TheClickable from '~/components/ui/Clickable.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
 
 </script>

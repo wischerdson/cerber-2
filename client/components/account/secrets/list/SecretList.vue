@@ -16,9 +16,9 @@
 		</ul>
 		<div class="text-center" v-else>
 			<div class="text-sm text-gray-500">Ни одного доступа еще нет</div>
-			<TheClickable class="h-7 rounded-full bg-gray-800 px-5 mt-3 inline-flex items-center mx-auto" @click="secretsStore.setModeCreate">
+			<UiClickable class="h-7 rounded-full bg-gray-800 px-5 mt-3 inline-flex items-center mx-auto" @click="secretsStore.setModeCreate">
 				<span class="text-white text-sm">Добавить</span>
-			</TheClickable>
+			</UiClickable>
 		</div>
 	</AbstractList>
 </template>
@@ -28,7 +28,7 @@
 import type { SecretPreview } from '~/repositories/adapters/secret-adapter'
 import SecretItem from '~/components/account/secrets/list/SecretItem.vue'
 import AbstractList from '~/components/account/secrets/list/AbstractList.vue'
-import TheClickable from '~/components/ui/Clickable.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
 import { useSecretsStore } from '~/store/secrets'
 
 interface SecretListProps {

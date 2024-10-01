@@ -6,12 +6,12 @@
 		<span class="text-gray-700 dark:text-gray-550 font-medium text-lg select-none">{{ firstLetter }}</span>
 		<slot></slot>
 	</div>
-	<div class="aspect-square flex items-center justify-center rounded-lg overflow-hidden" v-else-if="icon[0] === 'img'">
+	<div class="secret-icon aspect-square flex items-center justify-center rounded-lg overflow-hidden" v-else-if="icon[0] === 'img'">
 		<img class="w-full h-full object-contain" :src="icon[1]" />
 		<slot></slot>
 	</div>
 	<div class="secret-icon secret-icon--has-background aspect-square flex items-center justify-center rounded-lg" v-else-if="icon[0] === 'icones'">
-		<component is="icon" class="text-gray-700" :name="icon[1]" size="22px" />
+		<component is="icon" :name="icon[1]" size="22px" />
 		<slot></slot>
 	</div>
 </template>

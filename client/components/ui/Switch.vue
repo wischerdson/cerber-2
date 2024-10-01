@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="ui-switch rounded-full w-10 h-6 bg-gray-150 flex items-center p-0.5 cursor-pointer"
+		class="ui-switch rounded-full w-10 h-6 bg-gray-150 dark:bg-gray-700 flex items-center p-0.5 cursor-pointer"
 		:class="[ isOn ? 'on' : 'off' ]"
 		@click="isOn = !isOn"
 	>
@@ -17,11 +17,12 @@ const isOn = defineModel<boolean>()
 <style scoped lang="scss">
 
 .ui-switch {
-	transition: background-color .25s ease, box-shadow .25s ease;
+	transition: background-color .2s ease, box-shadow .2s ease;
 
 	.handle {
-		animation: .25s cubic-bezier(.4,0,.2,1) forwards;
-		transition: margin-left .25s ease, width .25s ease;
+		animation: .2s cubic-bezier(.4,0,.2,1) forwards;
+		transition: .2s ease;
+		transition-property: margin-left, width;
 	}
 
 	&:active .handle {
@@ -44,6 +45,12 @@ const isOn = defineModel<boolean>()
 		.handle {
 			animation-name: switch-off;
 		}
+	}
+}
+
+html.dark {
+	.ui-switch.on {
+		background-color: theme('colors.green.500');
 	}
 }
 

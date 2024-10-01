@@ -1,6 +1,6 @@
 <template>
 	<div class="relative">
-		<TheClickable
+		<UiClickable
 			class="user-pill rounded-full pr-2 h-12 flex items-center"
 			:class="{ 'menu-is-shown': showMenu }"
 			@click="showMenu = !showMenu"
@@ -17,7 +17,7 @@
 			<div class="ml-3">
 				<icon class="text-black/50 dark:text-white/50" size="26px" name="material-symbols:arrow-drop-down-rounded" />
 			</div>
-		</TheClickable>
+		</UiClickable>
 
 		<transition>
 			<div class="menu-wrapper absolute right-0 top-full pt-4 z-10" v-click-outside="() => showMenu = false" v-show="showMenu">
@@ -26,7 +26,7 @@
 						<icon class="arrow-top" size="48px" name="material-symbols:arrow-drop-up-rounded" />
 					</div>
 					<div>
-						<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
+						<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
 							<MoonIcon class="mr-3 h-4 w-4" v-if="theme.scheme" />
 							<SunIcon class="mr-3 h-4 w-4" v-else />
 							<span>Оформление</span>
@@ -36,25 +36,25 @@
 								name="material-symbols:chevron-right-rounded"
 								size="18px"
 							/>
-						</TheClickable>
+						</UiClickable>
 						<HeightAnimation>
 							<transition>
 								<div class="submenu mt-3" v-if="themeSubmenu">
-									<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('light')">
+									<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('light')">
 										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode.value === 'light'"></div>
 										<SunIcon class="mr-3 h-4 w-4" />
 										<span>Светлое</span>
-									</TheClickable>
-									<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.setMode('dark')">
+									</UiClickable>
+									<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.setMode('dark')">
 										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode.value === 'dark'"></div>
 										<MoonIcon class="mr-3 h-4 w-4" />
 										<span>Темное</span>
-									</TheClickable>
-									<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('system')">
+									</UiClickable>
+									<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('system')">
 										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode.value === 'system'"></div>
 										<ComputerIcon class="mr-3 h-4 w-4" />
 										<span>Как в системе</span>
-									</TheClickable>
+									</UiClickable>
 								</div>
 							</transition>
 						</HeightAnimation>
@@ -62,24 +62,24 @@
 
 					<div class="mt-3">
 						<NuxtLink to="settings">
-							<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
+							<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
 								<GearIcon class="gear-icon mr-3 h-4 w-4" />
 								<span>Настройки</span>
-							</TheClickable>
+							</UiClickable>
 						</NuxtLink>
 					</div>
 					<div>
-						<TheClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
+						<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
 							<icon class="mr-2.5 -ml-0.5" size="20px" name="material-symbols:shield-rounded" />
 							<span>Безопасность</span>
-						</TheClickable>
+						</UiClickable>
 					</div>
 
 					<div class="mt-3">
-						<TheClickable class="menu-item text-[#bf4c44] flex w-full h-9 rounded-md items-center px-4" @click="logout">
+						<UiClickable class="menu-item text-[#bf4c44] flex w-full h-9 rounded-md items-center px-4" @click="logout">
 							<DoorIcon class="mr-3 h-4 w-4" />
 							<span>Выйти</span>
-						</TheClickable>
+						</UiClickable>
 					</div>
 				</div>
 			</div>
@@ -89,7 +89,7 @@
 
 <script setup lang="ts">
 
-import TheClickable from '~/components/ui/Clickable.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
 import GearIcon from '~/assets/svg/Monochrome=gearshape.fill.svg'
 import DoorIcon from '~/assets/svg/Monochrome=door.left.hand.open.svg'
 import SunIcon from '~/assets/svg/Monochrome=sun.max.fill.svg'

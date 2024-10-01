@@ -1,40 +1,37 @@
 <template>
 	<div class="pt-5 secret-field" :class="{ secure: field.secure, visible }">
-		<div class="-mt-5">
-			<div class="flex">
-				<span class="text-sm text-gray-700 mb-1">{{ field.label }}</span>
-			</div>
-		</div>
+		<UiLabel class="mb-1.5">{{ field.label }}</UiLabel>
 		<div class="flex space-x-2">
-			<div class="w-full flex-1 relative rounded-lg py-3 px-3 bg-gray-50">
+			<div class="w-full flex-1 relative rounded-lg py-3 px-3 bg-gray-50 dark:bg-gray-900">
 				<span class="secret-field-content">{{ field.value }}</span>
 
 				<div class="absolute inset-0 pr-12 p-2 pointer-events-none">
-					<SpoilerContent class="spoiler w-full h-full" v-if="field.secure" />
+					<UiSpoilerContent class="spoiler w-full h-full" v-if="field.secure" />
 				</div>
 
 				<div class="absolute right-0 inset-y-0 z-10 flex">
-					<TheClickable
+					<UiClickable
 						class="copy-content-btn w-10 h-10 flex items-center justify-center rounded-lg"
 						@click="copy"
 						title="Скопировать"
 					>
 						<icon class="text-gray-500" name="material-symbols:content-copy-rounded" size="20px" />
-					</TheClickable>
+					</UiClickable>
 				</div>
 
 				<transition :duration="150">
-					<div class="copied-badge absolute right-8 z-10 inset-y-0 flex items-center pr-3 select-none" v-if="showCopiedBadge">
-						<div class="text-xs tracking-wide bg-green-200 text-green-700 px-2 py-1 rounded-full">Скопировано</div>
+					<div class="copied-badge absolute right-8 z-10 inset-y-0 flex items-center pr-3 select-none" v-if="showCopyingResultBadge">
+						<div class="text-xs tracking-wide bg-green-200 dark:bg-green-600/20 text-green-600 dark:text-green-500 backdrop-blur-sm px-2 py-1 rounded-full" v-if="showCopyingResultBadge === 'success'">Скопировано</div>
+						<div class="text-xs tracking-wide bg-red-200 dark:bg-red-600/20 text-red-600 dark:text-red-500 backdrop-blur-sm px-2 py-1 rounded-full" v-else>Ошибка</div>
 					</div>
 				</transition>
 			</div>
 
-			<TheClickable class="show-spoiler-content-btn w-7 self-stretch flex items-center justify-center" v-if="field.secure" @click="forceVisible = !forceVisible">
+			<UiClickable class="show-spoiler-content-btn w-7 self-stretch flex items-center justify-center" v-if="field.secure" @click="forceVisible = !forceVisible">
 				<EyeSlashIcon class="w-5 text-gray-500 -mt-px" v-if="forceVisible" />
 				<EyeIcon class="w-5 text-gray-500" v-else />
-			</TheClickable>
-			<TheClickable
+			</UiClickable>
+			<UiClickable
 				class="w-7 self-stretch flex items-center justify-center"
 				title="Перейти по ссылке"
 				tag="a"
@@ -43,7 +40,7 @@
 				v-if="isUrl"
 			>
 				<icon class="text-blue-500" name="tabler:external-link" size="20px" />
-			</TheClickable>
+			</UiClickable>
 		</div>
 		<p class="text-xs mt-1 pb-2 tracking-wide text-gray-500 leading-snug" v-if="field.shortDescription">{{ field.shortDescription }}</p>
 	</div>
@@ -56,8 +53,9 @@ import { computed, ref } from 'vue'
 import { isUrl as _isUrl, hasHttpProtocol } from '~/utils/helpers'
 import EyeIcon from '~/assets/svg/Monochrome=eye.fill.svg'
 import EyeSlashIcon from '~/assets/svg/Monochrome=eye.slash.fill.svg'
-import TheClickable from '~/components/ui/Clickable.vue'
-import SpoilerContent from '~/components/ui/SpoilerContent.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
+import UiLabel from '~/components/ui/Label.vue'
+import UiSpoilerContent from '~/components/ui/SpoilerContent.vue'
 
 interface FieldViewProps {
 	field: SecretField
@@ -66,7 +64,7 @@ interface FieldViewProps {
 const props = defineProps<FieldViewProps>()
 
 const forceVisible = ref(false)
-const showCopiedBadge = ref(false)
+const showCopyingResultBadge = ref<false | 'success' | 'fail'>(false)
 
 const isUrl = computed(() => _isUrl(props.field.value))
 const url = computed(() => {
@@ -74,10 +72,17 @@ const url = computed(() => {
 })
 const visible = computed(() => !props.field.secure || forceVisible.value)
 
-const copy = () => {
-	showCopiedBadge.value = true
+const copy = async () => {
+	try {
+		await navigator.clipboard.writeText(props.field.value)
 
-	setTimeout(() => showCopiedBadge.value = false, 1000)
+		showCopyingResultBadge.value = 'success'
+	} catch (err) {
+		showCopyingResultBadge.value = 'fail'
+		console.log(err)
+	}
+
+	setTimeout(() => showCopyingResultBadge.value = false, 1000)
 }
 
 </script>
@@ -122,6 +127,16 @@ const copy = () => {
 
 		svg {
 			color: theme('colors.gray.700');
+		}
+	}
+}
+
+html.dark {
+	.copy-content-btn:hover {
+		background-color: rgba(#fff, .1);
+
+		svg {
+			color: rgba(#fff, .6);
 		}
 	}
 }

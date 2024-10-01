@@ -1,6 +1,6 @@
 <template>
 	<div class="popover absolute top-5 left-0 rounded-2xl mt-2">
-		<div class="popover-inner-content p-5 pb-7">
+		<div class="popover-inner-content relative z-20 p-5 pb-7">
 			<h4 class="text-lg font-medium">Свойства поля</h4>
 			<form class="mt-6" @submit.prevent="emit('save', model)">
 				<div>
@@ -70,7 +70,7 @@ const shortDescription = computed({
 	width: 380px;
 	box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.1);
 	background-color: #fff;
-
+	z-index: 20;
 
 	&.v-enter-active {
 		transform-origin: top left;
@@ -97,6 +97,33 @@ const shortDescription = computed({
 
 	&.v-leave-to {
 		opacity: 0;
+	}
+}
+
+html.dark {
+	.popover {
+		background-image: linear-gradient(145deg, rgba(#fff, .05), rgba(#fff, 0.025), rgba(#fff, 0.04));
+		background-color: rgba(#000, 1);
+		box-shadow: none;
+
+		@supports (backdrop-filter: blur(18px)) {
+			background-color: rgba(#000, 0.75);
+			backdrop-filter: blur(18px) saturate(1.5);
+		}
+
+		&:before {
+			content: "";
+			position: absolute;
+			inset: 1px;
+			z-index: 2;
+			background-image: linear-gradient(145deg, rgba(#fff, .2), rgba(#fff, .075), rgba(#fff, .05));
+			padding: 1px;
+			border-radius: inherit;
+			mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#862e2e 0 0);
+			-webkit-mask-composite: xor;
+			mask-composite: exclude;
+			pointer-events: none;
+		}
 	}
 }
 
