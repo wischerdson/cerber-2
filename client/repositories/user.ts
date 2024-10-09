@@ -1,5 +1,6 @@
 import { serverToClientUser, type ServerUser } from './adapters/user-adapter'
-import { useGetReq, usePostReq } from '~/composables/use-request'
+import { useGetReq } from '~/composables/use-request'
+import { makeRequest } from '~/utils/request'
 
 export const fetchUser = async () => {
 	return serverToClientUser(
@@ -10,7 +11,8 @@ export const fetchUser = async () => {
 }
 
 export const initEncryptionHandshake = (clientPublicKey: string) => {
-	return usePostReq<{ id: string, server_public_key: string }>('/handshake', clientPublicKey)
-		.setHeader('Content-Type', 'text/plain')
-		.send()
+	return makeRequest<{ id: string, server_public_key: string }>('/handshake', {
+		method: 'POST',
+		body: clientPublicKey
+	}).setHeader('Content-Type', 'text/plain').send()
 }

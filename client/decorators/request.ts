@@ -1,6 +1,6 @@
-import type { AppRequest } from '~/utils/request'
+import type { AppRequest, FetchContext } from '~/utils/request'
 import { useNuxtApp } from '#app'
-import { defaults } from 'lodash-es'
+import { defaults, omit } from 'lodash-es'
 import { util as forgeUtil } from 'node-forge'
 
 type DecoratedRequest<T extends AppRequest> = AuthDecoratedRequest<T> & EncryptDecoratedRequest<T>
@@ -16,6 +16,10 @@ type AuthDecoratedRequest<ObjectT extends AppRequest> = ObjectT & {
 
 type EncryptDecoratedRequest<ObjectT extends AppRequest> = ObjectT & {
 	shouldEncrypt: () => EncryptDecoratedRequest<ObjectT>
+}
+
+const repeatRequest = (e: FetchContext) => {
+	return useNuxtApp().$makeRequest(e.request, e.options).send()
 }
 
 export const authRequestDecorator = <T extends AppRequest>(request: T) => {
@@ -72,6 +76,14 @@ export const encryptRequestDecorator = <T extends AppRequest>(request: T) => {
 
 		return decoratedRequest
 	}
+
+	decoratedRequest.onResponseError(async (e) => {
+		console.log(e)
+		if ('error_reason' in e.response._data && e.response._data.error_reason === 'handshake_not_found') {
+			// await useNuxtApp().$encryptor.initHandshake()
+
+		}
+	})
 
 	return decoratedRequest
 }
