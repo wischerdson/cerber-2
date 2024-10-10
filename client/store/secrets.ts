@@ -17,6 +17,8 @@ export const useSecretsStore = defineStore('secrets', () => {
 		let secret = secretsDetails.value.find(s => s.clientCode === clientCode)
 
 		if (secret) {
+			mode.value = 'view'
+
 			return secretForView.value = secret
 		}
 

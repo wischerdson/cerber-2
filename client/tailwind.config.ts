@@ -18,13 +18,6 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
-				primary: '#933131',
-				dark: {
-					'gray-1': '#a3a3a3',
-					'gray-2': '#0c0c0c',
-					'gray-3': '#1d1d1d',
-				},
-				'primary-red': '#bf4c44',
 				gray: {
 					950: '#0d0d0d',
 					900: '#1a1a1a',

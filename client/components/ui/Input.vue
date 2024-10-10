@@ -147,10 +147,10 @@ html.dark .ui-input {
 
 .ui-input--invalid {
 	background-color: rgba(#ef4444, .1);
-	border-color: rgba(#ef4444, .5);
+	border-color: rgba(#ef4444, .5) !important;
 
 	&:focus {
-		border-color: #ef4444;
+		border-color: #ef4444 !important;
 	}
 }
 

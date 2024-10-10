@@ -21,7 +21,8 @@ class SecretController extends Controller
 		return Secret::query()
 			->where('id', $secretId)
 			->with('fields')
-			->firstOrFail();
+			->firstOrFail()
+			->toArray();
 	}
 
 	public function create(Request $request)

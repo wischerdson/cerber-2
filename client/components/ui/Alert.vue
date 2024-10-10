@@ -57,8 +57,8 @@ const isError = computed(() => props.appearance === 'error')
 }
 
 .alert-error {
-	background-color: rgba(#9d2a23, .1);
-	color: #bf4c44;
+	background-color: theme('colors.red.500/.15');
+	color: theme('colors.red.500');
 	border-radius: 8px;
 }
 

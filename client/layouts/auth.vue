@@ -43,7 +43,7 @@ body {
 	font-family: theme('fontFamily.sans');
 }
 
-html.dark {
+html.dark body {
 	background-color: #000;
 	color: #fff;
 }

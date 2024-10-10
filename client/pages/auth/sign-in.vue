@@ -1,6 +1,6 @@
 <template>
 	<div class="pt-11 pb-16 relative">
-		<div class="flex flex-col items-center dark:text-dark-gray-1 text-gray-600">
+		<div class="flex flex-col items-center dark:text-white/50 text-black/50">
 			<CerberLogo class="w-24" />
 			<CerberTextLogo class="w-44 mt-4" />
 		</div>
@@ -10,7 +10,7 @@
 		</div>
 
 		<div class="mt-28">
-			<div class="tile max-w-sm dark:bg-dark-gray-2/50 bg-white/50 backdrop-blur-xl rounded-[20px] mx-auto py-7">
+			<div class="tile max-w-sm dark:bg-white/5 bg-white/50 backdrop-blur-xl rounded-[20px] mx-auto py-7">
 				<div class="text-center">
 					<h1 class="text-2xl font-medium">Войти</h1>
 				</div>
@@ -26,15 +26,12 @@
 						>Неверный логин или пароль</TheAlert>
 
 						<div class="flex justify-center">
-							<TheButton
-								class="w-[54px] h-[54px]"
-								color="primary"
-								rounded square custom-sizing
-								:loading="pending"
-								type="submit"
-							>
-								<icon name="material-symbols:arrow-forward-rounded" size="28px" />
-							</TheButton>
+							<UiClickable class="w-[54px] h-[54px] rounded-full bg-gray-100 dark:bg-white/15 relative" type="submit">
+								<icon :style="{ opacity: +!pending }" name="material-symbols:arrow-forward-rounded" size="28px" />
+								<div class="absolute inset-0 flex items-center justify-center" v-if="pending">
+									<icon name="svg-spinners:90-ring-with-bg" size="28px" />
+								</div>
+							</UiClickable>
 						</div>
 					</div>
 				</form>
@@ -48,7 +45,7 @@
 import CerberTextLogo from '~/assets/svg/cerber-text-logo.svg'
 import CerberLogo from '~/assets/svg/cerber-logo.svg'
 import UiInput from '~/components/ui/Input.vue'
-import TheButton from '~/components/ui/Button.vue'
+import UiClickable from '~/components/ui/Clickable.vue'
 import TheAlert from '~/components/ui/Alert.vue'
 import { useValidation } from '~/composables/use-validation'
 import { definePageMeta, ref, useAuth, useHead, useRouter } from '#imports'
