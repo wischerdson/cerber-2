@@ -1,15 +1,17 @@
+import type { AppRequest } from '~/utils/request.types.ts'
+import type { DecoratedRequest } from '~/decorators/request'
 import { defineNuxtPlugin } from 'nuxt/app'
-import { encryptRequestDecorator, decryptResponseDecorator, authRequestDecorator } from '~/decorators/request'
-import { makeRequest } from '~/utils/request'
-
-type Args<DataT> = Parameters<typeof makeRequest<DataT>>
+import { encryptRequestDecorator, decryptResponseDecorator, authRequestDecorator, attachHandshakeIdDecorator } from '~/decorators/request'
+import { makeRequest, makeRequestFromFetchContext } from '~/utils/request'
 
 export default defineNuxtPlugin(async () => {
-	const factory = <DataT>(...args: Args<DataT>) => {
+	const wrapWithDecorators = <RequestT extends AppRequest>(request: RequestT): DecoratedRequest<RequestT> => {
 		return authRequestDecorator(
 			encryptRequestDecorator(
 				decryptResponseDecorator(
-					makeRequest<DataT>(...args)
+					attachHandshakeIdDecorator(
+						request
+					)
 				)
 			)
 		)
@@ -17,7 +19,12 @@ export default defineNuxtPlugin(async () => {
 
 	return {
 		provide: {
-			makeRequest: factory
+			makeRequest: <DataT>(...args: Parameters<typeof makeRequest<DataT>>) => {
+				return wrapWithDecorators(makeRequest<DataT>(...args))
+			},
+			makeRequestFromFetchContext: <DataT>(...args: Parameters<typeof makeRequestFromFetchContext<DataT>>) => {
+				return wrapWithDecorators(makeRequestFromFetchContext(...args))
+			}
 		}
 	}
 })

@@ -23,6 +23,7 @@ export interface AppRequest<
 	ResponseT extends Promise<DataT> = Promise<DataT>,
 	RequestT extends NitroFetchRequest = NitroFetchRequest
 > {
+	_context: AppRequestContext<RequestT>
 	setOption<K extends keyof Options<RequestT>>(name: K, value: Options<RequestT>[K]): AppRequest<DataT, ResponseT, RequestT>
 	getOption<K extends keyof Options<RequestT>>(name: K): Options<RequestT>[K]
 	setHeader(name: string, value: number | string | null): AppRequest<DataT, ResponseT, RequestT>

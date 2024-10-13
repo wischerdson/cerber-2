@@ -1,9 +1,10 @@
-import type { AppRequest, FetchContext } from '~/utils/request'
+import type { AppRequest } from '~/utils/request.types.js'
 import { useNuxtApp } from '#app'
-import { defaults, omit } from 'lodash-es'
+import { defaults } from 'lodash-es'
 import { util as forgeUtil } from 'node-forge'
+import { makeRequestFromFetchContext } from '~/utils/request'
 
-type DecoratedRequest<T extends AppRequest> = AuthDecoratedRequest<T> & EncryptDecoratedRequest<T>
+export type DecoratedRequest<T extends AppRequest> = AuthDecoratedRequest<T> & EncryptDecoratedRequest<T>
 
 type AuthDecoratorParameters = {
 	provider?: Parameters<ReturnType<typeof useNuxtApp>['$resolveAuthProvider']>[0],
@@ -16,10 +17,6 @@ type AuthDecoratedRequest<ObjectT extends AppRequest> = ObjectT & {
 
 type EncryptDecoratedRequest<ObjectT extends AppRequest> = ObjectT & {
 	shouldEncrypt: () => EncryptDecoratedRequest<ObjectT>
-}
-
-const repeatRequest = (e: FetchContext) => {
-	return useNuxtApp().$makeRequest(e.request, e.options).send()
 }
 
 export const authRequestDecorator = <T extends AppRequest>(request: T) => {
@@ -68,7 +65,6 @@ export const encryptRequestDecorator = <T extends AppRequest>(request: T) => {
 			request.setOption('body', forgeUtil.encode64(payload))
 
 			request.setHeader('X-Encrypted', 1)
-			request.setHeader('X-Handshake-ID', $encryptor.getHandshakeId())
 			request.setHeader('X-Key', forgeUtil.encode64(encryptedKey))
 
 			return originalSend()
@@ -77,29 +73,41 @@ export const encryptRequestDecorator = <T extends AppRequest>(request: T) => {
 		return decoratedRequest
 	}
 
-	decoratedRequest.onResponseError(async (e) => {
-		console.log(e)
-		if ('error_reason' in e.response._data && e.response._data.error_reason === 'handshake_not_found') {
-			// await useNuxtApp().$encryptor.initHandshake()
+	return decoratedRequest
+}
 
+export const attachHandshakeIdDecorator = <T extends AppRequest>(request: T): T => {
+	const { $encryptor } = useNuxtApp()
+
+	const attachHandshakeId = <RequestT extends AppRequest>(request: RequestT) => {
+		let handshakeId = $encryptor.getHandshake()?.handshake_id
+
+		if (handshakeId) {
+			request.setHeader('X-Handshake-ID', handshakeId)
+		}
+
+		return request
+	}
+
+	request.onResponseError(async (context) => {
+		if ('error_reason' in context.response._data && context.response._data.error_reason === 'handshake_not_found') {
+			await $encryptor.initHandshake()
+
+			return await attachHandshakeId(
+				makeRequestFromFetchContext(context)
+			).send()
 		}
 	})
 
-	return decoratedRequest
+	return attachHandshakeId(request)
 }
 
 export const decryptResponseDecorator = <T extends AppRequest>(request: T): T => {
 	const { $encryptor } = useNuxtApp()
-	const originalSend = request.send
-
-	request.send = () => {
-		request.setHeader('X-Handshake-ID', $encryptor.getHandshakeId())
-
-		return originalSend()
-	}
 
 	request.onResponse(({ response }) => {
 		const headers = response.headers
+
 		if (!headers.get('X-Encrypted')) {
 			return
 		}

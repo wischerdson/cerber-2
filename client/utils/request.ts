@@ -1,5 +1,6 @@
 import type { CallInterceptors, AppRequest, Options, MakeContext, AppRequestContext } from './request.types.ts'
 import type { NitroFetchRequest } from 'nitropack'
+import type { FetchContext } from 'ofetch'
 import { apiBaseUrl } from '~/utils/helpers'
 import { defaults } from 'lodash-es'
 
@@ -10,6 +11,7 @@ export const makeRequest = <
 	const context = makeContext(options)
 
 	const request: AppRequest<DataT, Promise<DataT>, RequestT> = {
+		_context: context,
 		setOption(name, value) {
 			value === void 0 ? delete context.options[name] : context.options[name] = value
 
@@ -59,6 +61,10 @@ export const makeRequest = <
 	return request
 }
 
+export const makeRequestFromFetchContext = <DataT = unknown, RequestT extends NitroFetchRequest = NitroFetchRequest>(context: FetchContext<DataT>) => {
+	return makeRequest<DataT>(context.request, context.options as Options<RequestT>)
+}
+
 const makeContext: MakeContext = (options) => {
 	const context = {
 		interceptors: {
@@ -80,7 +86,7 @@ const makeContext: MakeContext = (options) => {
 const compileRequestOptions = <RequestT extends NitroFetchRequest>(context: AppRequestContext<RequestT>): Options<RequestT> => {
 	const options = { ...context.options }
 
-	options.headers = mergeHeaders(context.headers, context.options.headers)
+	options.headers = mergeHeaders(context.options.headers, context.headers)
 
 	options.onRequest = ctx => callInterceptors<RequestT>(context, 'onRequest', ctx)
 	options.onResponse = ctx => callInterceptors<RequestT>(context, 'onResponse', ctx)
@@ -107,7 +113,7 @@ const callInterceptors: CallInterceptors = (context, type, ctx) => {
 	return Promise.all(promises) as unknown as Promise<void>
 }
 
-const mergeHeaders = (src1: HeadersInit, src2?: HeadersInit) => {
+const mergeHeaders = (src1?: HeadersInit, src2?: HeadersInit) => {
 	const result = new Headers(src1)
 
 	new Headers(src2).forEach((value, name) => result.set(name, value))

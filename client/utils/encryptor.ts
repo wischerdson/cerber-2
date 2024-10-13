@@ -31,7 +31,7 @@ export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 		throw new Error('Encryption handshake is not defined')
 	}
 
-	const getHandshakeId = () => getHandshakeOrThrow().handshake_id
+	const getHandshake = () => handshake.value
 
 	const initHandshake = async () => {
 		const clientKeypair = pki.rsa.generateKeyPair({ bits: 1024 })
@@ -118,5 +118,5 @@ export const defineEncryptor = (handshake: Ref<Handshake | null>) => {
 		return decipher.output.data
 	}
 
-	return { initHandshake, initHandshakeIfNeeded, getHandshakeId, encrypt, decrypt, getRsaKeypair }
+	return { initHandshake, initHandshakeIfNeeded, getHandshake, encrypt, decrypt, getRsaKeypair }
 }
