@@ -20,7 +20,7 @@ export type MakeContext = <RequestT extends NitroFetchRequest>(options?: Options
 
 export interface AppRequest<
 	DataT = unknown,
-	ResponseT extends Promise<DataT> = Promise<DataT>,
+	ResponseT = Promise<DataT>,
 	RequestT extends NitroFetchRequest = NitroFetchRequest
 > {
 	_context: AppRequestContext<RequestT>

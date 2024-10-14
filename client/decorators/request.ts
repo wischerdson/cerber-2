@@ -76,8 +76,16 @@ export const encryptRequestDecorator = <T extends AppRequest>(request: T) => {
 	return decoratedRequest
 }
 
+/**
+ * Декоратор цепляет к запросу HTTP-заголовок X-Handshake-ID.
+ *
+ * Если сервер вернул ошибку о том, что X-Handshake-ID невалиден и на сервере не найден,
+ * то функция попытается совершить новое рукопожатие с сервером и после этого переотправит
+ * исходный запрос снова.
+ */
 export const attachHandshakeIdDecorator = <T extends AppRequest>(request: T): T => {
 	const { $encryptor } = useNuxtApp()
+	const originalSend = request.send
 
 	const attachHandshakeId = <RequestT extends AppRequest>(request: RequestT) => {
 		let handshakeId = $encryptor.getHandshake()?.handshake_id
@@ -89,14 +97,25 @@ export const attachHandshakeIdDecorator = <T extends AppRequest>(request: T): T 
 		return request
 	}
 
-	request.onResponseError(async (context) => {
-		if ('error_reason' in context.response._data && context.response._data.error_reason === 'handshake_not_found') {
-			await $encryptor.initHandshake()
+	request.send = () => new Promise((resolve, reject) => {
+		request.onResponseError(async (context) => {
+			const body = context.response._data
 
-			return await attachHandshakeId(
-				makeRequestFromFetchContext(context)
-			).send()
-		}
+			if (
+				typeof body === 'object' &&
+				'error_reason' in body &&
+				body.error_reason === 'handshake_not_found'
+			) {
+				await $encryptor.initHandshake()
+
+				await attachHandshakeId(makeRequestFromFetchContext(context))
+					.send()
+					.then(resolve)
+					.catch(reject)
+			}
+		})
+
+		originalSend().then(resolve).catch(reject)
 	})
 
 	return attachHandshakeId(request)
