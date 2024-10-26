@@ -3,6 +3,7 @@
 namespace App\Models\Auth;
 
 use App\Models\User;
+use Database\Factories\Auth\GrantFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +23,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Grant extends Model
 {
 	use HasFactory;
+
+	protected static $factory = GrantFactory::class;
 
 	protected $table = 'auth_grants';
 

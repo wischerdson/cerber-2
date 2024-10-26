@@ -115,10 +115,9 @@ watch(showMenu, () => themeSubmenu.value = false)
 
 const logout = () => useAuth('default').logout()
 
-loaderStore.addPromise(new Promise<void>(resolve => {
+loaderStore.addPromise(new Promise(resolve => {
 	onMounted(async () => {
-		await userStore.fetch()
-		resolve()
+		resolve(await userStore.fetch())
 	})
 }))
 

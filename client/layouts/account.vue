@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 
-import { onMounted, useHead, useNuxtApp } from '#imports'
+import { useHead, useNuxtApp } from '#imports'
 import ScreenSize from '~/components/dev/ScreenSize.vue'
 import TopBar from '~/components/account/TopBar.vue'
 import TheSpinner from '~/components/ui/Spinner.vue'
@@ -48,10 +48,6 @@ useHead({
 })
 
 const loaderStore = useAccountLayoutLoaderStore()
-
-loaderStore.addPromise(new Promise<void>(resolve => {
-	onMounted(resolve)
-}))
 
 </script>
 

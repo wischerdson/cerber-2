@@ -66,7 +66,7 @@ runOrExec() {
 	service=$1
 	result="exec"
 
-	if [ -z `docker compose ps -q $service` ] || [ -z `docker ps -q --no-trunc | grep $(docker compose ps -q $service)` ]; then
+	if [ -z `./corn ps -q $service` ] || [ -z `docker ps -q --no-trunc | grep $(./corn ps -q $service)` ]; then
 		result="run --rm"
 	fi
 
@@ -110,10 +110,10 @@ esac
 
 fullCommand="${initCommand} ${payload}"
 
+
 if [ $info_flag = 1 ]; then
 	echo -e "${PURPLE}${fullCommand}${NC}\n"
 fi
-
 if [ $dry_run_flag = 0 ]; then
 	$fullCommand
 fi

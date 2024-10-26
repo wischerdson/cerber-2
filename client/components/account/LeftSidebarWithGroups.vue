@@ -15,14 +15,17 @@
 		</div>
 		<hr class="mt-4 border-gray-150 dark:border-gray-850">
 		<div class="mt-4 pb-4">
-			<div class="flex items-center justify-between mb-2">
+			<div class="flex items-center justify-between">
 				<h2 class="text-sm text-gray-400 dark:text-gray-750">Группы</h2>
 				<UiClickable class="add-group-btn rounded-md text-gray-500" title="Добавить новую группу">
-					<icon size="24px" name="material-symbols:add-rounded" />
+					<icon size="20px" name="material-symbols:add-rounded" />
 				</UiClickable>
 			</div>
 
-			<ul class="grid grid-cols-3 gap-2.5 gap-y-5">
+			<ul class="grid grid-cols-3 gap-2.5 gap-y-5 mt-3">
+				<li>
+					<SecretGroup name="Название группы" :preview="[]"/>
+				</li>
 				<li>
 					<SecretGroup name="Название группы" :preview="[
 						['letter', 'ftp'],
@@ -72,11 +75,11 @@ import SecretGroup from './secrets/SecretGroup.vue'
 <style lang="scss" scoped>
 
 .add-group-btn {
-	width: 28px;
-	height: 28px;
+	width: 22px;
+	height: 22px;
 
 	&:hover {
-		color: theme('colors.gray.600');
+		color: theme('colors.black');
 		background-color: #eaeaea;
 	}
 }

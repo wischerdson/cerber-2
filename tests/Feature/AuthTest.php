@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Testing\TestResponse;
-use Tests\Helpers;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -87,7 +86,7 @@ class AuthTest extends TestCase
 	 */
 	public function can_issue_access_token()
 	{
-		Helpers::createUser('test', '123123a');
+		self::createUser('test', '123123a');
 
 		// Ошибка, если пароль неверен
 		$this->postJson('/auth/token', [
@@ -137,7 +136,7 @@ class AuthTest extends TestCase
 	{
 		/** @var \Illuminate\Auth\AuthManager */
 		$auth = app()->make('auth');
-		Helpers::createUser('test', '123123a');
+		self::createUser('test', '123123a');
 
 		Route::get('user', fn () => 1)->middleware('auth:api');
 

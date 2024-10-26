@@ -58,10 +58,9 @@ const secretsStore = useSecretsStore()
 
 const loaderStore = useAccountLayoutLoaderStore()
 
-loaderStore.addPromise(new Promise<void>(resolve => {
+loaderStore.addPromise(new Promise(resolve => {
 	onMounted(async () => {
-		await secretsStore.fetch()
-		resolve()
+		resolve(await secretsStore.fetch())
 	})
 }))
 

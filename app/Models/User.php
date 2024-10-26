@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Auth\Grant;
 use App\Models\Auth\PasswordGrant;
 use App\Models\Auth\Session as AuthSession;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -25,6 +26,8 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
 	use HasFactory, Notifiable;
+
+	protected static $factory = UserFactory::class;
 
 	const UPDATED_AT = null;
 
@@ -75,5 +78,10 @@ class User extends Authenticatable
 			->with('extendedGrant');
 
 		return $this->newHasOne($query, $this, 'user_id', $this->getKeyName());
+	}
+
+	public function secretGroups(): HasMany
+	{
+		return $this->hasMany(Group::class, 'user_id');
 	}
 }

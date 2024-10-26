@@ -1,6 +1,6 @@
 <template>
 	<UiClickable class="secret-group block w-full">
-		<div class="group-icon aspect-square bg-black/5 dark:bg-white/10 rounded-2xl grid grid-cols-2 grid-rows-2 items-start gap-1.5 p-1.5">
+		<div class="group-icon aspect-square bg-black/5 dark:bg-white/10 rounded-2xl grid grid-cols-2 grid-rows-2 items-start gap-1.5 p-1.5" v-if="preview.length">
 			<SecretIcon
 				v-for="icon in preview.slice(0, 3)"
 				:icon="icon"
@@ -14,6 +14,9 @@
 					:key="icon[1]"
 				/>
 			</div>
+		</div>
+		<div class="group-icon aspect-square bg-black/5 dark:bg-white/10 rounded-2xl flex items-center justify-center" v-else>
+			<span class="text-sm text-gray-350">Пусто</span>
 		</div>
 		<div class="group-name text-xs leading-none mt-1">{{ name }}</div>
 	</UiClickable>
