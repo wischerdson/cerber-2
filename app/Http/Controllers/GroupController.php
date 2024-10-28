@@ -62,10 +62,13 @@ class GroupController extends Controller
 
 	public function show(int|string $groupId)
 	{
-		return Group::query()
-			->forCurrentUser()
-			->where('id', $groupId)
-			->firstOrFail();
+		$group = Group::findOrFail($groupId);
+
+		if ($group->user_id !== Auth::user()->id) {
+			throw new ForbiddenException();
+		}
+
+		return $group;
 	}
 
 	public function update(int|string $groupId, Request $request)
@@ -75,7 +78,7 @@ class GroupController extends Controller
 			'description' => 'string|max:255'
 		]);
 
-		$group = Group::find($groupId);
+		$group = Group::findOrFail($groupId);
 
 		if ($group->user_id !== Auth::user()->id) {
 			throw new ForbiddenException();
@@ -85,8 +88,15 @@ class GroupController extends Controller
 		$group->save();
 	}
 
-	public function destroy()
+	public function destroy(int|string $groupId)
 	{
+		$group = Group::findOrFail($groupId);
 
+		if ($group->user_id !== Auth::user()->id) {
+			throw new ForbiddenException();
+		}
+
+		$group->deleted_at = now();
+		$group->save();
 	}
 }
