@@ -3,10 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Group;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class SecretGroupsTest extends TestCase

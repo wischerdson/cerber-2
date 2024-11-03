@@ -1,3 +1,5 @@
+name: cerber
+
 services:
   php:
     build: ./php

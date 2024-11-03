@@ -81,7 +81,7 @@ html.dark {
 
 	&:hover {
 		.group-icon {
-			transform: scale(1.05);
+			transform: scale(1.075);
 		}
 	}
 }

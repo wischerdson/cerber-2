@@ -13,6 +13,7 @@ export interface FieldContext<T> {
 	clearErrors(): void
 	setValue(value: T): void
 	getValue(): T
+	resetValue(): void
 }
 
 interface FieldState<T> {
@@ -27,7 +28,9 @@ export interface ValidationContext<T extends ObjectSchema<AnyObject>> {
 	getYupSchemaInstance(): T
 	touchAll(): void
 	clearAll(): void
+	resetValues(): void
 	validate(): Promise<any>
+	destroy(): void
 }
 
 interface ValidationState<T extends Schema<object> = Schema<object>, I = InferType<T>> {
@@ -52,11 +55,13 @@ const makeField = <T>(initial: T): FieldContext<T> => {
 	const getError = () => hasErrors() ? state.value.errors[0] : null
 	const setValue = (value: T) => state.value.model = value
 	const getValue = () => state.value.model
+	const resetValue = () => state.value.model = initial
 	const clearErrors = () => state.value.errors = []
 	const appendError = (value: string) => state.value.errors.push(value)
 
 	return {
-		touch, clear, appendError, clearErrors, isDirty, hasErrors, getError, setValue, getValue
+		touch, clear, appendError, clearErrors, isDirty, hasErrors, getError, setValue,
+		getValue, resetValue
 	}
 }
 
@@ -89,21 +94,37 @@ export const useValidation = (): ValidationContext<any> => {
 				throw new Error('Validation rules is not defined')
 			}
 
-			const fieldsWithErrors: string[] = []
+			const errors: { [path: string]: ValidationError[] } = {}
 
 			return state.rules.validate(state.model, { abortEarly: false })
+				// Формируем массив ошибок, индексируемый по field path
 				.catch((e: ValidationError) => {
 					e.inner.forEach(error => {
 						if (typeof error.path === 'string' && error.path in state.fields) {
-							const field = state.fields[error.path]
+							if (!(error.path in errors)) {
+								errors[error.path] = []
+							}
 
-							fieldsWithErrors.push(error.path)
-							field.isDirty() && field.appendError(error.message)
+							errors[error.path].push(error)
 						}
 					})
 				})
 				.finally(() => {
-					difference(Object.keys(state.fields), fieldsWithErrors)
+					const paths = Object.keys(errors)
+
+					paths.forEach(path => {
+						const field = state.fields[path]
+
+						if (field.isDirty()) {
+							field.clearErrors()
+
+							errors[path].reverse().forEach(error => {
+								field.appendError(error.message)
+							})
+						}
+					})
+
+					difference(Object.keys(state.fields), paths)
 						.forEach(path => {
 							const field = state.fields[path]
 							field.hasErrors() && field.clearErrors()
@@ -124,6 +145,12 @@ export const useValidation = (): ValidationContext<any> => {
 		},
 		clearAll() {
 			Object.values(state.fields).forEach(field => field.clear())
+		},
+		resetValues() {
+			Object.values(state.fields).forEach(field => field.resetValue())
+		},
+		destroy() {
+			// Доделать удаление всех обработчиков и слушателей, чтобы не было утечек памяти
 		}
 	}
 

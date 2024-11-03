@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $fonts: (
 	("weight": 100, "style": "normal", "file": "/fonts/Roboto/Roboto-Thin.ttf"),
 	("weight": 300, "style": "normal", "file": "/fonts/Roboto/Roboto-Light.ttf"),
@@ -17,9 +19,9 @@ $fonts: (
 @each $font in $fonts {
 	@font-face {
 		font-family: 'Roboto';
-		src: url('#{map-get($font, "file")}') format('truetype');
-		font-weight: #{map-get($font, "weight")};
-		font-style: #{map-get($font, "style")};
+		src: url('#{map.get($font, "file")}') format('truetype');
+		font-weight: #{map.get($font, "weight")};
+		font-style: #{map.get($font, "style")};
 		font-display: block;
 	}
 }

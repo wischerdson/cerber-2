@@ -110,10 +110,10 @@ esac
 
 fullCommand="${initCommand} ${payload}"
 
-
 if [ $info_flag = 1 ]; then
 	echo -e "${PURPLE}${fullCommand}${NC}\n"
 fi
+
 if [ $dry_run_flag = 0 ]; then
 	$fullCommand
 fi
