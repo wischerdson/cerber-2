@@ -17,7 +17,11 @@
 		<div class="mt-4 pb-4">
 			<div class="flex items-center justify-between">
 				<h2 class="text-sm text-gray-400 dark:text-gray-750">Группы</h2>
-				<UiClickable class="add-group-btn rounded-md text-gray-500" title="Добавить новую группу">
+				<UiClickable
+					class="add-group-btn rounded-md text-gray-500"
+					title="Добавить новую группу"
+					@click="showCreateGroupModal = true"
+				>
 					<icon size="20px" name="material-symbols:add-rounded" />
 				</UiClickable>
 			</div>
@@ -60,6 +64,7 @@
 				</li>
 			</ul>
 		</div>
+		<GroupModalCreate v-model="showCreateGroupModal" :parent-id="2" />
 	</div>
 </template>
 
@@ -69,6 +74,10 @@ import UiClickable from '~/components/ui/Clickable.vue'
 import Search from '~/components/account/Search.vue'
 import ClockIcon from '~/assets/svg/Monochrome=clock.fill.svg'
 import SecretGroup from './secrets/SecretGroup.vue'
+import GroupModalCreate from '~/components/account/secrets/group/ModalCreate.vue'
+import { ref } from '#imports'
+
+const showCreateGroupModal = ref(false)
 
 </script>
 
