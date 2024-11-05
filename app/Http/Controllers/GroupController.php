@@ -38,8 +38,9 @@ class GroupController extends Controller
 	public function store(Request $request)
 	{
 		$request->validate([
-			'name' => 'required|string|max:255',
-			'description' => 'string|max:255'
+			'name' => 'required|string|max:60',
+			'description' => 'string|max:255|nullable',
+			'parent_id' => 'numeric|nullable'
 		]);
 
 		$user = Auth::user();

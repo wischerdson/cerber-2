@@ -54,7 +54,7 @@ return [
 	'channels' => [
 		'stack' => [
 			'driver' => 'stack',
-			'channels' => ['single'],
+			'channels' => ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'],
 			'ignore_exceptions' => false,
 		],
 
@@ -68,7 +68,71 @@ return [
 			'driver' => 'single',
 			'path' => base_path('.runtime/logs/laravel.log'),
 			'level' => env('LOG_LEVEL', 'debug'),
-			'replace_placeholders' => true,
+			'replace_placeholders' => true
+		],
+
+		'emergency' => [
+			'driver' => 'single',
+			'path' => base_path('.runtime/logs/rfc-5424.emergency.log'),
+			'level' => 'emergency',
+			'bubble' => false,
+			'replace_placeholders' => true
+		],
+
+		'alert' => [
+			'driver' => 'single',
+			'path' => base_path('.runtime/logs/rfc-5424.alert.log'),
+			'level' => 'alert',
+			'bubble' => false,
+			'replace_placeholders' => true
+		],
+
+		'critical' => [
+			'driver' => 'single',
+			'path' => base_path('.runtime/logs/rfc-5424.critical.log'),
+			'level' => 'critical',
+			'bubble' => false,
+			'replace_placeholders' => true
+		],
+
+		'error' => [
+			'driver' => 'single',
+			'path' => base_path('.runtime/logs/rfc-5424.error.log'),
+			'level' => 'error',
+			'bubble' => false,
+			'replace_placeholders' => true
+		],
+
+		'warning' => [
+			'driver' => 'single',
+			'path' => base_path('.runtime/logs/rfc-5424.warning.log'),
+			'level' => 'warning',
+			'bubble' => false,
+			'replace_placeholders' => true
+		],
+
+		'notice' => [
+			'driver' => 'single',
+			'path' => base_path('.runtime/logs/rfc-5424.notice.log'),
+			'level' => 'notice',
+			'bubble' => false,
+			'replace_placeholders' => true
+		],
+
+		'info' => [
+			'driver' => 'single',
+			'path' => base_path('.runtime/logs/rfc-5424.info.log'),
+			'level' => 'info',
+			'bubble' => false,
+			'replace_placeholders' => true
+		],
+
+		'debug' => [
+			'driver' => 'single',
+			'path' => base_path('.runtime/logs/rfc-5424.debug.log'),
+			'level' => 'debug',
+			'bubble' => false,
+			'replace_placeholders' => true
 		],
 
 		'daily' => [
@@ -127,11 +191,6 @@ return [
 		'null' => [
 			'driver' => 'monolog',
 			'handler' => NullHandler::class,
-		],
-
-		'emergency' => [
-			'path' => base_path('.runtime/logs/emergency.log'),
-		],
-	],
-
+		]
+	]
 ];

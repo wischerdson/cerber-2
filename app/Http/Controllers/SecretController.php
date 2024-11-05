@@ -25,7 +25,7 @@ class SecretController extends Controller
 			->toArray();
 	}
 
-	public function create(Request $request)
+	public function store(Request $request)
 	{
 		$request->validate([
 			'name' => 'required',
