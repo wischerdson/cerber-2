@@ -10,7 +10,7 @@
 				<div class="ui-modal fixed inset-0 z-30" v-if="show">
 					<div class="overflow-y-auto overscroll-contain absolute inset-0 -z-20">
 						<div class="min-h-full flex items-center justify-center relative -z-20 py-14 lg:py-0">
-							<div class="ui-modal__darken-bg fixed inset-0 bg-black/60 -z-10" @click="show = false"></div>
+							<div class="ui-modal__darken-bg fixed inset-0 bg-black/60 dark:bg-black/70 -z-10" @click="show = false"></div>
 							<div class="ui-modal__content">
 								<slot></slot>
 							</div>

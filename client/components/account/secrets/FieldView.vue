@@ -1,5 +1,5 @@
 <template>
-	<div class="pt-5 secret-field" :class="{ secure: field.secure, visible }">
+	<div class="secret-field" :class="{ secure: field.secure, visible }">
 		<UiLabel class="mb-1.5" v-if="field.label">{{ field.label }}</UiLabel>
 		<div class="flex space-x-2">
 			<div class="w-full flex-1 relative rounded-lg py-3 px-3 bg-gray-50 dark:bg-gray-900">

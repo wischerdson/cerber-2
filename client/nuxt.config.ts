@@ -47,8 +47,7 @@ export default defineNuxtConfig({
 	css: [
 		'~/assets/sass/fonts.scss',
 		'~/assets/sass/reset.scss',
-		'~/assets/sass/tailwind.css',
-		'~/assets/sass/utils.scss'
+		'~/assets/sass/tailwind.css'
 	],
 
 	vite: {

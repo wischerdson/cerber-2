@@ -1,5 +1,5 @@
 <template>
-	<div class="container py-7">
+	<UiContainer class="py-7">
 		<div>
 			<h1 class="font-bold text-gray-700 text-2.5xl">Настройки</h1>
 		</div>
@@ -24,13 +24,14 @@
 
 			</div>
 		</div>
-	</div>
+	</UiContainer>
 </template>
 
 <script setup lang="ts">
 
 import { definePageMeta } from '#imports'
 import Clickable from '~/components/ui/Clickable.vue'
+import UiContainer from '~/components/ui/Container.vue'
 
 definePageMeta({ middleware: 'auth', layout: 'account' })
 

@@ -1,12 +1,12 @@
 <template>
-	<div class="container">
+	<div class="ui-container">
 		<slot></slot>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 
-.container {
+.ui-container {
 	width: 100%;
 	max-width: 1320px;
 	margin-left: auto;

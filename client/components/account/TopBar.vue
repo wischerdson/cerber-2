@@ -1,6 +1,6 @@
 <template>
 	<section class="top-bar">
-		<div class="container relative z-20">
+		<UiContainer class="relative z-20">
 			<div class="flex py-2">
 				<div class="flex-1">
 					<UiClickable>
@@ -17,7 +17,7 @@
 					<UserBadge />
 				</div>
 			</div>
-		</div>
+		</UiContainer>
 	</section>
 </template>
 
@@ -28,5 +28,6 @@ import CerberTextLogo from '~/assets/svg/cerber-text-logo.svg'
 import UserBadge from '~/components/account/TopBar/UserBadge.vue'
 import SpacesManager from '~/components/account/TopBar/SpacesManager.vue'
 import UiClickable from '~/components/ui/Clickable.vue'
+import UiContainer from '~/components/ui/Container.vue'
 
 </script>

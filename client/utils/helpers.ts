@@ -58,11 +58,28 @@ export const hasHttpProtocol = (url: string): boolean => {
 	return httpSchemeRegExp.test(url)
 }
 
+export const isIPv4 = (string: string): boolean => {
+	const IPV4_REGEXP = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\:\d{1,5})?($|\/)/i
+
+	const matches = string.match(IPV4_REGEXP)
+
+	if (!matches?.length) {
+		return false
+	}
+
+	const [ip, port] = trim(matches[0], '/').split(':')
+
+	if (port !== void 0 && +port > 65535) {
+		return false
+	}
+
+	return !ip.split('.', 4).find(number => +number > 255)
+}
+
 export const isUrl = (string: string): boolean => {
-	const domainRegExp = /^(?!-)[A-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-z]{2,6}($|\/)/i
-	const ipv4RegExp = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}($|\/)/i
+	const DOMAIN_REGEXP = /^(?!-)[A-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-z]{2,6}($|\/)/i
 
 	return hasHttpProtocol(string) ||
-		domainRegExp.test(string) ||
-		ipv4RegExp.test(string)
+		DOMAIN_REGEXP.test(string) ||
+		isIPv4(string)
 }

@@ -1,5 +1,5 @@
 <template>
-	<DefaultPageView>
+	<UiContainer class="py-7">
 		<div class="flex items-start gap-6 mt-4">
 			<Sidebar />
 			<div class="w-full" v-if="invalidSearchQuery">
@@ -27,12 +27,12 @@
 				</ContentTile>
 			</div>
 		</div>
-	</DefaultPageView>
+	</UiContainer>
 </template>
 
 <script setup lang="ts">
 
-import DefaultPageView from '~/components/ui/DefaultPageView.vue'
+import UiContainer from '~/components/ui/Container.vue'
 import ContentTile from '~/components/ui/ContentTile.vue'
 import Sidebar from '~/components/account/LeftSidebarWithGroups.vue'
 import SecretView from '~/components/account/secrets/Detail.vue'

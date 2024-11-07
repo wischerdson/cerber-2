@@ -18,8 +18,8 @@ export interface User {
 	timezone: string|null
 	timezoneOffset: number|null
 	isAdmin: boolean
-	created_at: Date
-	deleted_at: Date|null
+	createdAt: Date
+	deletedAt: Date|null
 }
 
 export const serverToClientUser = (user: ServerUser): User => {
@@ -31,7 +31,7 @@ export const serverToClientUser = (user: ServerUser): User => {
 		timezone: user.timezone,
 		timezoneOffset: user.timezone_offset,
 		isAdmin: user.is_admin,
-		created_at: new Date(user.created_at * 1000),
-		deleted_at: user.deleted_at === null ? null : new Date(user.deleted_at * 1000)
+		createdAt: new Date(user.created_at * 1000),
+		deletedAt: user.deleted_at === null ? null : new Date(user.deleted_at * 1000)
 	}
 }
