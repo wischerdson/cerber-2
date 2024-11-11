@@ -1,11 +1,11 @@
 {
 	"editor.insertSpaces": false,
 	"files.eol": "\n",
-	"intelephense.phpdoc.useFullyQualifiedNames": true,
 	"files.insertFinalNewline": true,
 	"files.trimFinalNewlines": true,
-	"workbench.editor.showTabs": "single",
 	"files.trimTrailingWhitespace": true,
+	"intelephense.phpdoc.useFullyQualifiedNames": true,
+	"workbench.editor.showTabs": "single",
 	"[markdown]": {
 		"files.trimTrailingWhitespace": false
 	},

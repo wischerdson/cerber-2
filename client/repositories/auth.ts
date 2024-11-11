@@ -1,4 +1,5 @@
 import { useDeleteReq, usePostReq } from '~/composables/use-request'
+import { lockAsyncProcess } from '~/utils/helpers'
 
 export type TokensPairIssuingResponse = {
 	token_type: string
@@ -21,7 +22,10 @@ export const issueTokensPairViaPasswordGrant = (login: string, password: string)
 }
 
 export const issueTokensPairViaRefreshToken = (refreshToken: string) => {
-	return issueTokensPair('refresh_token', { refresh_token: refreshToken })
+	return lockAsyncProcess(
+		'auth.issuing-tokens-pair-via-refresh-token',
+		() => issueTokensPair('refresh_token', { refresh_token: refreshToken })
+	)
 }
 
 export const revokeSession = () => {

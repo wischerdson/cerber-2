@@ -1,6 +1,6 @@
 import { trim } from 'lodash-es'
 import { Buffer } from 'buffer'
-import { useRouter, useRuntimeConfig } from '#imports'
+import { useRouter, useRuntimeConfig, useSingleton } from '#imports'
 
 export const storageUrl = (path: string) => {
 	return trim(useRuntimeConfig().public.storageBaseUrl, '/') + '/' + trim(path, '/')
@@ -82,4 +82,14 @@ export const isUrl = (string: string): boolean => {
 	return hasHttpProtocol(string) ||
 		DOMAIN_REGEXP.test(string) ||
 		isIPv4(string)
+}
+
+export const lockAsyncProcess = <T extends Promise<unknown>>(key: string, fn: () => T): T => {
+	return useSingleton(key, deleteInstance => {
+		try {
+			return fn()
+		} finally {
+			deleteInstance()
+		}
+	})
 }

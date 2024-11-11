@@ -29,9 +29,7 @@ export const makeRequest = <
 			return context.headers.get(name)
 		},
 		setBearerToken(token) {
-			request.setHeader('Authorization', `Bearer ${token}`)
-
-			return request
+			return request.setHeader('Authorization', `Bearer ${token}`)
 		},
 		onRequest(interceptor) {
 			context.interceptors.onRequest.push(interceptor)

@@ -3,7 +3,7 @@ import type { Ref, WatchOptions } from 'vue'
 import { watch } from 'vue'
 import { defaultsDeep, kebabCase, omit } from 'lodash-es'
 import { useCookie, useState } from 'nuxt/app'
-import { singletonClientOnly } from './singleton'
+import { useSingleton } from '~/composables/use-singleton'
 
 export interface StorageDriver<T> {
 	uid: string
@@ -72,7 +72,7 @@ export function dummyStorageDriver<T>(init?: () => T): StorageDriver<T | null> {
 export const defineStorage = <T>(key: string, driver: StorageDriver<T>, watchOptions: WatchOptions | false = {}): DefinedStorage<T> => {
 	const stateKey = kebabCase(`storage-${driver.uid}-${key}`)
 
-	return singletonClientOnly(stateKey, () => {
+	return useSingleton(stateKey, () => {
 		const storageKey = kebabCase(`app-${key}`)
 		const state = useState<T>(stateKey, () => driver.read(storageKey))
 
