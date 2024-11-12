@@ -1,4 +1,4 @@
-import type { CallInterceptors, AppRequest, Options, MakeContext, AppRequestContext } from './request.types.ts'
+import type { CallInterceptors, AppRequest, Options, MakeContext, AppRequestContext } from './request.types'
 import type { NitroFetchRequest } from 'nitropack'
 import type { FetchContext } from 'ofetch'
 import { apiBaseUrl } from '~/utils/helpers'

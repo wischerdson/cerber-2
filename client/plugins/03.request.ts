@@ -1,15 +1,15 @@
-import type { AppRequest } from '~/utils/request.types.ts'
+import type { AppRequest } from '~/utils/request.types'
 import type { DecoratedRequest } from '~/decorators/request'
 import { defineNuxtPlugin } from 'nuxt/app'
-import { encryptRequestDecorator, decryptResponseDecorator, authRequestDecorator, attachHandshakeIdDecorator } from '~/decorators/request'
+import { authenticationRequest, encryptionRequest, decryptionResponse, attachingHandshakeId } from '~/decorators/request'
 import { makeRequest, makeRequestFromFetchContext } from '~/utils/request'
 
 export default defineNuxtPlugin(async () => {
 	const wrapWithDecorators = <RequestT extends AppRequest>(request: RequestT): DecoratedRequest<RequestT> => {
-		return authRequestDecorator(
-			encryptRequestDecorator(
-				decryptResponseDecorator(
-					attachHandshakeIdDecorator(
+		return authenticationRequest(
+			encryptionRequest(
+				decryptionResponse(
+					attachingHandshakeId(
 						request
 					)
 				)
