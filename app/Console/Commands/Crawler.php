@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Services\HtmlMetaCrawler\Crawler as HtmlMetaCrawlerCrawler;
+use App\Services\HtmlMetaCrawler\Crawler as HtmlMetaCrawler;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Console\Command;
@@ -24,34 +25,63 @@ class Crawler extends Command
 	 */
 	public function handle()
 	{
-		ini_set('memory_limit', '2048M');
+		ini_set('memory_limit', '4096M');
 
-		$i = 0;
-		DB::connection('crawler')->table('sites')->where('completed', 0)->where('locked', 0)->orderBy('id', 'desc')->chunk(100, function ($sites) use ($i) {
-			$client = new Client();
-
-			$requests = function ($sites) use ($client) {
-				foreach ($sites as $site) {
-					DB::connection('crawler')->table('sites')->where('id', $site->id)->update(['locked' => 1]);
-					yield fn () => $client->getAsync("http://{$site->site}", ['timeout' => 2]);
-				}
-			};
-
-			$pool = new Pool($client, $requests($sites), [
-				'concurrency' => 50, // Количество одновременных запросов
-				'fulfilled' => fn ($response, $i) => $this->handleResponse($response, $sites[$i]),
-			]);
-
-			$pool->promise()->wait();
-
-			$i++;
-			$a = $i*100;
-
-			$this->info("Обработано {$a} сайтов");
-		});
+		// $this->writeComSites();
+		$this->parse();
 	}
 
-	public function handleResponse(Response $response, $site)
+	private function parse()
+	{
+		$i = 0;
+		$chunk = 500;
+		$client = new Client([
+			'headers' => ['Connection' => 'close'],
+			'timeout' => 2,
+			CURLOPT_FORBID_REUSE => true,
+			CURLOPT_FRESH_CONNECT => true,
+		]);
+
+		// update sites set locked = 0 where completed = 0 and locked = 1
+
+		DB::connection('crawler')
+			->table('sites')
+			->where('completed', 0)
+			->where('locked', 0)
+			->orderBy('id')
+			->chunk($chunk, function ($sites) use ($client, $chunk, &$i) {
+				$j = 0;
+
+				DB::connection('crawler')
+					->table('sites')
+					->whereIn('id', $sites->pluck('id'))
+					->update(['locked' => 1]);
+
+				$requests = function ($sites) use ($client) {
+					foreach ($sites as $site) {
+						yield fn () => $client->getAsync("http://{$site->site}");
+					}
+				};
+
+				$pool = new Pool($client, $requests($sites), [
+					'concurrency' => 100, // Количество одновременных запросов
+					'fulfilled' => function ($response, $i) use ($sites, &$j) {
+						$j++;
+						$this->handleResponse($response, $sites[$i]);
+					}
+				]);
+
+				$pool->promise()->wait();
+
+				$i++;
+				$n = $i*$chunk;
+
+				$this->info("\nОбработано всего {$n} сайтов, из них ответили всего {$j} \n");
+				unset($j, $pool, $requests);
+			});
+	}
+
+	private function handleResponse(Response $response, $site)
 	{
 		if ($contentType = @$response->getHeader('content-type')[0]) {
 			if (!str_contains($contentType, 'text/html')) {
@@ -64,13 +94,12 @@ class Crawler extends Command
 		}
 
 		try {
-			$elements = HtmlMetaCrawlerCrawler::init(html: (string) $response->getBody())->run();
+			$elements = HtmlMetaCrawler::init(html: (string) $response->getBody())->run();
 		} catch (\Throwable $th) {
-			Log::error("Хуйня: \n{e}", ['e' => (string) $th]);
+			Log::error("Хуйня ({$site->site}): \n{e}", ['e' => (string) $th]);
 			$this->error('Ошибка, чек логи');
 			return;
 		}
-
 
 		$this->info("Обработка сайта {$site->site} [{$site->id}]");
 
@@ -90,7 +119,7 @@ class Crawler extends Command
 
 	private function writeComSites()
 	{
-		$handle = fopen(base_path('.runtime/tmp/com_domains_base.txt'), 'r');
+		$handle = fopen(base_path('.runtime/tmp/com.txt'), 'r');
 
 		$domains = [];
 		$i = 0;
