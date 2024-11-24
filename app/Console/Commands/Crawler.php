@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Services\HtmlMetaCrawler\Crawler as HtmlMetaCrawler;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Console\Command;
@@ -36,10 +35,11 @@ class Crawler extends Command
 		$i = 0;
 		$chunk = 500;
 		$client = new Client([
-			'headers' => ['Connection' => 'close'],
+			'headers' => ['Connection' => 'keep-alive'],
 			'timeout' => 2,
-			CURLOPT_FORBID_REUSE => true,
-			CURLOPT_FRESH_CONNECT => true,
+			'http_errors' => false,
+			'allow_redirects' => false,
+			'cookies' => false,
 		]);
 
 		// update sites set locked = 0 where completed = 0 and locked = 1
@@ -64,7 +64,7 @@ class Crawler extends Command
 				};
 
 				$pool = new Pool($client, $requests($sites), [
-					'concurrency' => 100, // Количество одновременных запросов
+					'concurrency' => 15, // Количество одновременных запросов
 					'fulfilled' => function ($response, $i) use ($sites, &$j) {
 						$j++;
 						$this->handleResponse($response, $sites[$i]);
@@ -78,6 +78,8 @@ class Crawler extends Command
 
 				$this->info("\nОбработано всего {$n} сайтов, из них ответили всего {$j} \n");
 				unset($j, $pool, $requests);
+
+				usleep(500000);
 			});
 	}
 
