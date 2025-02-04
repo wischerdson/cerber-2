@@ -26,16 +26,12 @@ import UiInput from '~/components/ui/Input.vue'
 import UiTextarea from '~/components/ui/Textarea.vue'
 import UiClickable from '~/components/ui/Clickable.vue'
 import UiSpinner from '~/components/ui/Spinner.vue'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useValidation } from '~/composables/use-validation'
 import { object, string } from 'yup'
+import { useSecretGroupsStore } from '~/store/secret-groups'
 
-const emit = defineEmits<{
-	(e: 'close'): void
-	(e: 'create'): void
-}>()
-
-const props = defineProps<{ parentId: number }>()
+const props = defineProps<{ parentId: number | null }>()
 
 const pending = ref(false)
 
@@ -59,7 +55,16 @@ const sendForm = async () => {
 		return
 	}
 
-	console.log(Object.assign(form, { parentId: props.parentId }))
+	pending.value = true
+
+	const store = useSecretGroupsStore()
+
+	await store.create(
+		Object.assign(form, { parentId: props.parentId })
+	)
+
+	pending.value = false
+	show.value = false
 }
 
 </script>

@@ -16,14 +16,15 @@
 					:data-space="space.clientCode"
 					@click="activeSpace = space.clientCode"
 				>
-					<icon class="mr-1.5" :name="space.icon" size="20px" />
+					<!-- <icon class="mr-1.5" :name="space.icon" size="20px" /> -->
 					<span>{{ space.name }}</span>
 				</button>
 			</li>
 			<li class="ml-3">
 				<UiClickable
 					class="show-more-btn bg-white dark:bg-transparent dark:text-gray-250 h-[42px] flex justify-center items-center w-[42px] rounded-full"
-					@click=""
+					@click="emit('manageSpaces')"
+					title="Управление пространствами"
 				>
 					<icon size="24px" name="material-symbols:add-rounded" v-if="false"/>
 					<icon size="20px" name="ion:ellipsis-horizontal" />
@@ -37,6 +38,8 @@
 
 import UiClickable from '~/components/ui/Clickable.vue'
 import { onMounted, ref, watch } from '#imports'
+
+const emit = defineEmits<{ (e: 'manageSpaces'): void }>()
 
 const highlighter = ref({ x: 0, width: 0, transition: false })
 const activeSpace = ref(1)

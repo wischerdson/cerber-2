@@ -14,6 +14,10 @@ import { useNoindexHeader } from '~/composables/use-noindex-header'
 useNoindexHeader()
 
 useHead({
+	htmlAttrs: {
+		class: 'dark',
+		lang: 'ru-RU'
+	},
 	link: [
 		{ rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
 		{ rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon/favicon-32x32.png' },

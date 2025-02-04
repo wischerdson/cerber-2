@@ -64,7 +64,7 @@
 				</li>
 			</ul>
 		</div>
-		<GroupModalCreate v-model="showCreateGroupModal" :parent-id="2" />
+		<GroupModalCreate v-model="showCreateGroupModal" :parent-id="null" />
 	</div>
 </template>
 

@@ -39,3 +39,16 @@ export const clientToServerSecretGroupForCreate = (group: SecretGroupForCreate):
 		parent_id: group.parentId
 	}
 }
+
+export const serverToClientSecretGroup = (group: ServerSecretGroup): SecretGroup => {
+	return {
+		id: group.id,
+		userId: group.user_id,
+		name: group.name,
+		alias: group.alias,
+		description: group.description,
+		parentId: group.parent_id,
+		createdAt: new Date(group.created_at * 1000),
+		deletedAt: group.deleted_at === null ? null : new Date(group.deleted_at * 1000)
+	}
+}

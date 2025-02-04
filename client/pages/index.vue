@@ -49,18 +49,24 @@ import { definePageMeta, useHead } from '#imports'
 import { useSecretsStore } from '~/store/secrets'
 import { onMounted } from 'vue'
 import { useAccountLayoutLoaderStore } from '~/store/loaders'
+import { useSecretGroupsStore } from '~/store/secret-groups'
 
 definePageMeta({ middleware: 'auth' })
 
 useHead({ title: 'Cerber - Доступы' })
 
 const secretsStore = useSecretsStore()
-
+const secretGroupsStore = useSecretGroupsStore()
 const loaderStore = useAccountLayoutLoaderStore()
 
 loaderStore.addPromise(new Promise(resolve => {
 	onMounted(async () => {
-		resolve(await secretsStore.fetch())
+		resolve(
+			await Promise.all([
+				secretsStore.fetch(),
+				// secretGroupsStore.fetch(),
+			])
+		)
 	})
 }))
 
