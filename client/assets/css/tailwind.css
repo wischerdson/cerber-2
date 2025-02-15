@@ -1,14 +1,33 @@
-@import "tailwindcss";
+@layer theme, base, components, modification, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@custom-variant dark (&:where(html.dark, html.dark *));
 
 @custom-variant 2xl (@media (max-width: 96rem));
-@custom-variant xl (@media (max-width: 80rem));
-@custom-variant lg (@media (max-width: 64rem));
-@custom-variant md (@media (max-width: 48rem));
-@custom-variant sm (@media (max-width: 40rem));
+@custom-variant xl  (@media (max-width: 80rem));
+@custom-variant lg  (@media (max-width: 64rem));
+@custom-variant md  (@media (max-width: 48rem));
+@custom-variant sm  (@media (max-width: 40rem));
 
 @theme {
 	--font-sans: Roboto, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 	--font-mono: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+	--text-xs--line-height:   1;
+	--text-sm--line-height:   1;
+	--text-base--line-height: 1;
+	--text-lg--line-height:   1;
+	--text-xl--line-height:   1;
+	--text-2xl--line-height:  1;
+	--text-3xl--line-height:  1;
+	--text-4xl--line-height:  1;
+	--text-5xl--line-height:  1;
+	--text-6xl--line-height:  1;
+	--text-7xl--line-height:  1;
+	--text-8xl--line-height:  1;
 
 	--color-gray-950: #0d0d0d;
 	--color-gray-900: #1a1a1a;
@@ -29,6 +48,8 @@
 	--color-gray-150: #d9d9d9;
 	--color-gray-100: #e6e6e6;
 	--color-gray-50:  #f2f2f2;
+
+	--color-dark-tile: #171717;
 }
 
 @layer base {

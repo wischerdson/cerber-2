@@ -12,7 +12,7 @@ export default defineNuxtConfig({
 		]
 	},
 	css: [
-		'~/assets/css/fonts.css',
+		'~/assets/css/fonts.scss',
 		'~/assets/css/tailwind.css'
 	],
 	components: false,
@@ -26,5 +26,13 @@ export default defineNuxtConfig({
 	modules: [
 		'nuxt-icon',
 		'@pinia/nuxt'
-	]
+	],
+	runtimeConfig: {
+		public: {
+			storageBaseUrl: process.env.STORAGE_URL,
+			apiBaseUrl: process.env.CLIENT_API_URL,
+			disableHttpEncryption: process.env.DISABLE_HTTP_ENCRYPTION
+		},
+		apiBaseUrl: process.env.SERVER_API_URL
+	},
 })
