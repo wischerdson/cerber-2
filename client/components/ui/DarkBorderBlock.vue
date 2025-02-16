@@ -4,7 +4,7 @@
 	</div>
 </template>
 
-<style>
+<style lang="scss">
 
 .ui-dark-border-block:before {
 	content: "";

@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 import { computed, watch } from 'vue'
-import { useSingleton } from './use-singleton'
+import { useSingleton } from '~/composables/use-singleton'
 
 export type ThemeMode = 'system' | 'light' | 'dark'
 

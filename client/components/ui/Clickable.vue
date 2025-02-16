@@ -26,7 +26,7 @@ const opacityTransition = ref(false)
 
 </script>
 
-<style>
+<style lang="scss">
 
 .clickable {
 	cursor: pointer;

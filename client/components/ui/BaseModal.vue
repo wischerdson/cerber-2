@@ -37,7 +37,7 @@ const emit = defineEmits<ModalEmits>()
 
 </script>
 
-<style>
+<style lang="scss">
 
 .ui-modal {
 	&.v-enter-active, &.v-leave-active {
