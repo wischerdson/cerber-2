@@ -1,5 +1,5 @@
 <template>
-	<div class="relative">
+	<div class="relative" v-if="userStore.user">
 		<UiClickable
 			class="user-pill rounded-full pr-2 h-12 flex items-center"
 			:class="{ 'menu-is-shown': showMenu }"
@@ -9,22 +9,16 @@
 				<img class="h-12 rounded-full" src="/images/avatar.jpg" alt="Avatar">
 			</div>
 			<div class="ml-3">
-				<div>
-					<span class="text-black/85 dark:text-white/85">{{ userStore.user?.firstName }}&nbsp;</span>
-					<span class="text-black/50 dark:text-white/50">{{ lastNameFirstLetter }}.</span>
+				<div class="text-black/85 dark:text-white/85">
+					<span>{{ userStore.user.firstName }}&nbsp;</span>
+					<span>{{ userStore.user.lastName }}</span>
 				</div>
-			</div>
-			<div class="ml-3">
-				<icon class="text-black/50 dark:text-white/50" size="26px" name="material-symbols:arrow-drop-down-rounded" />
 			</div>
 		</UiClickable>
 
 		<transition>
 			<div class="menu-wrapper absolute right-0 top-full pt-4 z-10" v-click-outside="() => showMenu = false" v-show="showMenu">
 				<div class="menu rounded-xl w-64 relative px-2.5 py-2.5 z-50" ref="$menu">
-					<div class="absolute right-0 -top-7">
-						<icon class="arrow-top" size="48px" name="material-symbols:arrow-drop-up-rounded" />
-					</div>
 					<div>
 						<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
 							<MoonIcon class="mr-3 h-4 w-4" v-if="theme.scheme" />
@@ -98,8 +92,8 @@ import ComputerIcon from '~/assets/svg/Monochrome=desktopcomputer.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 import { ref, watch, useNuxtApp, onMounted, computed } from '#imports'
 import { useAuth } from '~/composables/use-auth'
-import { useUserStore } from '../../../../client.old/store/user'
-import { useAccountLayoutLoaderStore } from '../../../../client.old/store/loaders'
+import { useUserStore } from '~/store/user'
+import { useAccountLayoutLoaderStore } from '~/store/loaders'
 
 const userStore = useUserStore()
 const loaderStore = useAccountLayoutLoaderStore()
@@ -126,22 +120,6 @@ loaderStore.addPromise(new Promise(resolve => {
 <style lang="scss" scoped>
 
 @use "sass:color";
-
-.user-pill {
-	transition: background-color .15s ease;
-
-	&:hover, &.menu-is-shown {
-		background-color: #ebebeb;
-	}
-}
-
-html.dark {
-	.user-pill {
-		&:hover, &.menu-is-shown {
-			background-color: color.scale(#fff, $lightness: -85%);
-		}
-	}
-}
 
 .menu-wrapper {
 	&.v-enter-active, &.v-leave-active {

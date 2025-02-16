@@ -45,11 +45,10 @@ import UiClickable from '~/components/ui/Clickable.vue'
 import TheAlert from '~/components/ui/Alert.vue'
 import UiSpinner from '~/components/ui/Spinner.vue'
 import { useValidation } from '~/composables/use-validation'
-import { definePageMeta, ref, useAuth, useHead, useRouter } from '#imports'
+import { ref, useAuth, useHead, useRouter } from '#imports'
 import { object, string } from 'yup'
 
 useHead({ title: 'Cerber - Авторизация' })
-definePageMeta({ layout: 'auth' })
 
 const pending = ref(false)
 const serverError = ref<string|null>()
