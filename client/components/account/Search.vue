@@ -11,7 +11,7 @@
 		>
 			<template #before>
 				<div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-					<icon class="text-gray-600 dark:text-gray-400" size="22px" name="ph:magnifying-glass" />
+					<icon class="text-gray-600 dark:text-gray-200" size="22px" name="ph:magnifying-glass" />
 				</div>
 			</template>
 			<template #after>
