@@ -1,7 +1,7 @@
 <template>
 	<div class="relative" v-if="userStore.user">
 		<UiClickable
-			class="user-pill rounded-full pr-2 h-12 flex items-center"
+			class="pr-2 h-12 flex items-center"
 			:class="{ 'menu-is-shown': showMenu }"
 			@click="showMenu = !showMenu"
 		>
@@ -17,7 +17,7 @@
 		</UiClickable>
 
 		<transition>
-			<div class="menu-wrapper absolute right-0 top-full pt-4 z-10" v-click-outside="() => showMenu = false" v-show="showMenu">
+			<div class="menu-wrapper absolute left-0 bottom-full pb-4 z-10" v-click-outside="() => showMenu = false" v-show="showMenu">
 				<div class="menu rounded-xl w-64 relative px-2.5 py-2.5 z-50" ref="$menu">
 					<div>
 						<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
@@ -90,7 +90,7 @@ import SunIcon from '~/assets/svg/Monochrome=sun.max.fill.svg'
 import MoonIcon from '~/assets/svg/Monochrome=moon.stars.fill.svg'
 import ComputerIcon from '~/assets/svg/Monochrome=desktopcomputer.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
-import { ref, watch, useNuxtApp, onMounted, computed } from '#imports'
+import { ref, watch, useNuxtApp, onMounted, useRouter } from '#imports'
 import { useAuth } from '~/composables/use-auth'
 import { useUserStore } from '~/store/user'
 import { useAccountLayoutLoaderStore } from '~/store/loaders'
@@ -103,7 +103,6 @@ const themeSubmenu = ref(false)
 const $menu = ref<HTMLElement>()
 
 const theme = useNuxtApp().$theme
-const lastNameFirstLetter = computed(() => userStore.user?.lastName.slice(0, 1).toUpperCase())
 
 watch(showMenu, () => themeSubmenu.value = false)
 
@@ -114,6 +113,10 @@ loaderStore.addPromise(new Promise(resolve => {
 		resolve(await userStore.fetch())
 	})
 }))
+
+useRouter().beforeEach(() => {
+	showMenu.value = false
+})
 
 </script>
 

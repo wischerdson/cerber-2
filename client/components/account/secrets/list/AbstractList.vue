@@ -1,7 +1,7 @@
 <template>
 	<div class="list" :class="{ shown }">
 		<div class="flex justify-between">
-			<UiClickable class="show-hide-btn flex items-center justify-center text-gray-700 dark:text-gray-550" @click="shown = !shown">
+			<UiClickable class="show-hide-btn flex items-center justify-center text-gray-700 dark:text-gray-500" @click="shown = !shown">
 				<span class="text-sm">{{ name }}</span>
 				<icon
 					class="chevron-right -mb-0.5 ml-1 -mr-2"
@@ -9,7 +9,11 @@
 					size="22px"
 				/>
 			</UiClickable>
-			<UiClickable class="add-btn rounded-md text-gray-700" :title="addItemTitle" @click="emits('add')">
+			<UiClickable
+				class="w-6 h-6 flex items-center justify-center rounded-md text-gray-600 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-850 hover:text-black dark:hover:text-gray-200"
+				:title="addItemTitle"
+				@click="emits('add')"
+			>
 				<icon size="20px" name="material-symbols:add-rounded" />
 			</UiClickable>
 		</div>
@@ -42,7 +46,7 @@ const shown = ref(props.showOnInit !== false)
 
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 
 .list {
 	.show-hide-btn {
@@ -70,25 +74,6 @@ const shown = ref(props.showOnInit !== false)
 
 .list-enter-from, .list-leave-to {
 	opacity: 0;
-}
-
-.add-btn {
-	width: 22px;
-	height: 22px;
-
-	&:hover {
-		color: theme('colors.gray.900');
-		background-color: #eaeaea;
-	}
-}
-
-html.dark {
-	.add-btn {
-		&:hover {
-			color: theme('colors.gray.100');
-			background-color: rgba(#fff, .1);
-		}
-	}
 }
 
 </style>

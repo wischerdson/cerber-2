@@ -19,7 +19,6 @@ withDefaults(defineProps<{ borderRadius?: number }>(), {
 		position: relative;
 		background-color: #fff;
 		box-shadow: 0 4px 30px 0 color-mix(in oklab, #000 4%, transparent);
-		padding: 26px 26px;
 		z-index: 0;
 
 		&:where(html.dark &) {
