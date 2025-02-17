@@ -1,6 +1,5 @@
 import type { Ref } from 'vue'
 import { computed, watch } from 'vue'
-import { useSingleton } from '~/composables/use-singleton'
 
 export type ThemeMode = 'system' | 'light' | 'dark'
 
@@ -11,7 +10,7 @@ export interface Theme {
 	scheme: ColorScheme
 }
 
-export const useTheme = (state: Ref<Theme>) => useSingleton('theme', () => {
+export const useTheme = (state: Ref<Theme>) => {
 	const darkModePreference = import.meta.client ? window.matchMedia('(prefers-color-scheme: dark)') : null
 
 	const resolveScheme = (mode: ThemeMode) => {
@@ -48,4 +47,4 @@ export const useTheme = (state: Ref<Theme>) => useSingleton('theme', () => {
 		scheme: computed(() => state.value.scheme),
 		setMode
 	}
-})
+}
