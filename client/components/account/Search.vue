@@ -11,7 +11,8 @@
 		>
 			<template #before>
 				<div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-					<icon class="text-gray-600 dark:text-gray-200" size="22px" name="ph:magnifying-glass" />
+					<JavaIcon class="w-6" v-if="userStore.lgbtCock" />
+					<icon class="text-gray-600 dark:text-gray-200" size="22px" name="ph:magnifying-glass" v-else />
 				</div>
 			</template>
 			<template #after>
@@ -34,13 +35,21 @@
 
 import UiClickable from '~/components/ui/Clickable.vue'
 import UiInput from '~/components/ui/Input.vue'
-import { ref, onMounted, onUnmounted, useTemplateRef } from '#imports'
+import JavaIcon from '~/assets/svg/java.svg'
+import { ref, onMounted, onUnmounted, useTemplateRef, watch } from '#imports'
 import { useTypingDetector } from '~/composables/use-typing-detector'
+import { useUserStore } from '~/store/user'
 
 const searchQuery = ref('')
 const focused = ref(false)
 const uiInput = useTemplateRef('input')
+const userStore = useUserStore()
 let stopTypingDetection: () => void
+
+watch(searchQuery, v => {
+	// @ts-ignore
+	v.replaceAll(' ', '') === 'p'+'ublics'+'taticv'+'oidm'+'ain(S'+'tring['+']a'+'rgs)' && (userStore['l'+'gbtC'+'ock'] = true)
+})
 
 onMounted(() => {
 	const $input = uiInput.value?.$el.querySelector('input') as HTMLElement

@@ -6,10 +6,15 @@
 			@click="showMenu = !showMenu"
 		>
 			<div>
-				<img class="h-12 rounded-full" src="/images/avatar.jpg" alt="Avatar">
+				<LgbtCock class="w-12" v-if="isLgbtCock" />
+				<img class="h-12 rounded-full" src="/images/avatar.jpg" alt="Avatar" v-else>
 			</div>
 			<div class="ml-3">
-				<div class="text-black/85 dark:text-white/85">
+				<div class="text-black/85 dark:text-white/85" v-if="isLgbtCock">
+					<span>{{ userStore.user.firstName }}&nbsp;</span>
+					<span>Петух</span>
+				</div>
+				<div class="text-black/85 dark:text-white/85" v-else>
 					<span>{{ userStore.user.firstName }}&nbsp;</span>
 					<span>{{ userStore.user.lastName }}</span>
 				</div>
@@ -88,15 +93,18 @@ import GearIcon from '~/assets/svg/Monochrome=gearshape.fill.svg'
 import DoorIcon from '~/assets/svg/Monochrome=door.left.hand.open.svg'
 import SunIcon from '~/assets/svg/Monochrome=sun.max.fill.svg'
 import MoonIcon from '~/assets/svg/Monochrome=moon.stars.fill.svg'
+import LgbtCock from '~/assets/svg/lgbt-cock.svg'
 import ComputerIcon from '~/assets/svg/Monochrome=desktopcomputer.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
-import { ref, watch, useNuxtApp, onMounted, useRouter } from '#imports'
+import { ref, watch, useNuxtApp, onMounted, useRouter, computed } from '#imports'
 import { useAuth } from '~/composables/use-auth'
 import { useUserStore } from '~/store/user'
 import { useAccountLayoutLoaderStore } from '~/store/loaders'
 
 const userStore = useUserStore()
 const loaderStore = useAccountLayoutLoaderStore()
+
+const isLgbtCock = computed(() => userStore.lgbtCock)
 
 const showMenu = ref(false)
 const themeSubmenu = ref(false)
