@@ -11,7 +11,7 @@
 		>
 			<template #before>
 				<div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-					<JavaIcon class="w-6" v-if="userStore.lgbtCock" />
+					<JavaIcon class="w-6 text-black dark:text-white" v-if="userStore.lgbtCock" />
 					<icon class="text-gray-600 dark:text-gray-200" size="22px" name="ph:magnifying-glass" v-else />
 				</div>
 			</template>
