@@ -10,11 +10,7 @@
 				<img class="h-12 rounded-full" src="/images/avatar.jpg" alt="Avatar" v-else>
 			</div>
 			<div class="ml-3">
-				<div class="text-black/85 dark:text-white/85" v-if="isLgbtCock">
-					<span>{{ userStore.user.firstName }}&nbsp;</span>
-					<span>Петух</span>
-				</div>
-				<div class="text-black/85 dark:text-white/85" v-else>
+				<div class="text-black/85 dark:text-white/85">
 					<span>{{ userStore.user.firstName }}&nbsp;</span>
 					<span>{{ userStore.user.lastName }}</span>
 				</div>
