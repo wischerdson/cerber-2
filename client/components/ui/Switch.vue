@@ -14,7 +14,7 @@ const isOn = defineModel<boolean>()
 
 </script>
 
-<style scoped lang="scss">
+<style>
 
 .ui-switch {
 	transition: background-color .2s ease, box-shadow .2s ease;
@@ -50,7 +50,7 @@ const isOn = defineModel<boolean>()
 
 html.dark {
 	.ui-switch.on {
-		background-color: theme('colors.green.500');
+		background-color: var(--color-green-500);
 	}
 }
 

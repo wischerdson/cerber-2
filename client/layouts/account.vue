@@ -1,7 +1,7 @@
 <template>
 	<NuxtLayout name="default">
 		<div class="flex items-start gap-6">
-			<div class="h-screen pl-6 py-6">
+			<div class="h-screen pl-6 py-6 sticky top-0">
 				<div class="min-w-3xs h-full flex flex-col justify-between items-start">
 					<UiClickable :nuxt-link="{ to: '/' }">
 						<CerberLogo class="h-12" />

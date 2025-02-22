@@ -17,11 +17,13 @@ import type { NuxtLinkProps } from '#app'
 import { ref } from '#imports'
 import { NuxtLink } from '#components'
 
-withDefaults(defineProps<{
+export interface UiClickableProps {
 	tag?: string
 	duration?: number
 	nuxtLink?: NuxtLinkProps
-}>(), {
+}
+
+withDefaults(defineProps<UiClickableProps>(), {
 	tag: 'button',
 	duration: 200
 })

@@ -3,7 +3,7 @@
 		class="secret-item w-full flex items-center gap-3 h-10 hover:bg-gray-50 dark:hover:bg-gray-850 px-4 rounded-lg"
 		:nuxt-link="{ to: '/' }"
 	>
-		<SecretIcon class="secret-icon--letter w-7 h-7" :icon="icon" />
+		<SecretIcon class="w-7 h-7" :icon="icon" />
 		<span class="font-medium">{{ secret.name }}</span>
 	</UiClickable>
 </template>
@@ -17,3 +17,25 @@ import SecretIcon, { type SecretIconProps } from '~/components/account/secrets/l
 defineProps<{ secret: SecretPreview, icon: SecretIconProps['icon'] }>()
 
 </script>
+
+<style>
+
+.secret-item {
+	&:hover {
+		.secret-icon--letter {
+			background-color: var(--color-gray-100);
+		}
+	}
+}
+
+html.dark {
+	.secret-item {
+		&:hover {
+			.secret-icon--letter {
+				background-color: var(--color-gray-800);
+			}
+		}
+	}
+}
+
+</style>

@@ -160,7 +160,7 @@ const classes = computed(() => {
 	}
 }
 
-@layer modification {
+@layer modifications {
 	.ui-input--base {
 		height: 36px;
 		padding: 0 12px;

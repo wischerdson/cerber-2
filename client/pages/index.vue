@@ -1,10 +1,10 @@
 <template>
-	<div class="flex justify-center gap-6">
+	<div class="flex justify-center items-start gap-6">
 		<div class="grow max-w-2xl">
 			<TheSearch />
 
 			<UiContentTile class="mt-6 pb-6">
-				<div class="px-2 pt-4">
+				<div class="px-2.5 pt-4">
 					<TheBreadcrumb />
 				</div>
 				<div class="px-6 mt-4">
@@ -17,8 +17,8 @@
 				</div>
 			</UiContentTile>
 		</div>
-		<UiContentTile class="py-6 h-[400px] grow max-w-md px-6">
-			<h2 class="font-semibold text-xl">Какой-то доступ</h2>
+		<UiContentTile class="py-6 grow max-w-md px-6">
+			<SecretFormCreate />
 		</UiContentTile>
 	</div>
 </template>
@@ -28,34 +28,13 @@
 import { definePageMeta, useHead } from '#imports'
 import UiContentTile from '~/components/ui/ContentTile.vue'
 import TheBreadcrumb from '~/components/account/Breadcrumb.vue'
-import SecretGroupList from '~/components/account/secrets/list/SecretGroupList.vue'
+import SecretGroupList from '~/components/account/secrets/list/group/SecretGroupList.vue'
 import SecretList from '~/components/account/secrets/list/SecretList.vue'
 import TheSearch from '~/components/account/Search.vue'
+import SecretFormCreate from '~/components/account/secrets/form/FormCreate.vue'
 
 definePageMeta({ middleware: 'auth' })
 
 useHead({ title: 'Cerber - Доступы' })
 
 </script>
-
-<style>
-
-.secret-item {
-	&:hover {
-		.secret-icon--letter {
-			background-color: var(--color-gray-100);
-		}
-	}
-}
-
-html.dark {
-	.secret-item {
-		&:hover {
-			.secret-icon--letter {
-				background-color: var(--color-gray-800);
-			}
-		}
-	}
-}
-
-</style>

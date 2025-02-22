@@ -14,6 +14,6 @@
 <script setup lang="ts">
 
 import AbstractList from '~/components/account/secrets/list/AbstractList.vue'
-import SecretGroupItem from '~/components/account/secrets/list/SecretGroupItem.vue'
+import SecretGroupItem from '~/components/account/secrets/list/group/SecretGroupItem.vue'
 
 </script>

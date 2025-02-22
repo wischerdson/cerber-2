@@ -1,4 +1,4 @@
-@layer theme, base, components, modification, utilities;
+@layer theme, base, components, modifications, utilities;
 
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);

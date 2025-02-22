@@ -1,5 +1,5 @@
 <template>
-	<div class="aspect-square bg-gray-50 dark:bg-gray-850 flex items-center justify-center rounded-md" v-if="icon[0] === 'letter'">
+	<div class="secret-icon--letter aspect-square bg-gray-50 dark:bg-gray-850 flex items-center justify-center rounded-md" v-if="icon[0] === 'letter'">
 		<span class="text-gray-700 dark:text-gray-400 font-medium text-lg select-none">{{ firstLetter }}</span>
 		<slot></slot>
 	</div>
