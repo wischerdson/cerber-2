@@ -19,9 +19,9 @@
 
 		<transition>
 			<div class="menu-wrapper absolute left-0 bottom-full pb-4 z-10" v-click-outside="() => showMenu = false" v-show="showMenu">
-				<div class="menu rounded-xl w-64 relative px-2.5 py-2.5 z-50" ref="$menu">
+				<div class="menu bg-white dark:bg-dark-tile rounded-xl w-64 relative px-2.5 py-2.5 z-50" ref="$menu">
 					<div>
-						<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
+						<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
 							<MoonIcon class="mr-3 h-4 w-4" v-if="theme.scheme" />
 							<SunIcon class="mr-3 h-4 w-4" v-else />
 							<span>Оформление</span>
@@ -35,17 +35,17 @@
 						<HeightAnimation>
 							<transition>
 								<div class="submenu mt-3" v-if="themeSubmenu">
-									<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('light')">
+									<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('light')">
 										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode.value === 'light'"></div>
 										<SunIcon class="mr-3 h-4 w-4" />
 										<span>Светлое</span>
 									</UiClickable>
-									<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.setMode('dark')">
+									<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4 relative" @click="theme.setMode('dark')">
 										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode.value === 'dark'"></div>
 										<MoonIcon class="mr-3 h-4 w-4" />
 										<span>Темное</span>
 									</UiClickable>
-									<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('system')">
+									<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="theme.setMode('system')">
 										<div class="absolute left-1.5 rounded-full w-1 h-1 dark:bg-gray-300 bg-gray-600" v-if="theme.mode.value === 'system'"></div>
 										<ComputerIcon class="mr-3 h-4 w-4" />
 										<span>Как в системе</span>
@@ -57,21 +57,21 @@
 
 					<div class="mt-3">
 						<NuxtLink to="settings">
-							<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
+							<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
 								<GearIcon class="gear-icon mr-3 h-4 w-4" />
 								<span>Настройки</span>
 							</UiClickable>
 						</NuxtLink>
 					</div>
 					<div>
-						<UiClickable class="menu-item dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
+						<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
 							<icon class="mr-2.5 -ml-0.5" size="20px" name="material-symbols:shield-rounded" />
 							<span>Безопасность</span>
 						</UiClickable>
 					</div>
 
 					<div class="mt-3">
-						<UiClickable class="menu-item text-[#bf4c44] flex w-full h-9 rounded-md items-center px-4" @click="logout">
+						<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 text-[#bf4c44] flex w-full h-9 rounded-md items-center px-4" @click="logout">
 							<DoorIcon class="mr-3 h-4 w-4" />
 							<span>Выйти</span>
 						</UiClickable>
@@ -124,9 +124,7 @@ useRouter().beforeEach(() => {
 
 </script>
 
-<style lang="scss" scoped>
-
-@use "sass:color";
+<style scoped>
 
 .menu-wrapper {
 	&.v-enter-active, &.v-leave-active {
@@ -140,22 +138,7 @@ useRouter().beforeEach(() => {
 }
 
 .menu {
-	box-shadow: 0 0 20px 0 rgba(#000, 8%);
-	background-color: #fff;
-
-	.arrow-top {
-		color: #fff;
-	}
-}
-
-html.dark {
-	.menu {
-		background-color: color.scale(#fff, $lightness: -91%);
-
-		.arrow-top {
-			color: color.scale(#fff, $lightness: -91%);
-		}
-	}
+	box-shadow: 0 0 20px 0 color-mix(in oklab, #000 8%, transparent);
 }
 
 .menu-item {
@@ -165,18 +148,6 @@ html.dark {
 
 	.chevron-right {
 		transition: transform .15s ease;
-	}
-
-	&:hover {
-		background-color: #ebebeb;
-	}
-}
-
-html.dark {
-	.menu-item {
-		&:hover {
-			background-color: color.scale(#fff, $lightness: -85%);
-		}
 	}
 }
 

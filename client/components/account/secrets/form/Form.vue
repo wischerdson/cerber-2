@@ -11,7 +11,7 @@
 						tag="div"
 						name="field-list"
 					>
-						<FieldEditRow
+						<EditableField
 							class="mt-5"
 							v-for="(field, idx) in model.fields"
 							:key="field.clientCode"
@@ -25,7 +25,7 @@
 					</TransitionGroup>
 				</HeightAnimation>
 
-				<div class="mt-4">
+				<div class="mt-5">
 					<UiButton class="gap-1" color="secondary" size="sm" tabindex="-1" @click="addField">
 						<icon class="-ml-1" name="material-symbols:add-rounded" size="18px" />
 						<span>Добавить поле</span>
@@ -46,7 +46,7 @@ import type { SecretForCreate } from '~/repositories/adapters/secret-adapter'
 import UiInput from '~/components/ui/Input.vue'
 import UiTextarea from '~/components/ui/Textarea.vue'
 import UiButton from '~/components/ui/Button.vue'
-import FieldEditRow from '~/components/account/secrets/FieldEditRow.vue'
+import EditableField from '~/components/account/secrets/form/EditableField.vue'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 import { uid } from '~/utils/helpers'
 

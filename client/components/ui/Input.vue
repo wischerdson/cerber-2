@@ -169,10 +169,13 @@ const classes = computed(() => {
 	.ui-input--invalid {
 		background-color: color-mix(in oklab, #ef4444 10%, transparent);
 		border-color: color-mix(in oklab, #ef4444 50%, transparent);
-		padding-right: 32px;
 
 		&:focus {
 			border-color: #ef4444;
+		}
+
+		&:not(.ui-textarea--invalid) {
+			padding-right: 32px;
 		}
 	}
 

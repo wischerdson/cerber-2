@@ -10,7 +10,7 @@
 					<UserBadge />
 				</div>
 			</div>
-			<div class="w-full py-6">
+			<div class="w-full py-6 pr-6">
 				<slot></slot>
 			</div>
 		</div>

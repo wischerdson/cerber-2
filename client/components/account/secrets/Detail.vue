@@ -2,7 +2,7 @@
 	<div class="secret-view relative">
 		<div>
 			<div class="flex space-x-3">
-				<SecretIcon class="w-8 h-8" :icon="['icones', 'material-symbols:database']" />
+				<SecretIcon class="w-8 h-8" :icon="['letter', 'material-symbols:database']" />
 				<h2 class="flex-1 font-bold text-gray-850 dark:text-white/75 text-1.5xl tracking-wide self-center">{{ secret.name }}</h2>
 			</div>
 
@@ -32,11 +32,11 @@
 
 <script setup lang="ts">
 
-import type { Secret } from '../../../../client.old/repositories/adapters/secret-adapter'
+import type { Secret } from '~/repositories/adapters/secret-adapter'
 import UiClickable from '~/components/ui/Clickable.vue'
 import TrashIcon from '~/assets/svg/Monochrome=trash.fill.svg'
 import CustomFieldView from '~/components/account/secrets/FieldView.vue'
-import SecretIcon from '~/components/account/secrets/SecretIcon.vue'
+import SecretIcon from '~/components/account/secrets/list/SecretIcon.vue'
 import { computed } from 'vue'
 import { formatDate, formatTime } from '~/utils/date'
 

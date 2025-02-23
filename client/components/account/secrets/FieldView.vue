@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 
-import type { SecretField } from '../../../../client.old/repositories/adapters/secret-adapter'
+import type { SecretField } from '~/repositories/adapters/secret-adapter'
 import { computed, ref } from 'vue'
 import { isUrl as _isUrl, hasHttpProtocol } from '~/utils/helpers'
 import EyeIcon from '~/assets/svg/Monochrome=eye.fill.svg'
