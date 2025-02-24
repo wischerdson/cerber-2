@@ -7,11 +7,15 @@
 						<CerberLogo class="h-12" />
 					</UiClickable>
 
-					<UserBadge />
+					<ClientOnly>
+						<UserBadge />
+					</ClientOnly>
 				</div>
 			</div>
 			<div class="w-full py-6 pr-6">
-				<slot></slot>
+				<ClientOnly>
+					<slot></slot>
+				</ClientOnly>
 			</div>
 		</div>
 	</NuxtLayout>

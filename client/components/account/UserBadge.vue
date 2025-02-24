@@ -1,5 +1,5 @@
 <template>
-	<div class="relative" v-if="userStore.user">
+	<div class="relative" v-if="user">
 		<UiClickable
 			class="pr-2 h-12 flex items-center"
 			:class="{ 'menu-is-shown': showMenu }"
@@ -11,8 +11,8 @@
 			</div>
 			<div class="ml-3">
 				<div class="text-black/85 dark:text-white/85">
-					<span>{{ userStore.user.firstName }}&nbsp;</span>
-					<span>{{ userStore.user.lastName }}</span>
+					<span>{{ user.firstName }}&nbsp;</span>
+					<span>{{ user.lastName }}</span>
 				</div>
 			</div>
 		</UiClickable>
@@ -92,31 +92,28 @@ import MoonIcon from '~/assets/svg/Monochrome=moon.stars.fill.svg'
 import LgbtCock from '~/assets/svg/lgbt-cock.svg'
 import ComputerIcon from '~/assets/svg/Monochrome=desktopcomputer.svg'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
-import { ref, watch, useNuxtApp, onMounted, useRouter, computed } from '#imports'
+import { ref, watch, useNuxtApp, useRouter, computed } from '#imports'
 import { useAuth } from '~/composables/use-auth'
 import { useUserStore } from '~/store/user'
 import { useAccountLayoutLoaderStore } from '~/store/loaders'
 
 const userStore = useUserStore()
-const loaderStore = useAccountLayoutLoaderStore()
+const { addPromise: addPromiseToLoader } = useAccountLayoutLoaderStore()
 
 const isLgbtCock = computed(() => userStore.lgbtCock)
 
 const showMenu = ref(false)
 const themeSubmenu = ref(false)
 const $menu = ref<HTMLElement>()
+const user = computed(() => userStore.user)
 
 const theme = useNuxtApp().$theme
 
-watch(showMenu, () => themeSubmenu.value = false)
-
 const logout = () => useAuth('default').logout()
 
-loaderStore.addPromise(new Promise(resolve => {
-	onMounted(async () => {
-		resolve(await userStore.fetch())
-	})
-}))
+addPromiseToLoader(userStore.fetch())
+
+watch(showMenu, () => themeSubmenu.value = false)
 
 useRouter().beforeEach(() => {
 	showMenu.value = false

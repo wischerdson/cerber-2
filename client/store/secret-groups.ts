@@ -2,17 +2,35 @@ import { defineStore } from 'pinia'
 import type { SecretGroup, SecretGroupForCreate } from '~/repositories/adapters/secret-group-adapter'
 import { createGroup, getGroups } from '~/repositories/secret-groups'
 import { ref } from 'vue'
+import { uid } from '#imports'
 
 export const useSecretGroupsStore = defineStore('secret-groups', () => {
-	const groups = ref<SecretGroup[]>([])
+	const groups = ref<(SecretGroup | SecretGroupForCreate & { editMode: boolean })[]>([])
+
+	const addNew = () => {
+		groups.value.unshift({
+			name: 'Новая группа',
+			clientCode: uid(),
+			description: null,
+			parentId: null,
+			editMode: true
+		})
+	}
 
 	const create = async (data: SecretGroupForCreate) => {
-		return { ...await createGroup(data), clientCode: data.clientCode }
+		groups.value[0] = await createGroup(data)
+		groups.value[0].clientCode = data.clientCode
+		groups.value = (groups.value as SecretGroup[]).sort((g1, g2) => g1.id - g2.id)
 	}
 
 	const fetch = async (spaceId: number | null, parentGroupId?: number) => {
 		return groups.value = await getGroups()
 	}
 
-	return { fetch, create }
+	return {
+		fetch,
+		create,
+		addNew,
+		groups
+	}
 })

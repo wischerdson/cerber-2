@@ -32,9 +32,16 @@ import SecretGroupList from '~/components/account/secrets/list/groups/SecretGrou
 import SecretList from '~/components/account/secrets/list/SecretList.vue'
 import TheSearch from '~/components/account/Search.vue'
 import SecretFormCreate from '~/components/account/secrets/form/FormCreate.vue'
+import { useSecretGroupsStore } from '~/store/secret-groups'
+import { useAccountLayoutLoaderStore } from '~/store/loaders'
 
 definePageMeta({ middleware: 'auth' })
 
 useHead({ title: 'Cerber - Доступы' })
+
+const loaderStore = useAccountLayoutLoaderStore()
+const groupsStore = useSecretGroupsStore()
+
+loaderStore.addPromise(groupsStore.fetch(null))
 
 </script>
