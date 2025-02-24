@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia'
-import type { SecretGroupForCreate } from '../repositories/adapters/secret-group-adapter'
-import { createGroup } from '../repositories/secret-groups'
+import type { SecretGroup, SecretGroupForCreate } from '~/repositories/adapters/secret-group-adapter'
+import { createGroup, getGroups } from '~/repositories/secret-groups'
+import { ref } from 'vue'
 
 export const useSecretGroupsStore = defineStore('secret-groups', () => {
-	const create = async (data: SecretGroupForCreate) => {
-		const group = await createGroup(data)
+	const groups = ref<SecretGroup[]>([])
 
-		console.log(group)
+	const create = async (data: SecretGroupForCreate) => {
+		return { ...await createGroup(data), clientCode: data.clientCode }
 	}
 
-	const fetch = (spaceId: number | null, parentGroupId?: number) => {
-
+	const fetch = async (spaceId: number | null, parentGroupId?: number) => {
+		return groups.value = await getGroups()
 	}
 
 	return { fetch, create }

@@ -24,30 +24,18 @@ import { uid } from '~/utils/helpers'
 import { ref } from 'vue'
 import AbstractList from '~/components/account/secrets/list/AbstractList.vue'
 import SecretGroupItem from '~/components/account/secrets/list/groups/SecretGroupItem.vue'
+import { useSecretGroupsStore } from '~/store/secret-groups'
+import type { SecretGroup, SecretGroupForCreate } from '~/repositories/adapters/secret-group-adapter'
 
-type FreshlyBakedGroup = {
-	name: string
-	clientCode: string
-}
+const store = useSecretGroupsStore()
 
-type GroupPreview = {
-	id: number
-	name: string
-	clientCode: string
-}
+const groups = ref<(SecretGroup | SecretGroupForCreate)[]>(await store.fetch(null))
 
-const groups = ref<(GroupPreview | FreshlyBakedGroup)[]>([])
+const addGroup = () => groups.value.unshift({ name: 'Новая группа', clientCode: uid(), description: null, parentId: null })
 
-const addGroup = () => groups.value.unshift({ name: 'Новая группа', clientCode: uid() })
-
-const createGroup = (name: string) => {
-	groups.value[0] = {
-		id: groups.value.length,
-		clientCode: groups.value[0].clientCode,
-		name,
-	}
-
-	console.log(`Create group "${name}"`)
+const createGroup = async (name: string) => {
+	groups.value[0].name = name
+	groups.value[0] = await store.create(groups.value[0])
 }
 
 </script>

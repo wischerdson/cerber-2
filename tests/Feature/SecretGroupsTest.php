@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Group;
+use App\Models\SecretGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -18,11 +18,11 @@ class SecretGroupsTest extends TestCase
 	 */
 	public function restrict_without_authorization(): void
 	{
-		$this->getJson('/groups')->assertUnauthenticated();
-		$this->postJson('/groups')->assertUnauthenticated();
-		$this->putJson('/groups/1')->assertUnauthenticated();
-		$this->patchJson('/groups/1')->assertUnauthenticated();
-		$this->deleteJson('/groups/1')->assertUnauthenticated();
+		$this->getJson('/secret-groups')->assertUnauthenticated();
+		$this->postJson('/secret-groups')->assertUnauthenticated();
+		$this->putJson('/secret-groups/1')->assertUnauthenticated();
+		$this->patchJson('/secret-groups/1')->assertUnauthenticated();
+		$this->deleteJson('/secret-groups/1')->assertUnauthenticated();
 	}
 
 	/**
@@ -33,12 +33,12 @@ class SecretGroupsTest extends TestCase
 	public function can_user_get_his_spaces(): void
 	{
 		// Создаем случайную группу, не привязанную к конкретному пользователю
-		Group::factory()->create();
+		SecretGroup::factory()->create();
 
 		// ... и убеждаемся, что пользователю, запросившему группы первого уровня (пространства),
 		// отдается пустой массив, так как на его имя групп нет
 		$this->actingAs($user = self::createUser())
-			->getJson('/groups')
+			->getJson('/secret-groups')
 			->assertOk()
 			->assertJsonIsArray()
 			->assertJson(fn (AssertableJson $json) =>
@@ -46,13 +46,13 @@ class SecretGroupsTest extends TestCase
 			);
 
 		// Создаем группу от лица конкретного пользователя
-		$group = Group::factory()->for($user, 'user')->create();
+		$group = SecretGroup::factory()->for($user, 'user')->create();
 
 		// ... и убеждаемся, что ему пришел массив с 1 элементом с определенным набором свойств.
 		// ID группы, пришедший в ответе должен совпадать с ID группы, которая была только что
 		// создана выше
 		$this->actingAs($user)
-			->getJson('/groups')
+			->getJson('/secret-groups')
 			->assertOk()
 			->assertJsonIsArray()
 			->assertJson(fn (AssertableJson $json) =>
@@ -72,26 +72,26 @@ class SecretGroupsTest extends TestCase
 	{
 		// Проверяем, что на несуществующий ID группы придет ответ "Not Found"
 		$this->actingAs($user = self::createUser())
-			->getJson("/groups/nonExistentId")
+			->getJson("/secret-groups/nonExistentId")
 			->assertNotFound();
 
 		// Создаем случайную группу, не привязанную к конкретному пользователю
-		$groupWithoutUser = Group::factory()->create();
+		$groupWithoutUser = SecretGroup::factory()->create();
 
 		// ... и убеждаемся, что пользователю, запросившему детали не своей группы,
 		// возвращается ошибка Forbidden
 		$this->actingAs($user)
-			->getJson("/groups/{$groupWithoutUser->id}")
+			->getJson("/secret-groups/{$groupWithoutUser->id}")
 			->assertForbidden();
 
 		// Создаем группу от лица конкретного пользователя
-		$group = Group::factory()->for($user, 'user')->create();
+		$group = SecretGroup::factory()->for($user, 'user')->create();
 
 		// ... и убеждаемся, что ему пришел объект с определенным набором свойств и
 		// ID группы, пришедший в ответе должен совпадать с ID группы, которая была только что
 		// создана выше
 		$this->actingAs($user)
-			->getJson("/groups/{$group->id}")
+			->getJson("/secret-groups/{$group->id}")
 			->assertOk()
 			->assertJson(fn (AssertableJson $json) =>
 				$json->hasAll(
@@ -107,7 +107,7 @@ class SecretGroupsTest extends TestCase
 	public function can_user_create_first_level_group()
 	{
 		$this->actingAs($user = self::createUser())
-			->postJson('/groups', [])
+			->postJson('/secret-groups', [])
 			->assertStatus(422)
 			->assertJson(fn (AssertableJson $json) =>
 				$json->where('error_reason', 'validation_failed')
@@ -116,7 +116,7 @@ class SecretGroupsTest extends TestCase
 			);
 
 		$group = $this->actingAs($user)
-			->postJson('/groups', ['name' => 'Some first-level group'])
+			->postJson('/secret-groups', ['name' => 'Some first-level group'])
 			->assertCreated()
 			->assertJsonIsObject()
 			->assertJson(fn (AssertableJson $json) =>
@@ -126,7 +126,7 @@ class SecretGroupsTest extends TestCase
 				)
 			)->collect();
 
-		$this->assertDatabaseHas('groups', [
+		$this->assertDatabaseHas('secret_groups', [
 			'id' => $group->get('id'),
 			'user_id' => $user->id,
 			'name' => 'Some first-level group',
@@ -141,10 +141,10 @@ class SecretGroupsTest extends TestCase
 	 */
 	public function can_user_create_subgroups()
 	{
-		$someoneElsesGroup = Group::factory()->create();
+		$someoneElsesGroup = SecretGroup::factory()->create();
 
 		$this->actingAs($user = self::createUser())
-			->postJson('/groups', [
+			->postJson('/secret-groups', [
 				'parent_id' => $someoneElsesGroup->id,
 				'name' => "Some subgroup with parent \"{$someoneElsesGroup->name}\""
 			])
@@ -154,10 +154,10 @@ class SecretGroupsTest extends TestCase
 				$json->where('error_reason', 'forbidden')->etc()
 			);
 
-		$parentGroup = Group::factory()->for($user, 'user')->create();
+		$parentGroup = SecretGroup::factory()->for($user, 'user')->create();
 
 		$group = $this->actingAs($user)
-			->postJson('/groups', [
+			->postJson('/secret-groups', [
 				'parent_id' => $parentGroup->id,
 				'name' => "Some subgroup with parent",
 				'description' => "Group description"
@@ -171,7 +171,7 @@ class SecretGroupsTest extends TestCase
 				)
 			)->collect();
 
-		$this->assertDatabaseHas('groups', [
+		$this->assertDatabaseHas('secret_groups', [
 			'id' => $group->get('id'),
 			'user_id' => $user->id,
 			'name' => 'Some subgroup with parent',
@@ -187,13 +187,13 @@ class SecretGroupsTest extends TestCase
 	public function can_user_update_group()
 	{
 		$this->actingAs($user = self::createUser())
-			->patchJson("/groups/non-existent-group", [])
+			->patchJson("/secret-groups/non-existent-group", [])
 			->assertNotFound();
 
-		$someoneElsesGroup = Group::factory()->create();
+		$someoneElsesGroup = SecretGroup::factory()->create();
 
 		$this->actingAs($user)
-			->patchJson("/groups/{$someoneElsesGroup->id}", [
+			->patchJson("/secret-groups/{$someoneElsesGroup->id}", [
 				'name' => '123'
 			])
 			->assertForbidden()
@@ -201,14 +201,14 @@ class SecretGroupsTest extends TestCase
 				$json->where('error_reason', 'forbidden')->etc()
 			);
 
-		$group = Group::factory()->for($user, 'user')->create();
+		$group = SecretGroup::factory()->for($user, 'user')->create();
 
 		$this->actingAs($user)
-			->patchJson("/groups/{$group->id}", ['name' => '123'])
+			->patchJson("/secret-groups/{$group->id}", ['name' => '123'])
 			->assertOk()
 			->assertContent('');
 
-		$this->assertDatabaseHas('groups', [
+		$this->assertDatabaseHas('secret_groups', [
 			'id' => $group->id,
 			'user_id' => $user->id,
 			'name' => '123',
@@ -223,26 +223,26 @@ class SecretGroupsTest extends TestCase
 	public function can_user_delete_group()
 	{
 		$this->actingAs($user = self::createUser())
-			->deleteJson("/groups/non-existent-group", [])
+			->deleteJson("/secret-groups/non-existent-group", [])
 			->assertNotFound();
 
-		$someoneElsesGroup = Group::factory()->create();
+		$someoneElsesGroup = SecretGroup::factory()->create();
 
 		$this->actingAs($user)
-			->deleteJson("/groups/{$someoneElsesGroup->id}")
+			->deleteJson("/secret-groups/{$someoneElsesGroup->id}")
 			->assertForbidden()
 			->assertJson(fn (AssertableJson $json) =>
 				$json->where('error_reason', 'forbidden')->etc()
 			);
 
-		$group = Group::factory()->for($user, 'user')->create();
+		$group = SecretGroup::factory()->for($user, 'user')->create();
 
 		$this->actingAs($user)
-			->deleteJson("/groups/{$group->id}")
+			->deleteJson("/secret-groups/{$group->id}")
 			->assertOk()
 			->assertContent('');
 
-		$this->assertDatabaseHas('groups', [
+		$this->assertDatabaseHas('secret_groups', [
 			'id' => $group->id,
 			'user_id' => $user->id,
 			'deleted_at' => now()

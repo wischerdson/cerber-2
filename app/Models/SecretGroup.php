@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Facades\Auth;
-use Database\Factories\GroupFactory;
+use Database\Factories\SecretGroupFactory;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,17 +25,17 @@ use Spatie\Sluggable\SlugOptions;
  *
  * @method \Illuminate\Database\Eloquent\Builder forCurrentUser
  */
-class Group extends Model
+class SecretGroup extends Model
 {
 	use HasFactory, HasSlug;
 
 	const UPDATED_AT = null;
 
-	protected static $factory = GroupFactory::class;
+	protected static $factory = SecretGroupFactory::class;
 
 	protected $fillable = ['name', 'description'];
 
-	protected $table = 'groups';
+	protected $table = 'secret_groups';
 
 	protected $casts = [
 		'created_at' => 'timestamp',

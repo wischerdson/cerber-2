@@ -11,7 +11,7 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('groups', function (Blueprint $table) {
+		Schema::create('secret_groups', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
 			$table->string('name');
@@ -22,8 +22,8 @@ return new class extends Migration
 			$table->timestamp('deleted_at')->nullable();
 		});
 
-		Schema::table('groups', function (Blueprint $table) {
-			$table->foreign('parent_id')->references('id')->on('groups');
+		Schema::table('secret_groups', function (Blueprint $table) {
+			$table->foreign('parent_id')->references('id')->on('secret_groups');
 		});
 	}
 
@@ -32,6 +32,6 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists('groups');
+		Schema::dropIfExists('secret_groups');
 	}
 };

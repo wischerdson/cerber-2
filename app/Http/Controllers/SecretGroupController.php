@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ForbiddenException;
 use App\Facades\Auth;
-use App\Models\Group;
+use App\Models\SecretGroup;
 use Illuminate\Http\Request;
 
-class GroupController extends Controller
+class SecretGroupController extends Controller
 {
 	public function index(Request $request)
 	{
@@ -15,21 +15,21 @@ class GroupController extends Controller
 			(!$parentId = $request->parent_id) &&
 			(!$parentAlias = $request->parent_alias)
 		) {
-			return Group::query()
+			return SecretGroup::query()
 				->forCurrentUser()
 				->where('parent_id', null)
 				->get();
 		}
 
 		if (!$parentId) {
-			$parentId = Group::query()
+			$parentId = SecretGroup::query()
 				->forCurrentUser()
 				->findBySlug($parentAlias)
 				->firstOrFail()
 				->id;
 		}
 
-		return Group::query()
+		return SecretGroup::query()
 			->forCurrentUser()
 			->where('parent_id', $parentId)
 			->get();
@@ -46,24 +46,24 @@ class GroupController extends Controller
 		$user = Auth::user();
 
 		if ($groupParentId = $request->parent_id) {
-			$parentGroup = Group::findOrFail($groupParentId);
+			$parentGroup = SecretGroup::findOrFail($groupParentId);
 
 			if ($parentGroup->user_id !== $user->id) {
 				throw new ForbiddenException();
 			}
 		}
 
-		$group = new Group($request->only('name', 'description'));
+		$group = new SecretGroup($request->only('name', 'description'));
 		$group->parent_id = $groupParentId;
 
 		['id' => $id] = $user->secretGroups()->save($group);
 
-		return response()->json(Group::find($id), 201);
+		return response()->json(SecretGroup::find($id), 201);
 	}
 
 	public function show(int|string $groupId)
 	{
-		$group = Group::findOrFail($groupId);
+		$group = SecretGroup::findOrFail($groupId);
 
 		if ($group->user_id !== Auth::user()->id) {
 			throw new ForbiddenException();
@@ -79,7 +79,7 @@ class GroupController extends Controller
 			'description' => 'string|max:255'
 		]);
 
-		$group = Group::findOrFail($groupId);
+		$group = SecretGroup::findOrFail($groupId);
 
 		if ($group->user_id !== Auth::user()->id) {
 			throw new ForbiddenException();
@@ -91,7 +91,7 @@ class GroupController extends Controller
 
 	public function destroy(int|string $groupId)
 	{
-		$group = Group::findOrFail($groupId);
+		$group = SecretGroup::findOrFail($groupId);
 
 		if ($group->user_id !== Auth::user()->id) {
 			throw new ForbiddenException();

@@ -82,6 +82,6 @@ class User extends Authenticatable
 
 	public function secretGroups(): HasMany
 	{
-		return $this->hasMany(Group::class, 'user_id');
+		return $this->hasMany(SecretGroup::class, 'user_id');
 	}
 }

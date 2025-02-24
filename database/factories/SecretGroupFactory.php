@@ -2,16 +2,16 @@
 
 namespace Database\Factories;
 
-use App\Models\Group;
+use App\Models\SecretGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Group>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SecretGroup>
  */
-class GroupFactory extends Factory
+class SecretGroupFactory extends Factory
 {
 	/** @var class-string<\Illuminate\Database\Eloquent\Model> */
-	protected $model = Group::class;
+	protected $model = SecretGroup::class;
 
 	/**
 	 * Define the model's default state.
