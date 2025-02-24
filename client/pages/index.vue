@@ -28,7 +28,7 @@
 import { definePageMeta, useHead } from '#imports'
 import UiContentTile from '~/components/ui/ContentTile.vue'
 import TheBreadcrumb from '~/components/account/Breadcrumb.vue'
-import SecretGroupList from '~/components/account/secrets/list/group/SecretGroupList.vue'
+import SecretGroupList from '~/components/account/secrets/list/groups/SecretGroupList.vue'
 import SecretList from '~/components/account/secrets/list/SecretList.vue'
 import TheSearch from '~/components/account/Search.vue'
 import SecretFormCreate from '~/components/account/secrets/form/FormCreate.vue'

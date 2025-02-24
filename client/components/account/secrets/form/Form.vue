@@ -71,7 +71,7 @@ const swapFields = (idx: number, direction: -1 | 1) => {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 .field-list-move,
 .field-list-enter-active {

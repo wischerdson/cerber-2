@@ -9,5 +9,5 @@
 	"[markdown]": {
 		"files.trimTrailingWhitespace": false
 	},
-	// "editor.defaultFormatter": "esbenp.prettier-vscode"
+	"github.copilot.chat.localeOverride": "en"
 }

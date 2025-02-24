@@ -1,7 +1,8 @@
 <template>
 	<component
 		class="ui-clickable"
-		:is="nuxtLink ? NuxtLink : tag"
+		:class="{ disabled }"
+		:is="component"
 		@mouseup="opacityTransition = true"
 		@transitionend="opacityTransition = false"
 		:style="{ transition: opacityTransition ? `opacity ${duration}ms ease` : null }"
@@ -14,21 +15,31 @@
 <script setup lang="ts">
 
 import type { NuxtLinkProps } from '#app'
-import { ref } from '#imports'
+import { computed, ref } from '#imports'
 import { NuxtLink } from '#components'
 
 export interface UiClickableProps {
 	tag?: string
 	duration?: number
 	nuxtLink?: NuxtLinkProps
+	disabled?: boolean
 }
 
-withDefaults(defineProps<UiClickableProps>(), {
+const props = withDefaults(defineProps<UiClickableProps>(), {
 	tag: 'button',
-	duration: 200
+	duration: 200,
+	disabled: false
 })
 
 const opacityTransition = ref(false)
+
+const component = computed(() => {
+	if (props.disabled) {
+		return 'div'
+	}
+
+	return props.nuxtLink ? NuxtLink : props.tag
+})
 
 </script>
 
@@ -36,12 +47,15 @@ const opacityTransition = ref(false)
 
 @layer components {
 	.ui-clickable {
-		cursor: pointer;
 		user-select: none;
 
-		&:active {
-			opacity: .7 !important;
-			transition: none !important;
+		&:not(.disabled) {
+			cursor: pointer;
+
+			&:active:not(.disabled) {
+				opacity: .7 !important;
+				transition: none !important;
+			}
 		}
 	}
 }

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="w-full">
 		<slot name="before" :id="id"></slot>
 		<UiLabel v-if="label" class="mb-1.5" :for="id">{{ label }}</UiLabel>
 		<div class="relative" v-if="validationField">
@@ -108,6 +108,7 @@ const classes = computed(() => {
 
 @layer components {
 	.ui-input--non-styled, .ui-input {
+		width: 100%;
 		appearance: none;
 		background-image: none;
 		border-radius: 0;
