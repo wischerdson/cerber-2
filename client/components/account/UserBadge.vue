@@ -7,7 +7,12 @@
 		>
 			<div>
 				<LgbtCock class="w-12" v-if="isLgbtCock" />
-				<img class="h-12 rounded-full" src="/images/avatar.jpg" alt="Avatar" v-else>
+				<img class="h-10 rounded-full" src="/images/avatar.jpg" alt="Avatar" v-else-if="false">
+				<div v-else>
+					<div class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-850">
+						<span class="uppercase font-medium text-xl text-gray-700 dark:text-gray-200">{{ firstLetter }}</span>
+					</div>
+				</div>
 			</div>
 			<div class="ml-3">
 				<div class="text-black/85 dark:text-white/85">
@@ -56,12 +61,13 @@
 					</div>
 
 					<div class="mt-3">
-						<NuxtLink to="settings">
-							<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
-								<GearIcon class="gear-icon mr-3 h-4 w-4" />
-								<span>Настройки</span>
-							</UiClickable>
-						</NuxtLink>
+						<UiClickable
+							class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4"
+							:nuxt-link="{ to: { name: 'settings' } }"
+						>
+							<GearIcon class="gear-icon mr-3 h-4 w-4" />
+							<span>Настройки</span>
+						</UiClickable>
 					</div>
 					<div>
 						<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4">
@@ -118,6 +124,8 @@ watch(showMenu, () => themeSubmenu.value = false)
 useRouter().beforeEach(() => {
 	showMenu.value = false
 })
+
+const firstLetter = computed(() => user.value?.firstName.slice(0, 1).toUpperCase())
 
 </script>
 

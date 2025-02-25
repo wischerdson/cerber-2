@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="ui-switch rounded-full w-10 h-6 bg-gray-150 dark:bg-gray-700 flex items-center p-0.5 cursor-pointer"
+		class="ui-switch rounded-full w-10 h-6 bg-gray-200 dark:bg-gray-700 flex items-center p-0.5 cursor-pointer"
 		:class="[ isOn ? 'on' : 'off' ]"
 		@click="isOn = !isOn"
 	>

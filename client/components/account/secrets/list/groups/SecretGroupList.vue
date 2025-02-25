@@ -6,8 +6,9 @@
 			name="group-list"
 			v-if="groups.length"
 		>
-			<li v-for="group in groups" :key="group.clientCode">
-				<SecretGroupItem :name="group.name" :edit-mode="('editMode' in group) && group.editMode" @save-name="createGroup" />
+			<li v-for="group in groups" :key="'clientCode' in group ? group.clientCode : group.alias">
+				<SecretGroupEditableItem v-if="('editMode' in group)" :name="group.name" :edit-mode="group.editMode" @save-name="createGroup" />
+				<SecretGroupItem v-else :group="group" />
 			</li>
 		</TransitionGroup>
 	</AbstractList>
@@ -18,7 +19,9 @@
 import { computed } from 'vue'
 import AbstractList from '~/components/account/secrets/list/AbstractList.vue'
 import SecretGroupItem from '~/components/account/secrets/list/groups/SecretGroupItem.vue'
+import SecretGroupEditableItem from '~/components/account/secrets/list/groups/SecretGroupEditableItem.vue'
 import { useSecretGroupsStore } from '~/store/secret-groups'
+import type { SecretGroupForCreate } from '~/repositories/adapters/secret-group-adapter'
 
 const store = useSecretGroupsStore()
 const groups = computed(() => store.groups)
@@ -29,7 +32,7 @@ const createGroup = async (name: string) => {
 	if ('editMode' in localGroup) {
 		localGroup.name = name
 		localGroup.editMode = false
-		await store.create(groups.value[0])
+		await store.create(groups.value[0] as SecretGroupForCreate)
 	}
 }
 

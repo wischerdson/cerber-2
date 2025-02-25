@@ -28,7 +28,7 @@
 								<PencilIcon class="w-3" />
 							</UiClickable>
 							<UiLabel :for="id">{{ model.label }}</UiLabel>
-							<LockIcon class="ml-1 w-2 pt-px text-green-700" v-if="model.secure" />
+							<LockIcon class="ml-1 w-2 text-gray-600" v-if="model.secure" />
 						</div>
 						<div class="flex ml-auto">
 							<UiClickable

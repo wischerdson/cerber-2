@@ -8,24 +8,31 @@
 			<div class="mt-4">
 				<UiTextarea class="mt-1" :rows="1" allow-shrink v-model="shortDescription" label="Короткое описание" />
 			</div>
-			<div class="mt-6 space-y-4">
-				<div class="flex items-center justify-between">
-					<div class="flex items-center space-x-2">
-						<div class="flex items-center justify-center w-6 h-6 rounded-[5px] bg-gradient-to-b from-green-500 to-green-600">
-							<LockIcon class="w-2.5 text-white" />
+			<div class="mt-6 space-y-6">
+				<div>
+					<div class="flex items-center justify-between">
+						<div class="flex items-center space-x-2">
+							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] -bg-gradient-to-b bg-black from-green-500 to-green-600">
+								<LockIcon class="w-2.5 text-white" />
+							</div>
+							<div class="tracking-wide">Защищенное</div>
 						</div>
-						<div class="tracking-wide">Защищенное</div>
+						<UiSwitch v-model="model.secure" />
 					</div>
-					<UiSwitch v-model="model.secure" />
+					<p class="text-xs mt-1.5 text-gray-600 leading-tight">
+						Значение поля будет храниться в зашифрованном виде, поиск по нему осуществляться не будет, при отображении визуально будет скрываться.
+					</p>
 				</div>
-				<div class="flex items-center justify-between">
-					<div class="flex items-center space-x-2">
-						<div class="flex items-center justify-center w-6 h-6 rounded-[5px] bg-gradient-to-b from-blue-500 to-blue-600">
-							<icon class="text-white" name="material-symbols:wrap-text-rounded" size="20px" />
+				<div>
+					<div class="flex items-center justify-between">
+						<div class="flex items-center space-x-2">
+							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] -bg-gradient-to-b bg-black from-blue-500 to-blue-600">
+								<icon class="text-white" name="material-symbols:wrap-text-rounded" size="20px" />
+							</div>
+							<div class="tracking-wide">Многострочное</div>
 						</div>
-						<div class="tracking-wide">Многострочное</div>
+						<UiSwitch v-model="model.multiline" />
 					</div>
-					<UiSwitch v-model="model.multiline" />
 				</div>
 			</div>
 		</div>

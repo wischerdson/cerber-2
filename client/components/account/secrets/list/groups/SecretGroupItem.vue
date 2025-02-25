@@ -1,78 +1,18 @@
 <template>
 	<UiClickable
 		class="w-full flex items-center gap-3 h-10 hover:bg-gray-50 dark:hover:bg-gray-850 px-4 rounded-lg"
-		:class="{ 'edit-mode': editMode }"
-		:nuxt-link="{ to: '/' }"
-		:disabled="editMode"
+		:nuxt-link="{ to: { name: 'slug', params: { slug: [group.alias] } } }"
 	>
 		<icon class="text-gray-800 dark:text-gray-200 shrink-0" name="material-symbols:folder-rounded" size="30px" />
-		<div class="w-full inline-group-input" v-if="editMode">
-			<UiInput
-				class="new-group-input bg-gray-50 h-8 px-2 rounded-lg -mx-2 font-medium"
-				v-click-outside="saveNewName"
-				v-model="editedName"
-				non-styled
-				@blur="onBlur"
-				@focus="onFocus"
-			/>
-		</div>
-		<span class="font-medium" v-else>{{ name }}</span>
+		<span class="font-medium">{{ group.name }}</span>
 	</UiClickable>
 </template>
 
 <script setup lang="ts">
 
-import { onMounted, ref } from 'vue'
 import UiClickable from '~/components/ui/Clickable.vue'
-import UiInput from '~/components/ui/Input.vue'
+import type { SecretGroup } from '~/repositories/adapters/secret-group-adapter'
 
-export interface SecretGroupProps {
-	name: string
-	editMode?: boolean
-}
-
-const emit = defineEmits<{ (e: 'saveName', name: string): void }>()
-const props = withDefaults(defineProps<SecretGroupProps>(), { editMode: false })
-const editedName = ref(props.name)
-
-let timeout: NodeJS.Timeout | null = null
-
-const onFocus = () => timeout && clearTimeout(timeout)
-
-const onBlur = () => {
-	// Если пользователь переключает язык, то на долю секунды фокус с поля может сняться, что нежелательно
-	timeout = setTimeout(() => saveNewName(), 300)
-}
-
-const saveNewName = () => {
-	timeout && clearTimeout(timeout)
-	emit(
-		'saveName',
-		editedName.value.length ? editedName.value : props.name
-	)
-}
-
-onMounted(() => {
-	const $input = document.querySelector('.new-group-input') as HTMLInputElement
-
-	if ($input) {
-		$input.focus()
-		$input.select()
-	}
-})
+defineProps<{ group: SecretGroup }>()
 
 </script>
-
-<style scoped lang="scss">
-
-.edit-mode {
-	&:hover {
-		background: none;
-	}
-
-	.inline-group-input * {
-		pointer-events: all !important;
-	}
-}
-
-</style>

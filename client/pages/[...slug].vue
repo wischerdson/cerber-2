@@ -10,6 +10,10 @@
 				<div class="px-6 mt-4">
 					<h1 class="font-medium text-xl">Реклама и маркетинг</h1>
 
+					<p>
+						<pre>{{ route.params }}</pre>
+					</p>
+
 					<hr class="w-full border-gray-100 dark:border-gray-850 mt-6 mb-6">
 
 					<SecretGroupList />
@@ -34,8 +38,13 @@ import TheSearch from '~/components/account/Search.vue'
 import SecretFormCreate from '~/components/account/secrets/form/FormCreate.vue'
 import { useSecretGroupsStore } from '~/store/secret-groups'
 import { useAccountLayoutLoaderStore } from '~/store/loaders'
+import { useRoute, useRouter } from 'vue-router'
 
 definePageMeta({ middleware: 'auth' })
+
+const route = useRoute()
+
+console.log(useRouter().options)
 
 useHead({ title: 'Cerber - Доступы' })
 

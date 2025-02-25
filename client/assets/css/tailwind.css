@@ -53,6 +53,10 @@
 }
 
 @layer base {
+	html {
+		scroll-behavior: smooth;
+	}
+
 	html.theme-changing * {
 		transition: all .2s ease;
 	}

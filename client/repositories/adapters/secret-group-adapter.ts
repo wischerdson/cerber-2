@@ -1,5 +1,3 @@
-import { uid } from '~/utils/helpers'
-
 export interface ServerSecretGroup {
 	id: number
 	user_id: number
@@ -16,7 +14,7 @@ export interface SecretGroup {
 	userId: number
 	name: string
 	alias: string
-	clientCode: string
+	clientCode?: string
 	description: string | null
 	parentId: number | null
 	createdAt: Date
@@ -47,7 +45,6 @@ export const clientToServerSecretGroupForCreate = (group: SecretGroupForCreate):
 export const serverToClientSecretGroup = (group: ServerSecretGroup): SecretGroup => {
 	return {
 		id: group.id,
-		clientCode: uid(),
 		userId: group.user_id,
 		name: group.name,
 		alias: group.alias,
