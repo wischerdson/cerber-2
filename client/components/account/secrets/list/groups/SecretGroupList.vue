@@ -4,7 +4,6 @@
 			class="-mx-4"
 			tag="ul"
 			name="group-list"
-			v-if="groups.length"
 		>
 			<li v-for="group in groups" :key="'clientCode' in group ? group.clientCode : group.alias">
 				<SecretGroupEditableItem v-if="('editMode' in group)" :name="group.name" :edit-mode="group.editMode" @save-name="createGroup" />

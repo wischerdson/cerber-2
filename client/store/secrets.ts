@@ -1,7 +1,7 @@
-import type { Secret, SecretPreview } from '../repositories/adapters/secret-adapter'
+import type { Secret, SecretForCreate, SecretPreview } from '../repositories/adapters/secret-adapter'
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { fetchSecretDetails, fetchSecrets } from '../repositories/secrets'
+import { createSecret, fetchSecretDetails, fetchSecrets } from '~/repositories/secrets'
 
 export const useSecretsStore = defineStore('secrets', () => {
 	const mode = ref<'create' | 'view' | null>(null)
@@ -45,6 +45,10 @@ export const useSecretsStore = defineStore('secrets', () => {
 		const data = await fetchSecrets()
 
 		secrets.value = data
+	}
+
+	const create = (secret: SecretForCreate) => {
+		return createSecret(secret)
 	}
 
 	return {

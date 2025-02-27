@@ -10,9 +10,9 @@
 				<div class="px-6 mt-4">
 					<h1 class="font-medium text-xl">Реклама и маркетинг</h1>
 
-					<p>
+
 						<pre>{{ route.params }}</pre>
-					</p>
+
 
 					<hr class="w-full border-gray-100 dark:border-gray-850 mt-6 mb-6">
 

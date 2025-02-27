@@ -15,7 +15,7 @@ return new class extends Migration
 			$table->id();
 			$table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
 			$table->string('name');
-			$table->string('alias');
+			$table->string('alias')->unique();
 			$table->text('description')->nullable();
 			$table->bigInteger('parent_id')->unsigned()->nullable();
 			$table->timestamp('created_at');

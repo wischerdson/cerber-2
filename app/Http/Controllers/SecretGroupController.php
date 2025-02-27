@@ -24,7 +24,7 @@ class SecretGroupController extends Controller
 		if (!$parentId) {
 			$parentId = SecretGroup::query()
 				->forCurrentUser()
-				->findBySlug($parentAlias)
+				->where('alias', $parentAlias)
 				->firstOrFail()
 				->id;
 		}
@@ -99,5 +99,17 @@ class SecretGroupController extends Controller
 
 		$group->deleted_at = now();
 		$group->save();
+	}
+
+	public function breadcrumb(Request $request)
+	{
+		$request->validate([
+			'chain' => 'required|string'
+		]);
+
+		$chain = explode(',', $request->chain);
+		$groupOrSecret = array_pop($chain);
+
+		abort(404);
 	}
 }

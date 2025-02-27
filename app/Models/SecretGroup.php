@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -27,7 +27,7 @@ use Spatie\Sluggable\SlugOptions;
  */
 class SecretGroup extends Model
 {
-	use HasFactory, HasSlug;
+	use HasFactory;
 
 	const UPDATED_AT = null;
 
@@ -41,13 +41,6 @@ class SecretGroup extends Model
 		'created_at' => 'timestamp',
 		'deleted_at' => 'timestamp'
 	];
-
-	public function getSlugOptions(): SlugOptions
-	{
-		return SlugOptions::create()
-			->generateSlugsFrom('name')
-			->saveSlugsTo('alias');
-	}
 
 	public function user(): BelongsTo
 	{
@@ -64,6 +57,11 @@ class SecretGroup extends Model
 		return $this->hasMany(self::class, 'parent_id');
 	}
 
+	public function secrets(): BelongsToMany
+	{
+		return $this->belongsToMany(Secret::class, 'secrets_in_groups', 'group_id', 'secret_id');
+	}
+
 	public function scopeForCurrentUser(Builder $query): void
 	{
 		if (!$user = Auth::user()) {
@@ -71,5 +69,17 @@ class SecretGroup extends Model
 		}
 
 		$query->where('user_id', $user->id);
+	}
+
+	protected static function booted(): void
+	{
+		static::creating(function (self $group) {
+			$i = 5;
+			do {
+				$alias = mb_strtolower(Str::random($i++));
+			} while (self::query()->where('alias', $alias)->exists());
+
+			$group->alias = $alias;
+		});
 	}
 }

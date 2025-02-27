@@ -131,7 +131,7 @@ class SecretGroupsTest extends TestCase
 			'user_id' => $user->id,
 			'name' => 'Some first-level group',
 			'description' => null,
-			'alias' => 'some-first-level-group',
+			'alias' => $group->get('alias'),
 			'parent_id' => null
 		]);
 	}
@@ -176,7 +176,7 @@ class SecretGroupsTest extends TestCase
 			'user_id' => $user->id,
 			'name' => 'Some subgroup with parent',
 			'description' => 'Group description',
-			'alias' => 'some-subgroup-with-parent',
+			'alias' => $group->get('alias'),
 			'parent_id' => $parentGroup->id
 		]);
 	}
@@ -212,7 +212,7 @@ class SecretGroupsTest extends TestCase
 			'id' => $group->id,
 			'user_id' => $user->id,
 			'name' => '123',
-			'alias' => '123',
+			'alias' => $group->alias,
 			'parent_id' => null
 		]);
 	}

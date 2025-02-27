@@ -20,6 +20,7 @@ import UiButton from '~/components/ui/Button.vue'
 import TheForm from './Form.vue'
 import { uid } from '~/utils/helpers'
 import { ref } from 'vue'
+import { createSecret } from '~/repositories/secrets'
 
 const emit = defineEmits<{
 	(e: 'cancel'): void
@@ -32,5 +33,13 @@ const model = ref<SecretForCreate>({
 	name: '',
 	fields: []
 })
+
+const pending = ref(false)
+
+const save = async () => {
+	pending.value = true
+	await createSecret(model.value)
+	pending.value = false
+}
 
 </script>
