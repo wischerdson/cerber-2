@@ -13,7 +13,7 @@ return new class extends Migration
 	{
 		Schema::create('secrets_in_groups', function (Blueprint $table) {
 			$table->foreignId('secret_id')->constrained('secrets')->cascadeOnUpdate()->cascadeOnDelete();
-			$table->foreignId('group_id')->constrained('secret_groups3')->cascadeOnUpdate()->cascadeOnDelete();
+			$table->foreignId('group_id')->constrained('secret_groups')->cascadeOnUpdate()->cascadeOnDelete();
 
 			$table->primary(['secret_id', 'group_id']);
 		});

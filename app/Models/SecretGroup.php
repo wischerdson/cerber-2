@@ -42,6 +42,8 @@ class SecretGroup extends Model
 		'deleted_at' => 'timestamp'
 	];
 
+	protected $hidden = ['user_id', 'parent_id'];
+
 	public function user(): BelongsTo
 	{
 		return $this->belongsTo(User::class, 'user_id');
@@ -75,6 +77,7 @@ class SecretGroup extends Model
 	{
 		static::creating(function (self $group) {
 			$i = 5;
+
 			do {
 				$alias = mb_strtolower(Str::random($i++));
 			} while (self::query()->where('alias', $alias)->exists());

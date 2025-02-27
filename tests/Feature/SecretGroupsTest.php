@@ -58,7 +58,7 @@ class SecretGroupsTest extends TestCase
 			->assertJson(fn (AssertableJson $json) =>
 				$json->count(1)->has(0, fn (AssertableJson $json) =>
 					$json->hasAll(
-						'id', 'user_id', 'name', 'description', 'alias', 'parent_id', 'created_at',
+						'id', 'name', 'description', 'alias', 'created_at',
 						'deleted_at'
 					)->where('id', $group->id)
 				)
@@ -95,8 +95,7 @@ class SecretGroupsTest extends TestCase
 			->assertOk()
 			->assertJson(fn (AssertableJson $json) =>
 				$json->hasAll(
-					'id', 'user_id', 'name', 'description', 'alias', 'parent_id', 'created_at',
-					'deleted_at'
+					'id', 'name', 'description', 'alias', 'created_at', 'deleted_at'
 				)->where('id', $group->id)
 			);
 	}
@@ -121,8 +120,7 @@ class SecretGroupsTest extends TestCase
 			->assertJsonIsObject()
 			->assertJson(fn (AssertableJson $json) =>
 				$json->hasAll(
-					'id', 'user_id', 'name', 'description', 'alias', 'parent_id', 'created_at',
-					'deleted_at'
+					'id', 'name', 'description', 'alias', 'created_at', 'deleted_at'
 				)
 			)->collect();
 
@@ -166,7 +164,7 @@ class SecretGroupsTest extends TestCase
 			->assertJsonIsObject()
 			->assertJson(fn (AssertableJson $json) =>
 				$json->hasAll(
-					'id', 'user_id', 'name', 'description', 'alias', 'parent_id', 'created_at',
+					'id', 'name', 'description', 'alias', 'created_at',
 					'deleted_at'
 				)
 			)->collect();

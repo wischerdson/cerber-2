@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
+use App\Models\SecretField;
 use App\Models\SecretGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -34,11 +35,43 @@ class SecretGroupAggregateControllerTest extends TestCase
 
 		$group = SecretGroup::factory()
 			->for($user, 'user')
-			->has(Secret::factory()->count(3))
+			->has(
+				Secret::factory()->has(
+					SecretField::factory()->count(2), 'fields'
+				)->count(3)
+			)
+			->has(SecretGroup::factory()->count(2), 'children')
+			->for(SecretGroup::factory(), 'parent')
 			->create();
 
 		$this->actingAs($user)
 			->getJson("/aggregates/secret-group?group_alias={$group->alias}")
-			->assertOk();
+			->assertOk()
+			->assertJson(fn (AssertableJson $json) => $json
+				->has(
+					'current_group',
+					fn (AssertableJson $json) => $json
+						->hasAll('id', 'name', 'alias', 'description', 'created_at', 'deleted_at')
+						->where('id', $group->id)
+				)
+				->has(
+					'children_groups',
+					2,
+					fn (AssertableJson $json) => $json
+						->hasAll('id', 'name', 'alias', 'description', 'created_at', 'deleted_at')
+				)
+				->has(
+					'parent_groups',
+					2,
+					fn (AssertableJson $json) => $json
+						->hasAll('id', 'name', 'alias', 'description', 'created_at', 'deleted_at')
+				)
+				->has(
+					'secrets',
+					3,
+					fn (AssertableJson $json) => $json
+						->hasAll('id', 'alias', 'name', 'notes', 'is_uptodate', 'created_at', 'updated_at', 'deleted_at')
+				)
+			);
 	}
 }

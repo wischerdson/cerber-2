@@ -18,7 +18,7 @@ return new class extends Migration
 			$table->string('alias')->unique();
 			$table->text('description')->nullable();
 			$table->bigInteger('parent_id')->unsigned()->nullable();
-			$table->timestamp('created_at');
+			$table->timestamp('created_at')->useCurrent();
 			$table->timestamp('deleted_at')->nullable();
 		});
 

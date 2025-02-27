@@ -34,6 +34,8 @@ class SecretField extends Model
 		'secure' => 'boolean'
 	];
 
+	protected $hidden = ['secret_id'];
+
 	public function secret(): BelongsTo
 	{
 		return $this->belongsTo(Secret::class, 'secret_id');
