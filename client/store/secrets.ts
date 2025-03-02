@@ -11,6 +11,8 @@ export const useSecretsStore = defineStore('secrets', () => {
 
 	const setModeCreate = () => mode.value = 'create'
 
+	const set = (_secrets: SecretPreview[]) => secrets.value = _secrets
+
 	const resetMode = () => mode.value = null
 
 	const viewSecretDetails = async (clientCode: string) => {
@@ -55,6 +57,6 @@ export const useSecretsStore = defineStore('secrets', () => {
 		mode: computed(() => mode.value),
 		secrets: computed(() => secrets.value),
 		secretForView: computed(() => secretForView.value),
-		setModeCreate, viewSecretDetails, resetMode, unsetMode, fetch
+		setModeCreate, viewSecretDetails, resetMode, unsetMode, fetch, set
 	}
 })

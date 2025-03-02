@@ -16,7 +16,7 @@ import { useNoindexHeader } from '~/composables/use-noindex-header'
 useNoindexHeader()
 
 useHead({
-	title: 'default layout',
+	title: 'Cerber',
 	htmlAttrs: {
 		class: useNuxtApp().$theme.scheme,
 		lang: 'ru-RU'

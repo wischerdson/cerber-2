@@ -6,6 +6,7 @@ import { uid } from '#imports'
 
 export const useSecretGroupsStore = defineStore('secret-groups', () => {
 	const groups = ref<(SecretGroup | SecretGroupForCreate & { editMode: boolean })[]>([])
+	const current = ref<SecretGroup>()
 
 	const addNew = () => {
 		groups.value.unshift({
@@ -23,14 +24,16 @@ export const useSecretGroupsStore = defineStore('secret-groups', () => {
 		groups.value = (groups.value as SecretGroup[]).sort((g1, g2) => g1.id - g2.id)
 	}
 
-	const fetch = async (spaceId: number | null, parentGroupId?: number) => {
+	const fetch = async (parentGroupId: number|null = null) => {
 		return groups.value = await getGroups()
 	}
 
+	const set = (_groups: SecretGroup[]) => groups.value = _groups
+
+	const setCurrent = (_group: SecretGroup) => current.value = _group
+
 	return {
-		fetch,
-		create,
-		addNew,
-		groups
+		groups,
+		fetch, create, addNew, set, setCurrent
 	}
 })

@@ -11,7 +11,7 @@
 					<h1 class="font-medium text-xl">Реклама и маркетинг</h1>
 
 
-						<pre>{{ route.params }}</pre>
+					<pre>{{ route.params }}</pre>
 
 
 					<hr class="w-full border-gray-100 dark:border-gray-850 mt-6 mb-6">
@@ -36,21 +36,20 @@ import SecretGroupList from '~/components/account/secrets/list/groups/SecretGrou
 import SecretList from '~/components/account/secrets/list/SecretList.vue'
 import TheSearch from '~/components/account/Search.vue'
 import SecretFormCreate from '~/components/account/secrets/form/FormCreate.vue'
-import { useSecretGroupsStore } from '~/store/secret-groups'
 import { useAccountLayoutLoaderStore } from '~/store/loaders'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
+import { useSecretGroupAggregateStore } from '~/store/aggregates.ts/secret-group-aggregate-store'
 
 definePageMeta({ middleware: 'auth' })
 
 const route = useRoute()
 
-console.log(useRouter().options)
-
 useHead({ title: 'Cerber - Доступы' })
 
 const loaderStore = useAccountLayoutLoaderStore()
-const groupsStore = useSecretGroupsStore()
 
-loaderStore.addPromise(groupsStore.fetch(null))
+loaderStore.addPromise(
+	useSecretGroupAggregateStore().fetch({ alias: route.params.alias as string})
+)
 
 </script>
