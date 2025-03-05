@@ -22,7 +22,7 @@ class DocumentGroupAggregateTest extends TestCase
 		$document = Document::factory()
 			->group()
 			->has(
-				Document::factory()->has(
+				Document::factory()->group(false)->has(
 					DocumentField::factory()->count(2), 'fields'
 				)->count(3),
 				'descendants'
@@ -30,7 +30,12 @@ class DocumentGroupAggregateTest extends TestCase
 			->for(Document::factory()->group(), 'parent')
 			->create();
 
-		dd(Document::with('parent', 'descendants')->get()->toArray());
+		$response = $this->actingAs($user = self::createUser())
+			->getJson("/aggregates/document-group?id={$document->parent_id}");
+
+		dd($response->json());
+
+		// dd(Document::with('parent', 'descendants')->get()->toArray());
 	}
 
 	public function test_aggregate_input_validation(): void

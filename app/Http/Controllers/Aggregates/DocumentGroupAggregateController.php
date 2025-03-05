@@ -42,7 +42,7 @@ class DocumentGroupAggregateController
 	{
 		$documentTable = (new Document())->getTable();
 
-		$startingGroupQuery = DB::query()->select('*')->from($documentTable)->where('id', DB::raw(':id'));
+		$startingGroupQuery = DB::query()->select('*')->from($documentTable)->where('id', DB::raw(':parent_id'));
 		$parentGroupQuery = DB::query()->select('parent.*')->from($documentTable, 'parent')
 			->join('groups_breadcrumb', 'parent.id', '=', 'groups_breadcrumb.parent_id');
 
@@ -52,7 +52,7 @@ class DocumentGroupAggregateController
 				union all
 				{$parentGroupQuery->toRawSql()}
 			) SELECT * FROM `groups_breadcrumb` ORDER BY `parent_id` ASC",
-			['id' => $parentId]
+			['parent_id' => $parentId]
 		);
 
 		return collect($groups)->map(fn ($group) => (new Document())->forceFill((array) $group));
