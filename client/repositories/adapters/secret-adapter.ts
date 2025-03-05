@@ -2,6 +2,7 @@ import { uid } from '~/utils/helpers'
 
 export interface ServerSecretPreview {
 	id: number
+	alias: string
 	name: string
 	is_uptodate: boolean
 	created_at: number
@@ -10,6 +11,7 @@ export interface ServerSecretPreview {
 
 export interface ServerSecret {
 	id: number
+	alias: string
 	name: string
 	notes: string
 	is_uptodate: boolean
@@ -60,7 +62,7 @@ export interface SecretFieldForCreate extends Omit<SecretField, 'id'> {
 
 }
 
-export interface ServerSecretForCreate extends Omit<ServerSecret, 'id' | 'fields' | 'created_at' | 'updated_at'> {
+export interface ServerSecretForCreate extends Omit<ServerSecret, 'id' | 'alias' | 'fields' | 'created_at' | 'updated_at'> {
 	fields: ServerSecretFieldForCreate[]
 }
 

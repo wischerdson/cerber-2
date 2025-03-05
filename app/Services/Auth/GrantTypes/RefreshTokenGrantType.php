@@ -42,15 +42,6 @@ class RefreshTokenGrantType extends AbstractGrantType
 			(!$session = $authService->findSessionByToken($refreshToken)) ||
 			(!$grant = $this->findGrant($refreshToken))
 		) {
-			Log::debug("Refresh token auth credentials error: \n
-refreshToken: ##{refreshToken}##\n
-session: ##{session}##\n
-grant: ##{grant}##\n", [
-				'refreshToken' => @$refreshToken,
-				'session' => @$session,
-				'grant' => @$grant,
-			]);
-
 			throw new AuthCredentialsErrorException();
 		}
 

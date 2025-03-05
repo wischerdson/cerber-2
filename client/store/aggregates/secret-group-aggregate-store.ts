@@ -13,7 +13,7 @@ export const useSecretGroupAggregateStore = defineStore('secret-group-aggregate'
 		}))
 	}
 
-	const fetch = async (parentGroup: { alias?: string, id?: number }) => {
+	const fetch = async (parentGroup: { alias?: string|null, id?: number|null }) => {
 		const aggregate = await fetchSecretGroupAggregate(parentGroup)
 
 		const secretGroupsStore = useSecretGroupsStore()

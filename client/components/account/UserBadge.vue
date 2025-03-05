@@ -9,7 +9,7 @@
 				<LgbtCock class="w-12" v-if="isLgbtCock" />
 				<img class="h-10 rounded-full" src="/images/avatar.jpg" alt="Avatar" v-else-if="false">
 				<div v-else>
-					<div class="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-150 dark:bg-gray-850">
+					<div class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-850">
 						<span class="uppercase font-medium text-xl text-gray-800 dark:text-gray-200">{{ firstLetter }}</span>
 					</div>
 				</div>
