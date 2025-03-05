@@ -11,15 +11,16 @@ use Illuminate\Support\Facades\Crypt;
 
 /**
  * @property int $id
- * @property int $secret_id
+ * @property int $document_id
  * @property string $label
- * @property string $short_description
+ * @property string|null $short_description
  * @property string $value
- * @property bool $multiline
- * @property bool $secure
+ * @property bool $is_multiline
+ * @property bool $is_secure
  * @property int $sort
+ * @property string $created_at
  */
-class SecretField extends Model
+class DocumentField extends Model
 {
 	use HasFactory;
 
@@ -27,19 +28,12 @@ class SecretField extends Model
 
 	protected static $unguarded = true;
 
-	protected $table = 'secret_fields';
+	protected $table = 'document_fields';
 
 	protected $casts = [
-		'multiline' => 'boolean',
-		'secure' => 'boolean'
+		'is_multiline' => 'boolean',
+		'is_secure' => 'boolean'
 	];
-
-	protected $hidden = ['secret_id'];
-
-	public function secret(): BelongsTo
-	{
-		return $this->belongsTo(Secret::class, 'secret_id');
-	}
 
 	public function value(): Attribute
 	{
@@ -53,5 +47,10 @@ class SecretField extends Model
 			},
 			set: fn (string $value) => $this->secure ? Crypt::encryptString($value) : $value
 		);
+	}
+
+	public function document(): BelongsTo
+	{
+		return $this->belongsTo(Document::class, 'document_id');
 	}
 }

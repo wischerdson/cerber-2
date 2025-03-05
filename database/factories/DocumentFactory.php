@@ -2,22 +2,22 @@
 
 namespace Database\Factories;
 
-use App\Models\Secret;
+use App\Models\Document;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Secret>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Document>
  */
-class SecretFactory extends Factory
+class DocumentFactory extends Factory
 {
 	/** @var class-string<\Illuminate\Database\Eloquent\Model> */
-	protected $model = Secret::class;
+	protected $model = Document::class;
 
 	public function configure(): static
 	{
-		return $this->afterCreating(function (Secret $secret) {
-			$this->setFieldsSort($secret);
+		return $this->afterCreating(function (Document $document) {
+			$this->setFieldsSort($document);
 		});
 	}
 
@@ -29,14 +29,20 @@ class SecretFactory extends Factory
 	public function definition(): array
 	{
 		return [
+			'is_group' => fake()->boolean(),
 			'name' => mb_ucfirst(fake()->words(
 				fake()->randomElement([1, 2, 3, 4]),
 				true
 			)),
 			'notes' => fake()->randomElement([null, fake()->text(255)]),
-			'is_uptodate' => fake()->boolean(),
+			'is_effective' => fake()->boolean(),
 			'deleted_at' => fake()->randomElement([null, now()->timestamp(fake()->unixTime())]),
 		];
+	}
+
+	public function group(bool $yes = true): Factory
+	{
+		return $this->state(fn (array $attrs) => ['is_group' => $yes]);
 	}
 
 	public function deleted(DateTime|int|string|null $when = 'now'): Factory
@@ -46,21 +52,19 @@ class SecretFactory extends Factory
 		]);
 	}
 
-	public function upToDated(bool $yes = true): Factory
+	public function effective(bool $yes = true): Factory
 	{
-		return $this->state(fn (array $attrs) => [
-			'is_uptodate' => $yes
-		]);
+		return $this->state(fn (array $attrs) => ['is_effective' => $yes]);
 	}
 
-	private function setFieldsSort(Secret $secret): void
+	private function setFieldsSort(Document $document): void
 	{
-		$fields = $secret->fields()->get();
+		$fields = $document->fields()->get();
 
 		foreach ($fields as $i => $field) {
 			$field->sort = $i + 1;
 		}
 
-		$secret->fields()->saveMany($fields);
+		$document->fields()->saveMany($fields);
 	}
 }

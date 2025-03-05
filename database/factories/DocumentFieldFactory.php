@@ -2,16 +2,16 @@
 
 namespace Database\Factories;
 
-use App\Models\SecretField;
+use App\Models\DocumentField;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SecretFieldFactory>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DocumentField>
  */
-class SecretFieldFactory extends Factory
+class DocumentFieldFactory extends Factory
 {
 	/** @var class-string<\Illuminate\Database\Eloquent\Model> */
-	protected $model = SecretField::class;
+	protected $model = DocumentField::class;
 
 	/**
 	 * Define the model's default state.
@@ -29,8 +29,8 @@ class SecretFieldFactory extends Factory
 			),
 			'short_description' => fake()->randomElement([null, fake()->text(100)]),
 			'value' => $multiline ? fake()->paragraphs(3, true) : fake()->text(100),
-			'multiline' => $multiline,
-			'secure' => fake()->boolean(),
+			'is_multiline' => $multiline,
+			'is_secure' => fake()->boolean(),
 			'sort' => 1
 		];
 	}
@@ -38,14 +38,14 @@ class SecretFieldFactory extends Factory
 	public function multiline(bool $yes = true): Factory
 	{
 		return $this->state(fn (array $attrs) => [
-			'multiline' => $yes
+			'is_multiline' => $yes
 		]);
 	}
 
 	public function secure(bool $yes = true): Factory
 	{
 		return $this->state(fn (array $attrs) => [
-			'secure' => $yes
+			'is_secure' => $yes
 		]);
 	}
 }
