@@ -32,7 +32,7 @@ class DocumentGroupAggregateController
 		$document->loadMissing('descendants');
 
 		return [
-			'parents' => $this->fetchParents($document->id),
+			'parents' => $document->parent_id ? $this->fetchParents($document->parent_id) : [],
 			'current' => collect($document)->except('descendants'),
 			'descendants' => $document->descendants
 		];

@@ -29,6 +29,8 @@ class Document extends Model
 
 	protected $table = 'documents';
 
+	protected $hidden = ['parent_id'];
+
 	protected $casts = [
 		'created_at' => 'timestamp',
 		'deleted_at' => 'timestamp',

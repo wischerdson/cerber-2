@@ -1,7 +1,17 @@
 import { useGetReq } from '~/composables/use-request'
 import { serverToClientSecretGroupAggregate, type ServerSecretGroupAggregate } from '~/repositories/adapters/secret-group-aggregate-adapter'
 
-export const fetchSecretGroupAggregate = async (parentGroup: { alias?: string|null, id?: number|null }) => {
+export const fetchDocumentGroupAggregate = async (parentGroup: { alias?: string|null, id?: number|null }) => {
+
+	const send = () => useGetReq<ServerSecretGroupAggregate>('/aggregates/secret-group', { query })
+	.sign().shouldEncrypt().send()
+
+	const byParentId = (id: number) => {
+
+	}
+
+	return {}
+
 	let query: object
 
 	if (typeof parentGroup.alias !== 'undefined') {
@@ -14,8 +24,7 @@ export const fetchSecretGroupAggregate = async (parentGroup: { alias?: string|nu
 
 	console.log(query)
 
-	const aggregate = await useGetReq<ServerSecretGroupAggregate>('/aggregates/secret-group', { query })
-		.sign().shouldEncrypt().send()
+	const aggregate = await
 
 	return serverToClientSecretGroupAggregate(aggregate)
 }

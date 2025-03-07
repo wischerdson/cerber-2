@@ -30,12 +30,32 @@ class DocumentGroupAggregateTest extends TestCase
 			->for(Document::factory()->group(), 'parent')
 			->create();
 
-		$response = $this->actingAs($user = self::createUser())
-			->getJson("/aggregates/document-group?id={$document->parent_id}");
+		$response = $this->actingAs(self::createUser())
+			->getJson("/aggregates/document-group?id={$document->id}")
+			->assertOk()
+			->assertJson(fn (AssertableJson $json) => $json
+				->has(
+					'parents',
+					1,
+					fn (AssertableJson $json) => $json
+						->hasAll('id', 'name', 'alias', 'notes', 'is_group', 'is_effective', 'created_at', 'deleted_at')
+						->where('id', $document->parent->id)
+				)
+				->has(
+					'current',
+					fn (AssertableJson $json) => $json
+						->hasAll('id', 'name', 'alias', 'notes', 'is_group', 'is_effective', 'created_at', 'deleted_at')
+						->where('id', $document->id)
+				)
+				->has(
+					'descendants',
+					3,
+					fn (AssertableJson $json) => $json
+						->hasAll('id', 'name', 'alias', 'notes', 'is_group', 'is_effective', 'created_at', 'deleted_at')
+				)
+			);
 
 		dd($response->json());
-
-		// dd(Document::with('parent', 'descendants')->get()->toArray());
 	}
 
 	public function test_aggregate_input_validation(): void
@@ -87,52 +107,5 @@ class DocumentGroupAggregateTest extends TestCase
 		$this->actingAs($user)
 			->getJson('/aggregates/document-group?alias=asd')
 			->assertNotFound();
-
-		// dd($response->json());
-
-		// $this->actingAs($user)
-		// 	->getJson('/aggregates/secret-group?group_alias=123')
-		// 	->assertNotFound();
-
-		// $group = SecretGroup::factory()
-		// 	->for($user, 'user')
-		// 	->has(
-		// 		Secret::factory()->has(
-		// 			SecretField::factory()->count(2), 'fields'
-		// 		)->count(3)
-		// 	)
-		// 	->has(SecretGroup::factory()->count(2), 'children')
-		// 	->for(SecretGroup::factory(), 'parent')
-		// 	->create();
-
-		// $this->actingAs($user)
-		// 	->getJson("/aggregates/secret-group?group_alias={$group->alias}")
-		// 	->assertOk()
-		// 	->assertJson(fn (AssertableJson $json) => $json
-		// 		->has(
-		// 			'current_group',
-		// 			fn (AssertableJson $json) => $json
-		// 				->hasAll('id', 'name', 'alias', 'description', 'created_at', 'deleted_at')
-		// 				->where('id', $group->id)
-		// 		)
-		// 		->has(
-		// 			'children_groups',
-		// 			2,
-		// 			fn (AssertableJson $json) => $json
-		// 				->hasAll('id', 'name', 'alias', 'description', 'created_at', 'deleted_at')
-		// 		)
-		// 		->has(
-		// 			'parent_groups',
-		// 			2,
-		// 			fn (AssertableJson $json) => $json
-		// 				->hasAll('id', 'name', 'alias', 'description', 'created_at', 'deleted_at')
-		// 		)
-		// 		->has(
-		// 			'secrets',
-		// 			3,
-		// 			fn (AssertableJson $json) => $json
-		// 				->hasAll('id', 'alias', 'name', 'notes', 'is_uptodate', 'created_at', 'updated_at', 'deleted_at')
-		// 		)
-		// 	);
 	}
 }
