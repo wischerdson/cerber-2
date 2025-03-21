@@ -3,12 +3,12 @@ import type { DecoratedRequest } from '~/decorators/request'
 import { useNuxtApp } from '#app'
 import { util as forgeUtil } from 'node-forge'
 
-export type EncryptDecoratedRequest<ObjectT extends AppRequest> = ObjectT & {
-	shouldEncrypt: () => EncryptDecoratedRequest<ObjectT>
+export type EncryptDecoratedRequest = {
+	shouldEncrypt: () => DecoratedRequest
 }
 
 export const decorator = <T extends AppRequest>(request: T) => {
-	const decoratedRequest = request as DecoratedRequest<T>
+	const decoratedRequest = request as AppRequest & DecoratedRequest
 
 	decoratedRequest.shouldEncrypt = () => {
 		const { $encryptor, $config } = useNuxtApp()

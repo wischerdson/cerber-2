@@ -8,12 +8,12 @@ type AuthDecoratorParameters = {
 	ignoreErrors?: boolean
 }
 
-export type AuthDecoratedRequest<ObjectT extends AppRequest> = ObjectT & {
-	sign: (parameters?: AuthDecoratorParameters) => DecoratedRequest<ObjectT>
+export type AuthDecoratedRequest = {
+	sign: (parameters?: AuthDecoratorParameters) => DecoratedRequest
 }
 
 export const decorator = <T extends AppRequest>(request: T) => {
-	const decoratedRequest = request as DecoratedRequest<T>
+	const decoratedRequest = request as DecoratedRequest
 
 	decoratedRequest.sign = (parameters) => {
 		const context = defaults<unknown, Required<AuthDecoratorParameters>>(parameters, {

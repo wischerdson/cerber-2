@@ -3,8 +3,12 @@ import { serverToClientSecretGroupAggregate, type ServerSecretGroupAggregate } f
 
 export const fetchDocumentGroupAggregate = async (parentGroup: { alias?: string|null, id?: number|null }) => {
 
-	const send = () => useGetReq<ServerSecretGroupAggregate>('/aggregates/secret-group', { query })
-	.sign().shouldEncrypt().send()
+	const send = () => useGetReq<ServerSecretGroupAggregate>()
+		.url('/aggregates/secret-group')
+		.query(query)
+		.sign()
+		.shouldEncrypt()
+		.send()
 
 	const byParentId = (id: number) => {
 

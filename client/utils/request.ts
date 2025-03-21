@@ -6,12 +6,26 @@ import { defaults } from 'lodash-es'
 
 export const makeRequest = <
 	DataT = unknown,
-	RequestT extends NitroFetchRequest = NitroFetchRequest
->(url: RequestT, options?: Options<RequestT>) => {
-	const context = makeContext(options)
+	RequestT extends NitroFetchRequest = NitroFetchRequest,
+	ExtendedT = {}
+>(url?: RequestT, options?: Options<RequestT>) => {
+	const context = makeContext(url, options)
 
-	const request: AppRequest<DataT, Promise<DataT>, RequestT> = {
+	const request: AppRequest<DataT, RequestT> = {
 		_context: context,
+		extends<ExtendedK>() {
+			return request as AppRequest<DataT, RequestT, ExtendedK & ExtendedT>
+		},
+		url(url) {
+			context.url = url
+
+			return request
+		},
+		query(query) {
+			context.options.query = query
+
+			return request
+		},
 		setOption(name, value) {
 			value === void 0 ? delete context.options[name] : context.options[name] = value
 
@@ -52,18 +66,22 @@ export const makeRequest = <
 			return request
 		},
 		send() {
-			return $fetch<DataT>(url, compileRequestOptions(context))
+			if (typeof context.url === 'undefined') {
+				throw new Error('The URL is not defined for this request.')
+			}
+
+			return $fetch<DataT>(context.url, compileRequestOptions(context))
 		}
 	}
 
-	return request
+	return request as AppRequest<DataT, RequestT, ExtendedT>
 }
 
 export const makeRequestFromFetchContext = <DataT = unknown, RequestT extends NitroFetchRequest = NitroFetchRequest>(context: FetchContext<DataT>) => {
 	return makeRequest<DataT>(context.request, context.options as Options<RequestT>)
 }
 
-const makeContext: MakeContext = (options) => {
+const makeContext: MakeContext = (url, options) => {
 	const context = {
 		interceptors: {
 			onResponse: [],
@@ -72,6 +90,7 @@ const makeContext: MakeContext = (options) => {
 			onRequestError: [],
 		},
 		headers: new Headers(options?.headers),
+		url,
 		options: defaults(options, {
 			baseURL: apiBaseUrl(),
 			mode: 'cors'

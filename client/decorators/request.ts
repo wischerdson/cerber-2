@@ -7,4 +7,4 @@ export { decorator as encryptionRequest } from '~/decorators/request/encryption.
 export { decorator as attachingHandshakeId } from '~/decorators/request/handshaking.decorator'
 export { decorator as decryptionResponse } from '~/decorators/request/decryption.decorator'
 
-export type DecoratedRequest<T extends AppRequest> = AuthDecoratedRequest<T> & EncryptDecoratedRequest<T>
+export type DecoratedRequest = AuthDecoratedRequest & EncryptDecoratedRequest

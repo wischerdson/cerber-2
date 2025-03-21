@@ -10,7 +10,7 @@ export default defineNuxtPlugin(async () => {
 			encryptionRequest(
 				decryptionResponse(
 					attachingHandshakeId(
-						request
+						request.extends<DecoratedRequest>()
 					)
 				)
 			)
