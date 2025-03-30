@@ -1,6 +1,7 @@
 import type { RequestDecorator } from '~/utils/request.types'
 import { useNuxtApp } from '#app'
 import { util as forgeUtil } from 'node-forge'
+import { useConfig } from '#imports'
 
 export const decrypt: RequestDecorator = request => {
 	const { $encryptor } = useNuxtApp()
@@ -34,7 +35,7 @@ export const decrypt: RequestDecorator = request => {
 			response._data = JSON.parse(response._data)
 		}
 
-		if (useNuxtApp().$config.public.consoleLogDecryptedResponse) {
+		if (useConfig('public.consoleLogDecryptedResponse')) {
 			console.log(request._context.url, response._data)
 		}
 	})

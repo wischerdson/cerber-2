@@ -1,13 +1,12 @@
 import type { RequestDecorator } from '~/utils/request.types'
 import { useNuxtApp } from '#app'
 import { util as forgeUtil } from 'node-forge'
+import { useConfig } from '#imports'
 
 export const encrypt: RequestDecorator = request => {
-	const { $encryptor, $config } = useNuxtApp()
+	const { $encryptor } = useNuxtApp()
 
-	console.log('encrypt', typeof $config.public.disableHttpEncryption)
-
-	if ($config.public.disableHttpEncryption) {
+	if (useConfig('public.disableHttpEncryption')) {
 		return request
 	}
 
@@ -15,6 +14,11 @@ export const encrypt: RequestDecorator = request => {
 
 	request.send = () => {
 		const body = JSON.stringify(request.getOption('body'))
+
+		if (body === undefined) {
+			return originalSend()
+		}
+
 		const { payload, key } = $encryptor.encrypt(body)
 		const encryptedKey = $encryptor.getRsaKeypair().publicKey.encrypt(key)
 
