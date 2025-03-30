@@ -1,8 +1,8 @@
-import type { AppRequest } from '~/utils/request.types'
+import type { RequestDecorator } from '~/utils/request.types'
 import { useNuxtApp } from '#app'
 import { util as forgeUtil } from 'node-forge'
 
-export const decorator = <T extends AppRequest>(request: T): T => {
+export const decrypt: RequestDecorator = request => {
 	const { $encryptor } = useNuxtApp()
 
 	request.onResponse(({ response }) => {
@@ -26,12 +26,16 @@ export const decorator = <T extends AppRequest>(request: T): T => {
 			forgeUtil.decode64(response._data)
 		)
 
-		const contentType = headers.get('Content-Type')
-
 		response._data = $encryptor.decrypt(key, encryptedPayload)
+
+		const contentType = headers.get('Content-Type')
 
 		if (contentType && contentType === 'application/json') {
 			response._data = JSON.parse(response._data)
+		}
+
+		if (useNuxtApp().$config.public.consoleLogDecryptedResponse) {
+			console.log(request._context.url, response._data)
 		}
 	})
 

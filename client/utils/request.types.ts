@@ -20,24 +20,24 @@ export type MakeContext = <RequestT extends NitroFetchRequest>(url?: RequestT, o
 
 export type AppRequest<
 	DataT = unknown,
-	RequestT extends NitroFetchRequest = NitroFetchRequest,
-	ExtendedT = {},
+	RequestT extends NitroFetchRequest = NitroFetchRequest
 > = {
 	_context: AppRequestContext<RequestT>
-	extends<ExtendedK>(): AppRequest<DataT, RequestT, ExtendedT & ExtendedK>
-	url(url: RequestT): AppRequest<DataT, RequestT, ExtendedT>
-	query(query: Options<RequestT>['query']): AppRequest<DataT, RequestT, ExtendedT>
-	setOption<K extends keyof Options<RequestT>>(name: K, value: Options<RequestT>[K]): AppRequest<DataT, RequestT, ExtendedT>
+	apply(...decorators: RequestDecorator[]): AppRequest<DataT, RequestT>
+	url(url: RequestT): AppRequest<DataT, RequestT>
+	query(query: Options<RequestT>['query']): AppRequest<DataT, RequestT>
+	body(body: Options<RequestT>['body']): AppRequest<DataT, RequestT>
+	setOption<K extends keyof Options<RequestT>>(name: K, value: Options<RequestT>[K]): AppRequest<DataT, RequestT>
 	getOption<K extends keyof Options<RequestT>>(name: K): Options<RequestT>[K]
-	setHeader(name: string, value: number | string | null): AppRequest<DataT, RequestT, ExtendedT>
+	setHeader(name: string, value: number | string | null): AppRequest<DataT, RequestT>
 	getHeader(name: string): string | null
-	setBearerToken(token: string): AppRequest<DataT, RequestT, ExtendedT>
-	onRequest(interceptor: Interceptors['onRequest']): AppRequest<DataT, RequestT, ExtendedT>
-	onResponse(interceptor: Interceptors['onResponse']): AppRequest<DataT, RequestT, ExtendedT>
-	onRequestError(interceptor: Interceptors['onRequestError']): AppRequest<DataT, RequestT, ExtendedT>
-	onResponseError(interceptor: Interceptors['onResponseError']): AppRequest<DataT, RequestT, ExtendedT>
+	setBearerToken(token: string): AppRequest<DataT, RequestT>
+	onRequest(interceptor: Interceptors['onRequest']): AppRequest<DataT, RequestT>
+	onResponse(interceptor: Interceptors['onResponse']): AppRequest<DataT, RequestT>
+	onRequestError(interceptor: Interceptors['onRequestError']): AppRequest<DataT, RequestT>
+	onResponseError(interceptor: Interceptors['onResponseError']): AppRequest<DataT, RequestT>
 	send(): Promise<DataT>
-} & ExtendedT
+}
 
 export interface AppRequestContext<RequestT extends NitroFetchRequest> {
 	interceptors: { [key in keyof Interceptors]: Interceptors[key][] }
@@ -45,3 +45,8 @@ export interface AppRequestContext<RequestT extends NitroFetchRequest> {
 	options: Options<RequestT>
 	url?: RequestT
 }
+
+export type RequestDecorator = <RequestT extends AppRequest>(
+	request: RequestT,
+	parameters?: { [key: string]: unknown }
+) => RequestT

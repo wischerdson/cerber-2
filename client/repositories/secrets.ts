@@ -1,22 +1,28 @@
 import type { SecretForCreate, ServerSecret, ServerSecretPreview } from './adapters/secret-adapter'
+import { auth } from '~/decorators/request/auth.decorator'
 import { clientToServerSecretForCreate, serverToClientSecret, serverToClientSecretPreview } from './adapters/secret-adapter'
 import { useGetReq, usePostReq } from '~/composables/use-request'
+import { encrypt } from '~/decorators/request/encryption.decorator'
 
 export const createSecret = (secret: SecretForCreate) => {
-	return usePostReq(
-		'/secrets', clientToServerSecretForCreate(secret)
-	).sign().shouldEncrypt().send()
+	return usePostReq('/secrets')
+		.body(clientToServerSecretForCreate(secret))
+		.apply(auth, encrypt)
+		.send()
 }
 
 export const fetchSecrets = async () => {
-	const serverSecrets = await useGetReq<ServerSecretPreview[]>('/secrets').sign().send()
-	const secrets = serverSecrets.map(s => serverToClientSecretPreview(s))
+	const serverSecrets = await useGetReq<ServerSecretPreview[]>('/secrets')
+		.apply(auth)
+		.send()
 
-	return secrets
+	return serverSecrets.map(s => serverToClientSecretPreview(s))
 }
 
 export const fetchSecretDetails = async (id: number) => {
-	const secret = await useGetReq<ServerSecret>(`/secrets/${id}`).sign().send()
+	const secret = await useGetReq<ServerSecret>(`/secrets/${id}`)
+		.apply(auth)
+		.send()
 
 	return serverToClientSecret(secret)
 }

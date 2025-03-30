@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { fetchSecretGroupAggregate } from '~/repositories/aggregates/secret-group-aggregate'
+import { fetchDocumentGroupAggregate } from '~/repositories/aggregates/document-group-aggregate'
 import { useSecretGroupsStore } from '~/store/secret-groups'
 import { useBreadcrumbStore, type BreadcrumbChain } from '~/store/breadcrumb'
 import { useSecretsStore } from '~/store/secrets'
@@ -14,7 +14,7 @@ export const useSecretGroupAggregateStore = defineStore('secret-group-aggregate'
 	}
 
 	const fetch = async (parentGroup: { alias?: string|null, id?: number|null }) => {
-		const aggregate = await fetchSecretGroupAggregate(parentGroup)
+		const aggregate = await fetchDocumentGroupAggregate(parentGroup)
 
 		const secretGroupsStore = useSecretGroupsStore()
 

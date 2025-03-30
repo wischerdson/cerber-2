@@ -18,8 +18,8 @@ const breadcrumbStore = useBreadcrumbStore()
 
 breadcrumbStore.clearChain()
 
-loaderStore.addPromise(
-	useSecretGroupAggregateStore().fetch({ alias: null })
-)
+// loaderStore.addPromise(
+	// useSecretGroupAggregateStore().fetch({ alias: null })
+// )
 
 </script>

@@ -1,6 +1,5 @@
-import type { AppRequest } from '~/utils/request.types'
+import type { AppRequest, RequestDecorator } from '~/utils/request.types'
 import { useNuxtApp } from '#app'
-import { makeRequestFromFetchContext } from '~/utils/request'
 
 /**
  * Декоратор цепляет к запросу HTTP-заголовок X-Handshake-ID.
@@ -9,12 +8,12 @@ import { makeRequestFromFetchContext } from '~/utils/request'
  * то функция попытается совершить новое рукопожатие с сервером и после этого переотправит
  * исходный запрос снова.
  */
-export const decorator = <T extends AppRequest>(request: T): T => {
+export const encryptionHandshake: RequestDecorator = (request) => {
 	const { $encryptor } = useNuxtApp()
 	const originalSend = request.send
 
 	const attachHandshakeId = <RequestT extends AppRequest>(request: RequestT) => {
-		let handshakeId = $encryptor.getHandshake()?.handshake_id
+		const handshakeId = $encryptor.getHandshake()?.handshake_id
 
 		if (handshakeId) {
 			request.setHeader('X-Handshake-ID', handshakeId)
@@ -33,11 +32,9 @@ export const decorator = <T extends AppRequest>(request: T): T => {
 				body.error_reason === 'handshake_not_found'
 			) {
 				await $encryptor.initHandshake()
+				await attachHandshakeId(request)
 
-				await attachHandshakeId(makeRequestFromFetchContext(context))
-					.send()
-					.then(resolve)
-					.catch(reject)
+				originalSend().then(resolve).catch(reject)
 			}
 		})
 

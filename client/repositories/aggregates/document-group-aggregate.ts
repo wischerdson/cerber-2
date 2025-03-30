@@ -3,12 +3,22 @@ import { serverToClientSecretGroupAggregate, type ServerSecretGroupAggregate } f
 
 export const fetchDocumentGroupAggregate = async (parentGroup: { alias?: string|null, id?: number|null }) => {
 
-	const send = () => useGetReq<ServerSecretGroupAggregate>()
-		.url('/aggregates/secret-group')
-		.query(query)
-		.sign()
-		.shouldEncrypt()
-		.send()
+	// const send = () => useGetReq<ServerSecretGroupAggregate>()
+	// 	.url('/aggregates/secret-group')
+	// 	.query(query)
+	// 	.apply(shouldEncrypt, auth, )
+	// 	.url('/')
+	// 	.shouldEncrypt()
+	// 	.sign()
+	// 	.sign()
+	// 	.shouldEncrypt()
+	// 	.sign()
+	// 	.shouldEncrypt()
+	// 	.sign()
+	// 	.shouldEncrypt()
+	// 	.url('asd')
+	// 	.query({ 'asd': 'asd' })
+	// 	.send()
 
 	const byParentId = (id: number) => {
 
@@ -25,10 +35,6 @@ export const fetchDocumentGroupAggregate = async (parentGroup: { alias?: string|
 	} else {
 		throw new Error('Either alias or ID must be passed in the "parentGroup" object.')
 	}
-
-	console.log(query)
-
-	const aggregate = await
 
 	return serverToClientSecretGroupAggregate(aggregate)
 }

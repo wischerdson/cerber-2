@@ -1,4 +1,5 @@
 import { useDeleteReq, usePostReq } from '~/composables/use-request'
+import { encrypt } from '~/decorators/request/encryption.decorator'
 import { lockAsyncProcess } from '~/utils/helpers'
 
 export type TokensPairIssuingResponse = {
@@ -12,9 +13,13 @@ export type GrantType = 'password' | 'refresh_token'
 export type Credentials = { [key: string]: string }
 
 const issueTokensPair = (grantType: GrantType, credentials: Credentials) => {
-	return usePostReq<TokensPairIssuingResponse>('/auth/token', {
-		grant_type: grantType, ...credentials
-	}).shouldEncrypt().send()
+	return usePostReq<TokensPairIssuingResponse>('/auth/token')
+		.body({
+			grant_type: grantType,
+			...credentials
+		})
+		.apply(encrypt)
+		.send()
 }
 
 export const issueTokensPairViaPasswordGrant = (login: string, password: string) => {

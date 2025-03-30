@@ -1,20 +1,20 @@
 import type { CallInterceptors, AppRequest, Options, MakeContext, AppRequestContext } from './request.types'
 import type { NitroFetchRequest } from 'nitropack'
-import type { FetchContext } from 'ofetch'
 import { apiBaseUrl } from '~/utils/helpers'
 import { defaults } from 'lodash-es'
 
 export const makeRequest = <
 	DataT = unknown,
-	RequestT extends NitroFetchRequest = NitroFetchRequest,
-	ExtendedT = {}
+	RequestT extends NitroFetchRequest = NitroFetchRequest
 >(url?: RequestT, options?: Options<RequestT>) => {
 	const context = makeContext(url, options)
 
 	const request: AppRequest<DataT, RequestT> = {
 		_context: context,
-		extends<ExtendedK>() {
-			return request as AppRequest<DataT, RequestT, ExtendedK & ExtendedT>
+		apply(...decorators) {
+			decorators.forEach(d => d(request))
+
+			return request
 		},
 		url(url) {
 			context.url = url
@@ -23,6 +23,11 @@ export const makeRequest = <
 		},
 		query(query) {
 			context.options.query = query
+
+			return request
+		},
+		body(body) {
+			context.options.body = body
 
 			return request
 		},
@@ -74,11 +79,7 @@ export const makeRequest = <
 		}
 	}
 
-	return request as AppRequest<DataT, RequestT, ExtendedT>
-}
-
-export const makeRequestFromFetchContext = <DataT = unknown, RequestT extends NitroFetchRequest = NitroFetchRequest>(context: FetchContext<DataT>) => {
-	return makeRequest<DataT>(context.request, context.options as Options<RequestT>)
+	return request
 }
 
 const makeContext: MakeContext = (url, options) => {

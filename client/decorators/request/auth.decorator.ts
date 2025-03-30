@@ -1,5 +1,4 @@
-import type { AppRequest } from '~/utils/request.types'
-import type { DecoratedRequest } from '~/decorators/request'
+import type { AppRequest, RequestDecorator } from '~/utils/request.types'
 import { useNuxtApp } from '#app'
 import { defaults } from 'lodash-es'
 
@@ -8,32 +7,27 @@ type AuthDecoratorParameters = {
 	ignoreErrors?: boolean
 }
 
-export type AuthDecoratedRequest = {
-	sign: (parameters?: AuthDecoratorParameters) => DecoratedRequest
-}
+export const auth: RequestDecorator = (
+	request,
+	parameters?: AuthDecoratorParameters
+) => {
+	const context = defaults<unknown, Required<AuthDecoratorParameters>>(parameters, {
+		provider: 'default',
+		ignoreErrors: false
+	})
 
-export const decorator = <T extends AppRequest>(request: T) => {
-	const decoratedRequest = request as DecoratedRequest
+	const provider = useNuxtApp().$resolveAuthProvider(context.provider)
+	const originalSend = request.send
 
-	decoratedRequest.sign = (parameters) => {
-		const context = defaults<unknown, Required<AuthDecoratorParameters>>(parameters, {
-			provider: 'default',
-			ignoreErrors: false
-		})
+	request.send = async () => {
+		const signingResult = await provider.sign(request)
 
-		const provider = useNuxtApp().$resolveAuthProvider(context.provider)
-		const originalSend = request.send
-
-		decoratedRequest.send = async () => {
-			if (provider && !(await provider.sign(request)) && !context.ignoreErrors) {
-				return new Promise((_, reject) => reject(null))
-			}
-
-			return originalSend()
+		if (!signingResult && !context.ignoreErrors) {
+			return new Promise((_, reject) => reject(null))
 		}
 
-		return decoratedRequest
+		return originalSend()
 	}
 
-	return decoratedRequest
+	return request
 }
