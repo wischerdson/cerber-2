@@ -1,8 +1,8 @@
 import type { SecretForCreate, ServerSecret, ServerSecretPreview } from './adapters/secret-adapter'
-import { auth } from '~/decorators/request/auth.decorator'
+import { auth } from '~/utils/decorators/request/auth.decorator'
 import { clientToServerSecretForCreate, serverToClientSecret, serverToClientSecretPreview } from './adapters/secret-adapter'
 import { useGetReq, usePostReq } from '~/composables/use-request'
-import { encrypt } from '~/decorators/request/encryption.decorator'
+import { encrypt } from '~/utils/decorators/request/encryption.decorator'
 
 export const createSecret = (secret: SecretForCreate) => {
 	return usePostReq('/secrets')

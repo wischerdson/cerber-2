@@ -1,4 +1,4 @@
-import type { RequestDecorator } from '~/utils/request.types'
+import type { RequestDecorator } from '~/utils/request'
 import { useNuxtApp } from '#app'
 import { util as forgeUtil } from 'node-forge'
 import { useConfig } from '#imports'

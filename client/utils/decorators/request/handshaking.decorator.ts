@@ -1,4 +1,4 @@
-import type { AppRequest, RequestDecorator } from '~/utils/request.types'
+import type { AppRequest, RequestDecorator } from '~/utils/request'
 import { useNuxtApp } from '#app'
 
 /**

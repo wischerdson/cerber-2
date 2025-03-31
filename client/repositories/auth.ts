@@ -1,5 +1,5 @@
 import { useDeleteReq, usePostReq } from '~/composables/use-request'
-import { encrypt } from '~/decorators/request/encryption.decorator'
+import { encrypt } from '~/utils/decorators/request/encryption.decorator'
 import { lockAsyncProcess } from '~/utils/helpers'
 
 export type TokensPairIssuingResponse = {

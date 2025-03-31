@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { AppRequest } from './request.types'
+import type { AppRequest } from './request'
 import { isJwtExpired } from './helpers'
 import { issueTokensPairViaPasswordGrant, issueTokensPairViaRefreshToken, revokeSession } from '~/repositories/auth'
 import { pick } from 'lodash-es'

@@ -1,4 +1,4 @@
-import type { Options } from '~/utils/request.types'
+import type { Options } from '~/utils/request'
 import type { NitroFetchRequest } from 'nitropack'
 import { useNuxtApp } from '#app'
 

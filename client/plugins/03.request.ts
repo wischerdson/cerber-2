@@ -1,7 +1,7 @@
 import { defineNuxtPlugin } from 'nuxt/app'
 import { makeRequest } from '~/utils/request'
-import { encryptionHandshake } from '~/decorators/request/handshaking.decorator'
-import { decrypt } from '~/decorators/request/decryption.decorator'
+import { encryptionHandshake } from '~/utils/decorators/request/handshaking.decorator'
+import { decrypt } from '~/utils/decorators/request/decryption.decorator'
 
 export default defineNuxtPlugin(async () => {
 	return {

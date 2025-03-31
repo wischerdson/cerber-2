@@ -1,4 +1,4 @@
-import type { AppRequest, RequestDecorator } from '~/utils/request.types'
+import type { RequestDecorator } from '~/utils/request'
 import { useNuxtApp } from '#app'
 import { defaults } from 'lodash-es'
 

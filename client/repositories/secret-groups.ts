@@ -1,7 +1,7 @@
 import { useGetReq, usePostReq } from '~/composables/use-request'
 import { clientToServerSecretGroupForCreate, serverToClientSecretGroup, type SecretGroupForCreate, type ServerSecretGroup } from './adapters/secret-group-adapter'
-import { auth } from '~/decorators/request/auth.decorator'
-import { encrypt } from '~/decorators/request/encryption.decorator'
+import { auth } from '~/utils/decorators/request/auth.decorator'
+import { encrypt } from '~/utils/decorators/request/encryption.decorator'
 
 export const getGroups = async () => {
 	const groups = await useGetReq<ServerSecretGroup[]>('/secret-groups')
