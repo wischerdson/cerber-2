@@ -1,40 +1,24 @@
 import { useGetReq } from '~/composables/use-request'
-import { serverToClientSecretGroupAggregate, type ServerSecretGroupAggregate } from '~/repositories/adapters/secret-group-aggregate-adapter'
+import { auth } from '~/utils/decorators/request/auth.decorator'
+import { encrypt } from '~/utils/decorators/request/encryption.decorator'
+import { transformDocumentGroupAggregateToClient, type ServerDocumentGroupAggregate } from '../adapters/document-group-aggregate-adapter'
 
 export const fetchDocumentGroupAggregate = async (parentGroup: { alias?: string|null, id?: number|null }) => {
-
-	// const send = () => useGetReq<ServerSecretGroupAggregate>()
-	// 	.url('/aggregates/secret-group')
-	// 	.query(query)
-	// 	.apply(shouldEncrypt, auth, )
-	// 	.url('/')
-	// 	.shouldEncrypt()
-	// 	.sign()
-	// 	.sign()
-	// 	.shouldEncrypt()
-	// 	.sign()
-	// 	.shouldEncrypt()
-	// 	.sign()
-	// 	.shouldEncrypt()
-	// 	.url('asd')
-	// 	.query({ 'asd': 'asd' })
-	// 	.send()
-
-	const byParentId = (id: number) => {
-
-	}
-
-	return {}
-
-	let query: object
+	let query: { id?: number|null, alias?: string|null }
 
 	if (typeof parentGroup.alias !== 'undefined') {
-		query = { group_alias: parentGroup.alias }
+		query = { alias: parentGroup.alias }
 	} else if (typeof parentGroup.id !== 'undefined') {
-		query = { group_id: parentGroup.id }
+		query = { id: parentGroup.id }
 	} else {
-		throw new Error('Either alias or ID must be passed in the "parentGroup" object.')
+		throw new Error('Either "alias" or "id" must be passed in the "parentGroup" object.')
 	}
 
-	return serverToClientSecretGroupAggregate(aggregate)
+	const aggregate = await useGetReq<ServerDocumentGroupAggregate>()
+		.url('/aggregates/document-group')
+		.query(query)
+		.apply(auth, encrypt)
+		.send()
+
+	return transformDocumentGroupAggregateToClient(aggregate)
 }

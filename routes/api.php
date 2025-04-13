@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Aggregates\DocumentGroupAggregateController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\SecretGroupController;
 use App\Http\Controllers\HandshakeController;
 use Illuminate\Support\Facades\Route;
@@ -14,7 +15,7 @@ Route::delete('auth/session', [AuthController::class, 'revokeSession']);
 Route::middleware('auth')->group(function () {
 	Route::get('auth/user', [AuthController::class, 'user']);
 
-	// Route::apiResource('documents', )
+	Route::apiResource('documents', DocumentController::class);
 
 	// Route::apiResource('secrets', SecretController::class)->middleware('encrypt-response');
 	// Route::apiResource('secret-groups', SecretGroupController::class)->middleware('encrypt-response');

@@ -55,7 +55,7 @@ class DocumentGroupAggregateTest extends TestCase
 				)
 			);
 
-		dd($response->json());
+		// dd($response->json());
 	}
 
 	public function test_aggregate_input_validation(): void

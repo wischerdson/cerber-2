@@ -41,8 +41,8 @@ class Guard implements AuthGuard
 
 	public function currentSession(): ?AuthSession
 	{
-		/** @var \App\Models\User $user */
 		if ($user = $this->user()) {
+			/** @var \App\Models\User $user */
 			return $user->currentAuthSession();
 		}
 

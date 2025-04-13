@@ -13,29 +13,43 @@ class DocumentGroupAggregateController
 	public function __invoke(Request $request)
 	{
 		$request->validate([
-			'id' => ['exclude_with:alias', 'required', 'numeric'],
-			'alias' => ['exclude_with:id', 'required', 'string', 'max:255']
+			'id' => ['exclude_with:alias', 'nullable', 'numeric'],
+			'alias' => ['exclude_with:id', 'nullable', 'string', 'max:255']
 		]);
 
-		$document = Document::query()
-			->when(
-				$request->id,
-				fn ($query, $id) => $query->whereKey($id),
-				fn ($query) => $query->where('alias', $request->alias)
-			)
-			->firstOrFail();
+		if ($request->id || $request->alias) {
+			$document = Document::query()
+				->when(
+					$request->id,
+					fn ($query, $id) => $query->whereKey($id),
+					fn ($query) => $query->where('alias', $request->alias)
+				)
+				->where('is_group', true)
+				->firstOrFail();
 
-		if (!$document->is_group) {
-			throw new DocumentIsNotGroupException();
+			$document->loadMissing('descendants');
+
+			return [
+				'parents' => $document->parent_id ? $this->fetchParents($document->parent_id) : [],
+				'current' => collect($document)->except('descendants'),
+				'descendants' => $document->descendants
+			];
 		}
 
-		$document->loadMissing('descendants');
+		$descendants
 
-		return [
-			'parents' => $document->parent_id ? $this->fetchParents($document->parent_id) : [],
-			'current' => collect($document)->except('descendants'),
-			'descendants' => $document->descendants
-		];
+		// dd($document);
+
+
+
+
+	}
+
+	private function fetchTopLevelDocuments(): Collection
+	{
+		return Document::query()
+			->where('parent_id', null)
+			->get();
 	}
 
 	private function fetchParents(int $parentId): Collection

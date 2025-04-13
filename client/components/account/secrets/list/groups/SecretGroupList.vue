@@ -1,15 +1,17 @@
 <template>
-	<AbstractList name="Группы" :showOnInit="true" add-item-title="Добавить группу" @add="store.addNew()">
+	<AbstractList name="Группы" :showOnInit="true" add-item-title="Добавить группу" @add="addNew()">
 		<TransitionGroup
 			class="-mx-4"
 			tag="ul"
 			name="group-list"
 		>
 			<li v-for="group in groups" :key="'clientCode' in group ? group.clientCode : group.alias">
-				<SecretGroupEditableItem v-if="('editMode' in group)" :name="group.name" :edit-mode="group.editMode" @save-name="createGroup" />
-				<SecretGroupItem v-else :group="group" />
+				<SecretGroupItem :group="group" @save-name="saveNewName" />
 			</li>
 		</TransitionGroup>
+		<div v-if="!groups.length">
+			<p class="text-center text-gray-400 text-sm">Группы отсутствуют</p>
+		</div>
 	</AbstractList>
 </template>
 
@@ -18,21 +20,28 @@
 import { computed } from 'vue'
 import AbstractList from '~/components/account/secrets/list/AbstractList.vue'
 import SecretGroupItem from '~/components/account/secrets/list/groups/SecretGroupItem.vue'
-import SecretGroupEditableItem from '~/components/account/secrets/list/groups/SecretGroupEditableItem.vue'
-import { useSecretGroupsStore } from '~/store/secret-groups'
-import type { SecretGroupForCreate } from '~/repositories/adapters/secret-group-adapter'
+import { useDocumentsStore, type NewSecretGroup, type SecretGroup } from '~/store/documents'
+import { uid } from '#imports'
 
-const store = useSecretGroupsStore()
+const store = useDocumentsStore()
 const groups = computed(() => store.groups)
 
-const createGroup = async (name: string) => {
-	const localGroup = groups.value[0]
+const addNew = () => {
+	store.documents.unshift({
+		name: 'Новая группа',
+		isGroup: true,
+		fields: [],
+		notes: null,
+		clientCode: uid(),
+		editMode: true
+	})
+}
 
-	if ('editMode' in localGroup) {
-		localGroup.name = name
-		localGroup.editMode = false
-		await store.create(groups.value[0] as SecretGroupForCreate)
-	}
+const saveNewName = (group: SecretGroup | NewSecretGroup, newName: string) => {
+	group.name = newName
+	group.editMode = false
+
+	'id' in group ? store.update(group as SecretGroup) : store.create(group as NewSecretGroup)
 }
 
 </script>

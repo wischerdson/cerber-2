@@ -23,8 +23,13 @@ export default defineNuxtConfig({
 	imports: {
 		autoImport: false
 	},
+	icon: {
+		mode: 'svg',
+		localApiEndpoint: '/client-api/icon',
+		fetchTimeout: 0
+	},
 	modules: [
-		'nuxt-icon',
+		'@nuxt/icon',
 		'@pinia/nuxt'
 	],
 	runtimeConfig: {
@@ -35,5 +40,5 @@ export default defineNuxtConfig({
 			consoleLogDecryptedResponse: process.env.CONSOLE_LOG_DECRYPTED_RESPONSE
 		},
 		apiBaseUrl: process.env.SERVER_API_URL
-	},
+	}
 })

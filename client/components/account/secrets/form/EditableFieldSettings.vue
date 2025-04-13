@@ -12,8 +12,8 @@
 				<div>
 					<div class="flex items-center justify-between">
 						<div class="flex items-center space-x-2">
-							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] -bg-gradient-to-b bg-black from-green-500 to-green-600">
-								<LockIcon class="w-2.5 text-white" />
+							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] -bg-gradient-to-b bg-black dark:bg-white from-green-500 to-green-600">
+								<LockIcon class="w-2.5 text-white dark:text-black" />
 							</div>
 							<div class="tracking-wide">Защищенное</div>
 						</div>
@@ -26,8 +26,8 @@
 				<div>
 					<div class="flex items-center justify-between">
 						<div class="flex items-center space-x-2">
-							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] -bg-gradient-to-b bg-black from-blue-500 to-blue-600">
-								<icon class="text-white" name="material-symbols:wrap-text-rounded" size="20px" />
+							<div class="flex items-center justify-center w-6 h-6 rounded-[5px] -bg-gradient-to-b bg-black dark:bg-white from-blue-500 to-blue-600">
+								<icon class="text-white dark:text-black" name="material-symbols:wrap-text-rounded" size="20px" />
 							</div>
 							<div class="tracking-wide">Многострочное</div>
 						</div>

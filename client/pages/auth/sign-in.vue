@@ -23,7 +23,7 @@
 						>Неверный логин или пароль</TheAlert>
 
 						<div class="flex justify-center">
-							<UiClickable class="w-[54px] h-[54px] rounded-full bg-black dark:bg-white dark:text-black text-white relative" type="submit">
+							<UiClickable class="w-[54px] h-[54px] flex justify-center items-center rounded-full bg-black dark:bg-white dark:text-black text-white relative" type="submit">
 								<icon :style="{ opacity: +!pending }" name="material-symbols:arrow-forward-rounded" size="28px" />
 								<div class="absolute inset-0 flex items-center justify-center" v-if="pending">
 									<UiSpinner size="28px" />

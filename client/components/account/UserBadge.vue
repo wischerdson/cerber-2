@@ -24,7 +24,7 @@
 
 		<transition>
 			<div class="menu-wrapper absolute left-0 bottom-full pb-4 z-10" v-click-outside="() => showMenu = false" v-show="showMenu">
-				<div class="menu bg-white dark:bg-dark-tile rounded-xl w-64 relative px-2.5 py-2.5 z-50" ref="$menu">
+				<div class="menu bg-white dark:bg-dark-tile rounded-xl w-64 relative p-2.5 z-50" ref="$menu">
 					<div>
 						<UiClickable class="menu-item hover:bg-gray-50 dark:hover:bg-gray-850 dark:text-gray-300 text-gray-800 flex w-full h-9 rounded-md items-center px-4" @click="themeSubmenu = !themeSubmenu">
 							<MoonIcon class="mr-3 h-4 w-4" v-if="theme.scheme" />

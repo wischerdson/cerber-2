@@ -10,4 +10,6 @@ export const useMainScreen = defineStore('main-screen', () => {
 	// group - стандартный список групп и доступов
 	// search - работа в режиме поиска
 	const mode = ref<'search' | 'groups'>('groups')
+
+
 })
