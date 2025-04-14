@@ -26,7 +26,7 @@ return new class extends Migration
 		Schema::create('auth_grants', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-			$table->string('grant_type');
+			$table->string('grant_type')->collation('ascii_bin');
 			$table->string('grant_id');
 			$table->boolean('is_active')->default(true);
 			$table->timestamp('created_at')->useCurrent();
@@ -43,7 +43,7 @@ return new class extends Migration
 
 		Schema::create('auth_refresh_token_grants', function (Blueprint $table) {
 			$table->id();
-			$table->string('code', 3);
+			$table->string('code', 3)->collation('ascii_bin');
 			$table->timestamp('expires_at');
 			$table->timestamp('updated_at');
 		});

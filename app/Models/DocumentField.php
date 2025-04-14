@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Crypt;
  * @property bool $is_multiline
  * @property bool $is_secure
  * @property int $sort
- * @property string $created_at
  */
 class DocumentField extends Model
 {
@@ -51,6 +50,6 @@ class DocumentField extends Model
 
 	public function document(): BelongsTo
 	{
-		return $this->belongsTo(Document::class, 'document_id');
+		return $this->belongsTo(Node::class, 'document_id');
 	}
 }

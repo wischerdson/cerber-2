@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\ForbiddenException;
+use App\Exceptions\NodeNotFoundException;
 use App\Facades\Auth;
-use App\Models\Document;
 use App\Models\DocumentField;
+use App\Models\Node;
 use Illuminate\Http\Request;
 
-class DocumentController
+class NodeController
 {
 	public function index()
 	{
-		return Document::all();
+		return Node::all();
 	}
 
 	public function show(int $secretId)
 	{
-		return Document::query()
+		return Node::query()
 			->where('id', $secretId)
 			->with('fields')
 			->firstOrFail()
@@ -36,15 +36,17 @@ class DocumentController
 
 		$user = Auth::user();
 
-		if ($parentId = $request->parent_id) {
-			$parentDocuement = Document::findOrFail($parentId);
+		$document = Node::make($request->only('name', 'notes', 'type'));
 
-			if ($parentDocuement->user_id !== $user->id) {
-				throw new ForbiddenException();
+		if ($parentId = $request->parent_id) {
+			$parentNode = Node::find($parentId);
+
+			if (!$parentNode || $parentNode->type !== 'group') {
+				throw new NodeNotFoundException();
 			}
 		}
 
-		$document = Document::create($request->only('name', 'notes', 'is_group', 'parent_id'));
+
 
 		if ($document->is_group) {
 			return $document;

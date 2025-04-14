@@ -38,8 +38,8 @@ return new class extends Migration
 			$table->string('path');
 			$table->integer('size')->unsigned();
 			$table->string('mime');
-			$table->string('md5_hash', 32);
-			$table->string('sha1_hash', 40);
+			$table->string('md5_hash', 32)->collation('ascii_bin');
+			$table->string('sha1_hash', 40)->collation('ascii_bin');
 			$table->timestamp('created_at');
 		});
 

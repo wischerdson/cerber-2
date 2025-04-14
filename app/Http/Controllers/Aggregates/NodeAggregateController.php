@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Aggregates;
 
-use App\Exceptions\DocumentIsNotGroupException;
-use App\Models\Document;
+use App\Models\Node;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class DocumentGroupAggregateController
+class NodeAggregateController
 {
 	public function __invoke(Request $request)
 	{
@@ -18,7 +17,7 @@ class DocumentGroupAggregateController
 		]);
 
 		if ($request->id || $request->alias) {
-			$document = Document::query()
+			$document = Node::query()
 				->when(
 					$request->id,
 					fn ($query, $id) => $query->whereKey($id),
@@ -35,26 +34,11 @@ class DocumentGroupAggregateController
 				'descendants' => $document->descendants
 			];
 		}
-
-		$descendants
-
-		// dd($document);
-
-
-
-
-	}
-
-	private function fetchTopLevelDocuments(): Collection
-	{
-		return Document::query()
-			->where('parent_id', null)
-			->get();
 	}
 
 	private function fetchParents(int $parentId): Collection
 	{
-		$documentTable = (new Document())->getTable();
+		$documentTable = (new Node())->getTable();
 
 		$startingGroupQuery = DB::query()->select('*')->from($documentTable)->where('id', DB::raw(':parent_id'));
 		$parentGroupQuery = DB::query()->select('parent.*')->from($documentTable, 'parent')
@@ -69,6 +53,6 @@ class DocumentGroupAggregateController
 			['parent_id' => $parentId]
 		);
 
-		return collect($groups)->map(fn ($group) => (new Document())->forceFill((array) $group));
+		return collect($groups)->map(fn ($group) => (new Node())->forceFill((array) $group));
 	}
 }

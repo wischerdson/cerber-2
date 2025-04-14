@@ -11,7 +11,9 @@ use Illuminate\Support\Str;
 /**
  * @property int $id
  * @property int|null $parent_id
- * @property bool $is_group
+ * @property int|null $creator_id
+ * @property int|null $owner_id
+ * @property string $type
  * @property string $alias
  * @property string $name
  * @property string|null $notes
@@ -19,7 +21,7 @@ use Illuminate\Support\Str;
  * @property string $created_at
  * @property string|null $deleted_at
  */
-class Document extends Model
+class Node extends Model
 {
 	use HasFactory;
 
@@ -27,14 +29,13 @@ class Document extends Model
 
 	protected static $unguarded = true;
 
-	protected $table = 'documents';
+	protected $table = 'nodes';
 
-	protected $hidden = ['parent_id'];
+	protected $hidden = ['parent_id', 'creator_id', 'owner_id'];
 
 	protected $casts = [
 		'created_at' => 'timestamp',
 		'deleted_at' => 'timestamp',
-		'is_group' => 'boolean',
 		'is_effective' => 'boolean'
 	];
 
@@ -55,14 +56,14 @@ class Document extends Model
 
 	protected static function booted(): void
 	{
-		static::creating(function (self $document) {
+		static::creating(function (self $node) {
 			$i = 5;
 
 			do {
 				$alias = mb_strtolower(Str::random($i++));
 			} while (self::query()->where('alias', $alias)->exists());
 
-			$document->alias = $alias;
+			$node->alias = $alias;
 		});
 	}
 }

@@ -11,11 +11,13 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('documents', function (Blueprint $table) {
+		Schema::create('nodes', function (Blueprint $table) {
 			$table->id();
 			$table->bigInteger('parent_id')->unsigned()->nullable();
-			$table->boolean('is_group');
-			$table->string('alias')->unique();
+			// $table->foreignId('creator_id')->constrained('users');
+			// $table->foreignId('owner_id')->constrained('users');
+			$table->enum('type', ['document', 'group', 'link'])->collation('ascii_bin');
+			$table->string('alias')->unique()->collation('ascii_bin');
 			$table->string('name');
 			$table->text('notes')->nullable();
 			$table->boolean('is_effective')->default(true);
@@ -23,13 +25,13 @@ return new class extends Migration
 			$table->timestamp('deleted_at')->nullable();
 		});
 
-		Schema::table('documents', function (Blueprint $table) {
-			$table->foreign('parent_id')->references('id')->on('documents');
+		Schema::table('nodes', function (Blueprint $table) {
+			$table->foreign('parent_id')->references('id')->on('nodes');
 		});
 
 		Schema::create('document_fields', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('document_id')->references('id')->on('documents')->cascadeOnDelete();
+			$table->foreignId('document_id')->references('id')->on('nodes')->cascadeOnDelete();
 			$table->string('label');
 			$table->string('short_description')->nullable();
 			$table->mediumText('value')->default('');
@@ -38,14 +40,10 @@ return new class extends Migration
 			$table->smallInteger('sort')->unsigned();
 		});
 
-		Schema::disableForeignKeyConstraints();
-
-		Schema::dropIfExists('secrets');
-		Schema::dropIfExists('secrets_in_groups');
-		Schema::dropIfExists('secret_fields');
-		Schema::dropIfExists('secret_groups');
-
-		Schema::enableForeignKeyConstraints();
+		Schema::create('node_links', function (Blueprint $table) {
+			$table->foreignId('link_id')->primary()->constrained('nodes');
+			$table->foreignId('target_id')->constrained('nodes');
+		});
 	}
 
 	/**
@@ -53,6 +51,6 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-		//
+		Schema::dropIfExists('nodes');
 	}
 };
