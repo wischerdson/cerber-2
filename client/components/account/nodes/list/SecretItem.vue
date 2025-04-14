@@ -4,17 +4,17 @@
 		:nuxt-link="{ to: '/' }"
 	>
 		<SecretIcon class="w-7 h-7" :icon="icon" />
-		<span class="font-medium">{{ secret.name }}</span>
+		<span class="font-medium">{{ document.name }}</span>
 	</UiClickable>
 </template>
 
 <script setup lang="ts">
 
-import type { SecretPreview } from '~/repositories/adapters/secret-adapter'
+import type { Document, NewDocument } from '~/repositories/adapters/node-adapter'
 import UiClickable from '~/components/ui/Clickable.vue'
-import SecretIcon, { type SecretIconProps } from '~/components/account/secrets/list/SecretIcon.vue'
+import SecretIcon, { type SecretIconProps } from '~/components/account/nodes/list/SecretIcon.vue'
 
-defineProps<{ secret: SecretPreview, icon: SecretIconProps['icon'] }>()
+defineProps<{ document: Document | NewDocument, icon: SecretIconProps['icon'] }>()
 
 </script>
 

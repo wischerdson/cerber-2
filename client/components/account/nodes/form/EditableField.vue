@@ -9,7 +9,7 @@
 					v-model="model"
 				/>
 			</transition>
-			<component :is="model.multiline ? UiTextarea : UiInput" v-model="model.value">
+			<component :is="model.isMultiline ? UiTextarea : UiInput" v-model="model.value">
 				<template #before="{ id }">
 					<div class="flex items-end mb-1.5">
 						<div class="flex items-center gap-1.5">
@@ -28,7 +28,7 @@
 								<PencilIcon class="w-3" />
 							</UiClickable>
 							<UiLabel :for="id">{{ model.label }}</UiLabel>
-							<LockIcon class="ml-1 w-2 text-gray-600" v-if="model.secure" />
+							<LockIcon class="ml-1 w-2 text-gray-600" v-if="model.isSecure" />
 						</div>
 						<div class="flex ml-auto">
 							<UiClickable
@@ -76,12 +76,9 @@ import UiLabel from '~/components/ui/Label.vue'
 import UiClickable from '~/components/ui/Clickable.vue'
 import LockIcon from '~/assets/svg/lock.svg'
 import PencilIcon from '~/assets/svg/Monochrome=applepencil.gen1.svg'
-import EditableFieldSettings, { type FieldProperties } from '~/components/account/secrets/form/EditableFieldSettings.vue'
+import EditableFieldSettings from '~/components/account/nodes/form/EditableFieldSettings.vue'
 import { ref } from 'vue'
-
-export type FieldModel = FieldProperties & {
-	value: string
-}
+import type { NewDocumentField, DocumentField } from '~/repositories/adapters/node-adapter'
 
 const emit = defineEmits<{
 	(e: 'remove'): void
@@ -91,7 +88,7 @@ const emit = defineEmits<{
 
 defineProps<{ first: boolean, last: boolean }>()
 
-const model = defineModel<FieldModel>({ required: true })
+const model = defineModel<DocumentField | NewDocumentField>({ required: true })
 
 const showPopover = ref(false)
 

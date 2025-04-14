@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\NodeNotFoundException;
-use App\Facades\Auth;
 use App\Models\DocumentField;
 use App\Models\Node;
 use Illuminate\Http\Request;
@@ -28,15 +27,12 @@ class NodeController
 	{
 		$request->validate([
 			'name' => ['required', 'string'],
-			'is_group' => ['required', 'boolean'],
 			'fields' => ['prohibited_if:is_group,true', 'present', 'array'],
 			'fields.*.label' => ['required', 'string'],
 			'fields.*.short_description' => ['required', 'string'],
 		]);
 
-		$user = Auth::user();
-
-		$document = Node::make($request->only('name', 'notes', 'type'));
+		$node = Node::make($request->only('type', 'name', 'notes'));
 
 		if ($parentId = $request->parent_id) {
 			$parentNode = Node::find($parentId);
@@ -46,23 +42,24 @@ class NodeController
 			}
 		}
 
+		$node->save();
 
+		if ($node->type === 'document') {
+			$fields = [];
 
-		if ($document->is_group) {
-			return $document;
+			foreach (array_values($request->fields) as $field) {
+				$fieldModel = new DocumentField(
+					collect($field)
+						->only('label', 'short_description', 'multiline', 'secure', 'sort')
+						->all()
+				);
+				$fieldModel->value = $field['value'];
+				$field[] = $fieldModel;
+			}
+
+			$node->fields()->saveMany($fields);
 		}
 
-		foreach (array_values($request->fields) as $i => $field) {
-			$fieldModel = new DocumentField(
-				collect($field)
-					->only('label', 'short_description', 'multiline', 'secure', 'sort')
-					->all()
-			);
-			$fieldModel->value = $field['value'];
-
-			$document->fields()->save($fieldModel);
-		}
-
-		return $document;
+		return $node;
 	}
 }

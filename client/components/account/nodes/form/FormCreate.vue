@@ -15,21 +15,21 @@
 
 <script setup lang="ts">
 
-import type { SecretForCreate } from '~/repositories/adapters/secret-adapter'
+import type { NewDocument } from '~/repositories/adapters/node-adapter'
 import UiButton from '~/components/ui/Button.vue'
 import TheForm from './Form.vue'
 import { uid } from '~/utils/helpers'
 import { ref } from 'vue'
-import { createSecret } from '~/repositories/secrets'
+import { createNode } from '~/repositories/nodes'
 
 const emit = defineEmits<{
 	(e: 'cancel'): void
 }>()
 
-const model = ref<SecretForCreate>({
+const model = ref<NewDocument>({
+	type: 'document',
 	notes: '',
 	clientCode: uid(),
-	isUptodate: true,
 	name: '',
 	fields: []
 })
@@ -38,7 +38,7 @@ const pending = ref(false)
 
 const save = async () => {
 	pending.value = true
-	await createSecret(model.value)
+	await createNode(model.value)
 	pending.value = false
 }
 

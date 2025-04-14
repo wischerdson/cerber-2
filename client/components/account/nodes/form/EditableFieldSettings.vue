@@ -17,7 +17,7 @@
 							</div>
 							<div class="tracking-wide">Защищенное</div>
 						</div>
-						<UiSwitch v-model="model.secure" />
+						<UiSwitch v-model="model.isSecure" />
 					</div>
 					<p class="text-xs mt-1.5 text-gray-600 leading-tight">
 						Значение поля будет храниться в зашифрованном виде, поиск по нему осуществляться не будет, при отображении визуально будет скрываться.
@@ -31,7 +31,7 @@
 							</div>
 							<div class="tracking-wide">Многострочное</div>
 						</div>
-						<UiSwitch v-model="model.multiline" />
+						<UiSwitch v-model="model.isMultiline" />
 					</div>
 				</div>
 			</div>
@@ -46,15 +46,9 @@ import UiTextarea from '~/components/ui/Textarea.vue'
 import UiSwitch from '~/components/ui/Switch.vue'
 import LockIcon from '~/assets/svg/lock.svg'
 import { computed } from 'vue'
+import type { DocumentField, NewDocumentField } from '~/repositories/adapters/node-adapter'
 
-export type FieldProperties = {
-	label: string
-	shortDescription: string | null
-	secure: boolean
-	multiline: boolean
-}
-
-const model = defineModel<FieldProperties>({ required: true })
+const model = defineModel<DocumentField | NewDocumentField>({ required: true })
 
 const shortDescription = computed({
 	get: () => model.value.shortDescription || '',

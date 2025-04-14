@@ -13,7 +13,7 @@
 
 						<hr class="w-full border-gray-100 dark:border-gray-850 mt-6 mb-6">
 
-						<SecretGroupList />
+						<GroupList />
 						<SecretList />
 					</div>
 				</UiContentTile>
@@ -30,9 +30,9 @@
 
 import UiContentTile from '~/components/ui/ContentTile.vue'
 import TheBreadcrumb from '~/components/account/Breadcrumb.vue'
-import SecretGroupList from '~/components/account/secrets/list/groups/SecretGroupList.vue'
-import SecretList from '~/components/account/secrets/list/SecretList.vue'
+import GroupList from '~/components/account/nodes/list/groups/GroupList.vue'
+import SecretList from '~/components/account/nodes/list/SecretList.vue'
 import TheSearch from '~/components/account/Search.vue'
-import SecretFormCreate from '~/components/account/secrets/form/FormCreate.vue'
+import SecretFormCreate from '~/components/account/nodes/form/FormCreate.vue'
 
 </script>

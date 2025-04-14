@@ -5,9 +5,9 @@
 import { definePageMeta, useHead } from '#imports'
 import { useAccountLayoutLoaderStore } from '~/store/loaders'
 import { useRoute } from 'vue-router'
-import { useSecretGroupAggregateStore } from '~/store/aggregates/secret-group-aggregate-store'
+import {  } from '~/store/aggregates/nodes-aggregate-store'
 
-definePageMeta({ middleware: 'auth', layout: 'account-secrets' })
+definePageMeta({ middleware: 'auth', layout: 'account-node-list' })
 
 const route = useRoute()
 

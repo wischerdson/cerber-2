@@ -17,7 +17,7 @@ class NodeAggregateController
 		]);
 
 		if ($request->id || $request->alias) {
-			$document = Node::query()
+			$node = Node::query()
 				->when(
 					$request->id,
 					fn ($query, $id) => $query->whereKey($id),
@@ -26,12 +26,12 @@ class NodeAggregateController
 				->where('is_group', true)
 				->firstOrFail();
 
-			$document->loadMissing('descendants');
+			$node->loadMissing('descendants');
 
 			return [
-				'parents' => $document->parent_id ? $this->fetchParents($document->parent_id) : [],
-				'current' => collect($document)->except('descendants'),
-				'descendants' => $document->descendants
+				'parents' => $node->parent_id ? $this->fetchParents($node->parent_id) : [],
+				'current' => collect($node)->except('descendants'),
+				'descendants' => $node->descendants
 			];
 		}
 	}

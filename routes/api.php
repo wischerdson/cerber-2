@@ -17,9 +17,6 @@ Route::middleware('auth')->group(function () {
 
 	Route::apiResource('nodes', NodeController::class);
 
-	// Route::apiResource('secrets', SecretController::class)->middleware('encrypt-response');
-	// Route::apiResource('secret-groups', SecretGroupController::class)->middleware('encrypt-response');
-
 	Route::get('secrets-breadcrumb', [SecretGroupController::class, 'breadcrumb'])->middleware('encrypt-response');
 
 	Route::prefix('aggregates')->group(function () {

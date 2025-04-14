@@ -18,18 +18,19 @@
 <script setup lang="ts">
 
 import { computed } from 'vue'
-import AbstractList from '~/components/account/secrets/list/AbstractList.vue'
-import SecretGroupItem from '~/components/account/secrets/list/groups/SecretGroupItem.vue'
-import { useDocumentsStore, type NewSecretGroup, type SecretGroup } from '~/store/documents'
 import { uid } from '#imports'
+import AbstractList from '~/components/account/nodes/list/AbstractList.vue'
+import SecretGroupItem from '~/components/account/nodes/list/groups/GroupItem.vue'
+import { useNodesStore } from '~/store/nodes'
+import type { Group, NewGroup } from '~/repositories/adapters/node-adapter'
 
-const store = useDocumentsStore()
+const store = useNodesStore()
 const groups = computed(() => store.groups)
 
 const addNew = () => {
-	store.documents.unshift({
+	store.nodes.unshift({
 		name: 'Новая группа',
-		isGroup: true,
+		type: 'group',
 		fields: [],
 		notes: null,
 		clientCode: uid(),
@@ -37,11 +38,11 @@ const addNew = () => {
 	})
 }
 
-const saveNewName = (group: SecretGroup | NewSecretGroup, newName: string) => {
+const saveNewName = (group: Group | NewGroup, newName: string) => {
 	group.name = newName
 	group.editMode = false
 
-	'id' in group ? store.update(group as SecretGroup) : store.create(group as NewSecretGroup)
+	'id' in group ? store.update(group as Group) : store.create(group as NewGroup)
 }
 
 </script>

@@ -42,25 +42,26 @@
 
 <script setup lang="ts">
 
-import type { SecretForCreate } from '~/repositories/adapters/secret-adapter'
+import type { NewDocument } from '~/repositories/adapters/node-adapter'
 import UiInput from '~/components/ui/Input.vue'
 import UiTextarea from '~/components/ui/Textarea.vue'
 import UiButton from '~/components/ui/Button.vue'
-import EditableField from '~/components/account/secrets/form/EditableField.vue'
+import EditableField from '~/components/account/nodes/form/EditableField.vue'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 import { uid } from '~/utils/helpers'
 
-const model = defineModel<SecretForCreate>({ required: true })
+const model = defineModel<NewDocument>({ required: true })
 
 let fieldsCount = model.value.fields.length
 
 const addField = () => model.value.fields.push({
 	label: `Поле #${++fieldsCount}`,
-	secure: false,
-	multiline: false,
+	isSecure: false,
+	isMultiline: false,
 	value: '',
 	shortDescription: null,
-	clientCode: uid()
+	clientCode: uid(),
+	sort: 0
 })
 
 const swapFields = (idx: number, direction: -1 | 1) => {
