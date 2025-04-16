@@ -3,21 +3,22 @@
 namespace Database\Factories;
 
 use App\Models\Document;
+use App\Models\Node;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Document>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Node>
  */
-class DocumentFactory extends Factory
+class NodeFactory extends Factory
 {
 	/** @var class-string<\Illuminate\Database\Eloquent\Model> */
-	protected $model = Document::class;
+	protected $model = Node::class;
 
 	public function configure(): static
 	{
-		return $this->afterCreating(function (Document $document) {
-			$this->setFieldsSort($document);
+		return $this->afterCreating(function (Node $node) {
+			$node->type === Node::TYPE_DOCUMENT && $this->setFieldsSort($node);
 		});
 	}
 
@@ -29,7 +30,7 @@ class DocumentFactory extends Factory
 	public function definition(): array
 	{
 		return [
-			'is_group' => fake()->boolean(),
+			'type' => fake()->randomElement([Node::TYPE_DOCUMENT, Node::TYPE_LINK, Node::TYPE_GROUP]),
 			'name' => mb_ucfirst(fake()->words(
 				fake()->randomElement([1, 2, 3, 4]),
 				true
@@ -40,9 +41,19 @@ class DocumentFactory extends Factory
 		];
 	}
 
-	public function group(bool $yes = true): Factory
+	public function asGroup(): Factory
 	{
-		return $this->state(fn (array $attrs) => ['is_group' => $yes]);
+		return $this->state(fn (array $attrs) => ['type' => Node::TYPE_GROUP]);
+	}
+
+	public function asDocument(): Factory
+	{
+		return $this->state(fn (array $attrs) => ['type' => Node::TYPE_DOCUMENT]);
+	}
+
+	public function asLink(): Factory
+	{
+		return $this->state(fn (array $attrs) => ['type' => Node::TYPE_LINK]);
 	}
 
 	public function deleted(DateTime|int|string|null $when = 'now'): Factory
@@ -57,14 +68,14 @@ class DocumentFactory extends Factory
 		return $this->state(fn (array $attrs) => ['is_effective' => $yes]);
 	}
 
-	private function setFieldsSort(Document $document): void
+	private function setFieldsSort(Node $node): void
 	{
-		$fields = $document->fields()->get();
+		$fields = $node->document_fields()->get();
 
 		foreach ($fields as $i => $field) {
 			$field->sort = $i + 1;
 		}
 
-		$document->fields()->saveMany($fields);
+		$node->document_fields()->saveMany($fields);
 	}
 }

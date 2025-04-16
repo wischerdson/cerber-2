@@ -154,8 +154,9 @@ class AuthTest extends TestCase
 		$auth->forgetGuards();
 
 		$this->getJson('/user', ['Authorization' => "Bearer test"])
-			->assertStatus(401)->assertJson(fn (AssertableJson $json) =>
-				$json->where('error_reason', 'unauthenticated')
+			->assertStatus(401)->assertJson(fn (AssertableJson $json) => $json
+				->where('error_reason', 'unauthenticated')
+				->etc()
 			);
 		$this->assertGuest('api');
 
@@ -164,9 +165,10 @@ class AuthTest extends TestCase
 		$this->travelTo(now()->addMinutes(30), function () use ($accessToken, $auth) {
 			$this->getJson('/user', ['Authorization' => "Bearer {$accessToken}"])
 				->assertStatus(401)
-				->assertJson(fn (AssertableJson $json) =>
-					$json->where('error_reason', 'access_token_has_expired')
-			);
+				->assertJson(fn (AssertableJson $json) => $json
+					->where('error_reason', 'access_token_has_expired')
+					->etc()
+				);
 			$this->assertThrows(
 				fn () => $auth->guard('api')->user(),
 				AccessTokenHasExpiredException::class
@@ -203,6 +205,7 @@ class AuthTest extends TestCase
 			/** @var \Illuminate\Testing\TestResponse $this */
 			return $this->assertStatus(401)->assertJson(fn (AssertableJson $json) => $json
 				->where('error_reason', 'auth_credentials_error')
+				->etc()
 			);
 		};
 	}

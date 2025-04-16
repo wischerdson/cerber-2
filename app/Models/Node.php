@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +29,12 @@ class Node extends Model
 
 	const UPDATED_AT = null;
 
+	const TYPE_GROUP = 'group';
+
+	const TYPE_DOCUMENT = 'document';
+
+	const TYPE_LINK = 'link';
+
 	protected static $unguarded = true;
 
 	protected $table = 'nodes';
@@ -49,9 +57,15 @@ class Node extends Model
 		return $this->hasMany(self::class, 'parent_id');
 	}
 
-	public function fields(): HasMany
+	public function document_fields(): HasMany
 	{
 		return $this->hasMany(DocumentField::class, 'document_id');
+	}
+
+	#[Scope]
+	protected function whereTypeIsGroup(Builder $query): void
+	{
+		$query->where('type', self::TYPE_GROUP);
 	}
 
 	protected static function booted(): void

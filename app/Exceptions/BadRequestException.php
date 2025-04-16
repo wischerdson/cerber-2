@@ -5,16 +5,22 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Throwable;
 
 class BadRequestException extends Exception
 {
 	public ?string $errorReason = null;
 
-	public ?string $errorMessage = null;
-
 	public ?array $errorDetails = null;
 
-	public int $statusCode = 422;
+	public function __construct(
+		string $message = '',
+		int $code = 422,
+		?Throwable $previous = null
+	)
+	{
+		parent::__construct($message, $code, $previous);
+	}
 
 	public function report(): void
 	{
@@ -25,9 +31,12 @@ class BadRequestException extends Exception
 	 */
 	public function render(): JsonResponse
 	{
-		$responseData = ['error_reason' => $this->errorReason ?: $this->guessErrorReason()];
+		$responseData = [
+			'status' => 'error',
+			'error_reason' => $this->errorReason ?: $this->guessErrorReason()
+		];
 
-		if (($message = $this->getErrorMessage()) !== null) {
+		if ($message = $this->getErrorMessage()) {
 			$responseData['message'] = $message;
 		}
 
@@ -35,14 +44,13 @@ class BadRequestException extends Exception
 			$responseData['details'] = $details;
 		}
 
-		return response()->json($responseData, $this->statusCode);
+		return response()->json($responseData, $this->getCode());
 	}
 
-	protected function getErrorMessage()
+	protected function getErrorMessage(): ?string
 	{
-		return $this->errorMessage;
+		return isset($this->message) ? $this->message : null;
 	}
-
 	protected function getErrorDetails()
 	{
 		return $this->errorDetails;
