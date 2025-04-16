@@ -1,12 +1,8 @@
 FROM php:8.4-fpm-alpine3.20
 
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-
-RUN chmod +x /usr/local/bin/install-php-extensions \
-	&& install-php-extensions gd exif bcmath zip redis \
-	&& docker-php-ext-install pdo_mysql
-
-RUN docker-php-ext-configure pcntl --enable-pcntl \
-	&& docker-php-ext-install pcntl
+RUN curl -fsSL -o /usr/local/bin/install-php-extensions \
+	https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
+	&& chmod +x /usr/local/bin/install-php-extensions \
+	&& install-php-extensions gd bcmath zip redis xdebug pdo_mysql pcntl
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
