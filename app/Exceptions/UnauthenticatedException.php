@@ -4,5 +4,5 @@ namespace App\Exceptions;
 
 class UnauthenticatedException extends BadRequestException
 {
-	public int $statusCode = 401;
+	protected int $httpCode = 401;
 }

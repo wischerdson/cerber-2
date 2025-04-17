@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Aggregates;
 
-use App\Exceptions\BadRequestException;
+use App\Exceptions\NodeTroublesException;
 use App\Models\Node;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -18,7 +18,7 @@ class NodeAggregateController
 		]);
 
 		if (!$request->id && !$request->alias) {
-			throw new BadRequestException('Either the ID or alias of the node is required');
+			throw NodeTroublesException::missingAliasOrId();
 		}
 
 		$node = Node::query()
@@ -29,7 +29,7 @@ class NodeAggregateController
 			)
 			->whereTypeIsGroup()
 			->firstOr(
-				fn () => throw new BadRequestException('Node of type group by ' . ($request->id ?: $request->alias) . ' not found', 404))
+				fn () => throw NodeTroublesException::groupNotFound($request->id ?: $request->alias))
 			;
 
 		$node->loadMissing('descendants');

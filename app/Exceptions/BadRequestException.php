@@ -5,25 +5,23 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
-use Throwable;
 
 class BadRequestException extends Exception
 {
-	public ?string $errorReason = null;
+	protected ?string $reason = null;
 
-	public ?array $errorDetails = null;
+	protected ?array $details = null;
 
-	public function __construct(
-		string $message = '',
-		int $code = 422,
-		?Throwable $previous = null
-	)
+	protected int $httpCode = 422;
+
+	public static function message(string $message): self
 	{
-		parent::__construct($message, $code, $previous);
+		return new static($message);
 	}
 
-	public function report(): void
+	public function report(): bool
 	{
+		return true;
 	}
 
 	/**
@@ -33,27 +31,45 @@ class BadRequestException extends Exception
 	{
 		$responseData = [
 			'status' => 'error',
-			'error_reason' => $this->errorReason ?: $this->guessErrorReason()
+			'error_reason' => $this->reason ?: $this->guessErrorReason()
 		];
 
-		if ($message = $this->getErrorMessage()) {
+		if ($message = $this->message) {
 			$responseData['message'] = $message;
 		}
 
-		if (($details = $this->getErrorDetails()) !== null) {
+		if (($details = $this->details) !== null) {
 			$responseData['details'] = $details;
 		}
 
-		return response()->json($responseData, $this->getCode());
+		return response()->json($responseData, $this->httpCode);
 	}
 
-	protected function getErrorMessage(): ?string
+	/**
+	 * Set the reason for the bad request.
+	 *
+	 * This is a technical name, it should have only letters of the Latin alphabet,
+	 * numbers and the sign '_'.
+	 */
+	public function reason(string $reason): self
 	{
-		return isset($this->message) ? $this->message : null;
+		$this->reason = $reason;
+
+		return $this;
 	}
-	protected function getErrorDetails()
+
+	public function httpCode(int $code): self
 	{
-		return $this->errorDetails;
+		$this->httpCode = $code;
+
+		return $this;
+	}
+
+	public function details(array $details): self
+	{
+		$this->details = $details;
+
+		return $this;
 	}
 
 	private function guessErrorReason()

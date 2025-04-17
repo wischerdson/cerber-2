@@ -68,51 +68,13 @@ class NodeAggregateTest extends TestCase
 					->etc()
 			);
 
-		$response = $this->actingAs(self::createUser())
+		$this->actingAs(self::createUser())
 			->getJson('/aggregates/nodes?id=12345')
-			->assertStatus(404);
+			->assertStatus(404)
+			->assertJson(fn (AssertableJson $json) => $json
+				->where('message', 'Node of type group by 12345 not found')
+				->etc()
+			);
 
-
-			dd($response->json());
-
-
-
-		// $this->actingAs($user)
-		// 	->getJson('/aggregates/nodes?id=1ab')
-		// 	->assertStatus(422)
-		// 	->assertJson(fn (AssertableJson $json) =>
-		// 		$json->where('error_reason', 'validation_failed')
-		// 			->where('details.id.0', 'numeric')
-		// 			->missing('details.alias.0')
-		// 			->etc()
-		// 	);
-
-		// $this->actingAs($user)
-		// 	->getJson('/aggregates/nodes?alias=')
-		// 	->assertStatus(422)
-		// 	->assertJson(fn (AssertableJson $json) =>
-		// 		$json->where('error_reason', 'validation_failed')
-		// 			->where('details.alias.0', 'required')
-		// 			->missing('details.id.0')
-		// 			->etc()
-		// 	);
-
-		// $this->actingAs($user)
-		// 	->getJson('/aggregates/nodes?id=')
-		// 	->assertStatus(422)
-		// 	->assertJson(fn (AssertableJson $json) =>
-		// 		$json->where('error_reason', 'validation_failed')
-		// 			->where('details.id.0', 'required')
-		// 			->missing('details.alias.0')
-		// 			->etc()
-		// 	);
-
-		// $this->actingAs($user)
-		// 	->getJson('/aggregates/nodes?id=123')
-		// 	->assertNotFound();
-
-		// $this->actingAs($user)
-		// 	->getJson('/aggregates/nodes?alias=asd')
-		// 	->assertNotFound();
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\InvalidRsaPublicKeyException;
+use App\Exceptions\RsaException;
 use App\Models\Handshake;
 use App\Rules\OpenSslRsaPublicKey;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class HandshakeController extends Controller
 		$clientPublicKey = $request->getContent();
 
 		if (Validator::make([$clientPublicKey], ['required', new OpenSslRsaPublicKey()])->fails()) {
-			throw new InvalidRsaPublicKeyException();
+			throw RsaException::invalidPublicKey();
 		}
 
 		$handshake = new Handshake();

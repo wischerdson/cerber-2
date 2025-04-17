@@ -43,8 +43,9 @@ abstract class TestCase extends BaseTestCase
 		return function () {
 			/** @var \Illuminate\Testing\TestResponse $this */
 			return $this->assertStatus(401)
-				->assertJson(fn (AssertableJson $json) =>
-					$json->where('error_reason', 'unauthenticated')
+				->assertJson(fn (AssertableJson $json) => $json
+					->where('error_reason', 'unauthenticated')
+					->etc()
 				);
 		};
 	}
