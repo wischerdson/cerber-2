@@ -1,28 +1,4 @@
-export interface ServerUser {
-	id: number
-	first_name: string
-	last_name: string
-	email: string|null
-	timezone: string|null
-	timezone_offset: number|null
-	is_admin: boolean
-	created_at: number
-	deleted_at: number
-}
-
-export interface User {
-	id: number
-	firstName: string
-	lastName: string
-	email: string|null
-	timezone: string|null
-	timezoneOffset: number|null
-	isAdmin: boolean
-	createdAt: Date
-	deletedAt: Date|null
-}
-
-export const serverToClientUser = (user: ServerUser): User => {
+export const serverToClientUser = (user: App.Server.User): App.User => {
 	return {
 		id: user.id,
 		firstName: user.first_name,

@@ -1,101 +1,4 @@
-export interface ServerNode {
-	id: number
-	type: 'document' | 'group' | 'link'
-	alias: string
-	name: string
-	notes: string | null
-	is_effective: boolean
-	created_at: number
-	deleted_at: number | null
-}
-
-export interface Node {
-	id: number
-	type: 'document' | 'group' | 'link'
-	alias: string
-	name: string
-	notes: string|null
-	isEffective: boolean
-	clientCode?: string
-	createdAt: Date
-	deletedAt: Date|null
-}
-
-export interface DocumentField {
-	id: number
-	label: string
-	shortDescription: string | null
-	value: string
-	isMultiline: boolean
-	isSecure: boolean
-	sort: number
-}
-
-export interface ServerDocumentField {
-	id: number
-	label: string
-	short_description: string | null
-	value: string
-	is_multiline: boolean
-	is_secure: boolean
-	sort: number
-}
-
-export interface NewNode {
-	name: string
-	notes: string|null
-	type: 'document' | 'group' | 'link'
-	clientCode: string
-	fields?: NewDocumentField[]
-}
-
-export interface ServerNewNode {
-	name: string
-	notes: string|null
-	type: 'document' | 'group' | 'link'
-	fields?: ServerNewDocumentField[]
-}
-
-export interface NewDocumentField {
-	label: string
-	shortDescription: string | null
-	value: string
-	isMultiline: boolean
-	isSecure: boolean
-	sort: number
-	clientCode: string
-}
-
-export interface ServerNewDocumentField {
-	label: string
-	short_description: string | null
-	value: string
-	is_multiline: boolean
-	is_secure: boolean
-	sort: number
-}
-
-export interface NewDocument extends NewNode {
-	type: 'document'
-	fields: NewDocumentField[]
-}
-
-export interface NewGroup extends NewNode {
-	type: 'group'
-	editMode: boolean
-}
-
-export interface Document extends Node {
-	type: 'document'
-	fields: DocumentField[]
-}
-
-export interface Group extends Node {
-	type: 'group'
-	editMode?: boolean
-}
-
-export const transformNodeToClient = (node: ServerNode): Node => {
+export const transformNodeToClient = (node: App.Nodes.Server.Node): App.Nodes.Node => {
 	return {
 		id:          node.id,
 		type:        node.type,
@@ -108,7 +11,23 @@ export const transformNodeToClient = (node: ServerNode): Node => {
 	}
 }
 
-export const transformNewDocumentFieldToServer = (field: NewDocumentField): ServerNewDocumentField => {
+export const transformNewNodeToServer = (newNode: App.Nodes.NewNode): App.Nodes.Server.NewNode => {
+	return {
+		name:  newNode.name,
+		notes: newNode.notes,
+		type:  newNode.type
+	}
+}
+
+export const transformGroupToClient = (group: App.Nodes.Server.Group): App.Nodes.Group => {
+	return {
+		...transformNodeToClient(group),
+		type:     group.type,
+		editMode: false
+	}
+}
+
+export const transformNewDocumentFieldToServer = (field: App.Nodes.NewDocumentField): App.Nodes.Server.NewDocumentField => {
 	return {
 		label:             field.label,
 		short_description: field.shortDescription,
@@ -119,11 +38,19 @@ export const transformNewDocumentFieldToServer = (field: NewDocumentField): Serv
 	}
 }
 
-export const transformNewNodeToServer = (newNode: NewNode | NewDocument): ServerNewNode => {
+export const transformNewDocumentToServer = (newDocument: App.Nodes.NewDocument): App.Nodes.Server.NewDocument => {
 	return {
-		name:   newNode.name,
-		notes:  newNode.notes,
-		type:   newNode.type,
-		fields: newNode.fields?.map(transformNewDocumentFieldToServer)
+		name:   newDocument.name,
+		notes:  newDocument.notes,
+		type:   newDocument.type,
+		fields: newDocument.fields.map(transformNewDocumentFieldToServer)
+	}
+}
+
+export const transformNewGroupToServer = (newGroup: App.Nodes.NewGroup): App.Nodes.Server.NewGroup => {
+	return {
+		name:  newGroup.name,
+		notes: newGroup.notes,
+		type:  newGroup.type
 	}
 }

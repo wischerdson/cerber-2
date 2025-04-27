@@ -25,15 +25,16 @@
 
 <script setup lang="ts">
 
-import type { Group, NewGroup } from '~/repositories/adapters/node-adapter'
 import { computed, ref, type VNode } from 'vue'
 import UiClickable from '~/components/ui/Clickable.vue'
 import UiInput from '~/components/ui/Input.vue'
 import UiPressNHold from '~/components/ui/PressNHold.vue'
 
-const props = defineProps<{ group: Group | NewGroup }>()
+type Group = App.Nodes.Group | App.Nodes.NewGroup
+
+const props = defineProps<{ group: Group }>()
 const emit = defineEmits<{
-	(e: 'saveName', group: Group | NewGroup, name: string): void
+	(e: 'saveName', group: Group, name: string): void
 }>()
 
 const newName = ref<string>(props.group.name)
@@ -88,7 +89,7 @@ const inputMounted = (vnode: VNode) => {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 .secret-group:not(.edit-mode) {
 	&:hover {

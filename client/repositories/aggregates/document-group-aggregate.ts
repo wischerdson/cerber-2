@@ -1,7 +1,6 @@
 import { useGetReq } from '~/composables/use-request'
 import { auth } from '~/utils/decorators/request/auth.decorator'
 import { encrypt } from '~/utils/decorators/request/encryption.decorator'
-import { transformDocumentGroupAggregateToClient, type ServerDocumentGroupAggregate } from '../adapters/document-group-aggregate-adapter'
 
 export const fetchDocumentGroupAggregate = async (parentGroup: { alias?: string|null, id?: number|null }) => {
 	let query: { id?: number|null, alias?: string|null }

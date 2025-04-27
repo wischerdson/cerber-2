@@ -22,7 +22,6 @@ import { uid } from '#imports'
 import AbstractList from '~/components/account/nodes/list/AbstractList.vue'
 import SecretGroupItem from '~/components/account/nodes/list/groups/GroupItem.vue'
 import { useNodesStore } from '~/store/nodes'
-import type { Group, NewGroup } from '~/repositories/adapters/node-adapter'
 
 const store = useNodesStore()
 const groups = computed(() => store.groups)
@@ -34,15 +33,16 @@ const addNew = () => {
 		fields: [],
 		notes: null,
 		clientCode: uid(),
-		editMode: true
+		editMode: true,
+		parentId: null
 	})
 }
 
-const saveNewName = (group: Group | NewGroup, newName: string) => {
+const saveNewName = (group: App.Nodes.Group | App.Nodes.NewGroup, newName: string) => {
 	group.name = newName
 	group.editMode = false
 
-	'id' in group ? store.update(group as Group) : store.create(group as NewGroup)
+	'id' in group ? store.update(group) : store.create(group)
 }
 
 </script>

@@ -5,12 +5,22 @@ import type { Document, Group, NewDocument, NewGroup, NewNode, Node } from '~/re
 
 export const useNodesStore = defineStore('nodes', () => {
 	const nodes = ref<(Node | NewNode | NewGroup)[]>([])
+	const currentGroupId = ref<number|null>(null)
 
 	const groups = computed(() => {
 		return nodes.value.filter(d => d.type === 'group') as (Group | NewGroup)[]
 	})
+
 	const documents = computed(() => {
 		return nodes.value.filter(n => n.type === 'document') as (Document | NewDocument)[]
+	})
+
+	const currentGroup = computed(() => {
+		if (currentGroupId.value) {
+			return nodes.value.find(n => 'id' in n && n.id === currentGroupId.value)
+		}
+
+		return null
 	})
 
 	const fetchRootNodes = async () => {
@@ -43,8 +53,12 @@ export const useNodesStore = defineStore('nodes', () => {
 		// groups.find((g: Document) => document.id == g.id)
 	}
 
+	const jumpToGroup = (groupAlias: string|null) => {
+
+	}
+
 	return {
-		groups, documents, nodes,
+		groups, documents, nodes, currentGroup,
 		fetchRootNodes, create, update
 	}
 })

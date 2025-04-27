@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import type { DocumentGroupAggregate } from '~/repositories/adapters/document-group-aggregate-adapter'
 import { fetchDocumentGroupAggregate } from '~/repositories/aggregates/document-group-aggregate'
 import { useNodesStore } from '~/store/nodes'
 

@@ -33,6 +33,6 @@ import TheBreadcrumb from '~/components/account/Breadcrumb.vue'
 import GroupList from '~/components/account/nodes/list/groups/GroupList.vue'
 import DocumentList from '~/components/account/nodes/list/DocumentList.vue'
 import TheSearch from '~/components/account/Search.vue'
-import SecretFormCreate from '~/components/account/nodes/form/FormCreate.vue'
+import SecretFormCreate from '~/components/account/nodes/documents/form/FormCreate.vue'
 
 </script>
