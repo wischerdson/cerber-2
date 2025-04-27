@@ -25,22 +25,20 @@
 
 <script setup lang="ts">
 
-import type { NewSecretGroup, SecretGroup } from '~/store/documents'
+import type { Group, NewGroup } from '~/repositories/adapters/node-adapter'
 import { computed, ref, type VNode } from 'vue'
 import UiClickable from '~/components/ui/Clickable.vue'
 import UiInput from '~/components/ui/Input.vue'
 import UiPressNHold from '~/components/ui/PressNHold.vue'
 
-const props = defineProps<{ group: SecretGroup | NewSecretGroup }>()
+const props = defineProps<{ group: Group | NewGroup }>()
 const emit = defineEmits<{
-	(e: 'saveName', group: SecretGroup | NewSecretGroup, name: string): void
+	(e: 'saveName', group: Group | NewGroup, name: string): void
 }>()
 
 const newName = ref<string>(props.group.name)
 
-const onHold = () => {
-	props.group.editMode = true
-}
+const onHold = () => props.group.editMode = true
 
 const link = computed(() => {
 	return 'id' in props.group ? {

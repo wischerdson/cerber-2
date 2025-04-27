@@ -76,7 +76,7 @@ import UiLabel from '~/components/ui/Label.vue'
 import UiClickable from '~/components/ui/Clickable.vue'
 import LockIcon from '~/assets/svg/lock.svg'
 import PencilIcon from '~/assets/svg/Monochrome=applepencil.gen1.svg'
-import EditableFieldSettings from '~/components/account/nodes/form/EditableFieldSettings.vue'
+import EditableFieldSettings from '~/components/account/nodes/documents/form/EditableFieldSettings.vue'
 import { ref } from 'vue'
 import type { NewDocumentField, DocumentField } from '~/repositories/adapters/node-adapter'
 

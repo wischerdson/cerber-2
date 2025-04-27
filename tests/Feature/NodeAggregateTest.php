@@ -75,6 +75,5 @@ class NodeAggregateTest extends TestCase
 				->where('message', 'Node of type group by 12345 not found')
 				->etc()
 			);
-
 	}
 }

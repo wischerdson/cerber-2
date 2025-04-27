@@ -13,9 +13,9 @@
 				</UiContentTile>
 
 			</div>
-			<!-- <UiContentTile class="py-6 grow max-w-md px-6">
-				<SecretFormCreate />
-			</UiContentTile> -->
+			<UiContentTile class="py-6 grow max-w-md px-6">
+				<DocumentFormCreate />
+			</UiContentTile>
 		</div>
 		<slot></slot>
 	</NuxtLayout>
@@ -27,5 +27,8 @@ import UiContentTile from '~/components/ui/ContentTile.vue'
 import GroupList from '~/components/account/nodes/list/groups/GroupList.vue'
 import DocumentList from '~/components/account/nodes/list/DocumentList.vue'
 import TheSearch from '~/components/account/Search.vue'
+import DocumentFormCreate from '~/components/account/nodes/documents/form/FormCreate.vue'
+
+const newGroup: Node.Client.NewGroup = { type: 'group', 'editMode': true }
 
 </script>

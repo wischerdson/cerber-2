@@ -43,12 +43,8 @@ export const parseJwt = <T>(jwt: string): T => {
 export const isJwtExpired = (jwt: string): boolean => {
 	const payload = parseJwt<{ exp: number }>(jwt)
 
-	console.log('isJwtExpired-payload', payload)
-
 	if ('exp' in payload) {
 		const expiration = payload.exp
-
-		console.log('isJwtExpired-date', new Date().getTime(), new Date(expiration*1000).getTime())
 
 		return new Date().getTime() > new Date(expiration*1000).getTime()
 	}

@@ -46,7 +46,7 @@ import type { NewDocument } from '~/repositories/adapters/node-adapter'
 import UiInput from '~/components/ui/Input.vue'
 import UiTextarea from '~/components/ui/Textarea.vue'
 import UiButton from '~/components/ui/Button.vue'
-import EditableField from '~/components/account/nodes/form/EditableField.vue'
+import EditableField from '~/components/account/nodes/documents/form/EditableField.vue'
 import HeightAnimation from '~/components/ui/HeightAnimation.vue'
 import { uid } from '~/utils/helpers'
 

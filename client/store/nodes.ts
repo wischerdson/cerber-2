@@ -31,7 +31,14 @@ export const useNodesStore = defineStore('nodes', () => {
 		})
 	}
 
-	const update = (node: Node) => {
+	const update = (updated: Node) => {
+		nodes.value = nodes.value.map(_node => {
+			if ('id' in _node && _node.id === updated.id) {
+				return updated
+			}
+
+			return _node
+		})
 		// groups.value = groups.value.map(group => groups.value.find(g => g.id === document.id) || group);
 		// groups.find((g: Document) => document.id == g.id)
 	}

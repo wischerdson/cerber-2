@@ -37,5 +37,6 @@
 		"vue-router": "^4.5.0",
 		"yn": "^5.0.0",
 		"yup": "^1.6.1"
-	}
+	},
+	"packageManager": "yarn@4.9.1"
 }
