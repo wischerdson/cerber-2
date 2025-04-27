@@ -5,7 +5,6 @@
 import { definePageMeta, useHead } from '#imports'
 import { useAccountLayoutLoaderStore } from '~/store/loaders'
 import { useRoute } from 'vue-router'
-import {  } from '~/store/aggregates/nodes-aggregate-store'
 
 definePageMeta({ middleware: 'auth', layout: 'account-node-list' })
 

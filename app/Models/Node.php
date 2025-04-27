@@ -35,7 +35,7 @@ class Node extends Model
 
 	const TYPE_LINK = 'link';
 
-	protected static $unguarded = true;
+	protected $fillable = ['parent_id', 'type', 'name', 'notes', 'is_effective'];
 
 	protected $table = 'nodes';
 

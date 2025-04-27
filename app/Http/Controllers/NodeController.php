@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\NodeNotFoundException;
 use App\Exceptions\NodeTroublesException;
 use App\Models\DocumentField;
 use App\Models\Node;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class NodeController
 {
@@ -66,25 +67,52 @@ class NodeController
 
 	public function createBatch(Request $request)
 	{
-		/** @var \App\Models\Node[] */
 		$nodes = [];
 
-		foreach ($request->all() as $nodeData) {
-			$nodes[] = new Node($nodeData);
+		DB::transaction(function () use ($request, &$nodes) {
+			foreach ($request->all() as $nodeData) {
+				$node = Node::create($nodeData);
+				$node->client_code = @$nodeData['client_code'];
 
-			$fields = [];
-
-			if ($nodeData['type'] === 'document') {
-				foreach ($nodeData['fields'] as $fieldData) {
-
+				if ($node->type === 'document') {
+					foreach ($nodeData['fields'] as $fieldData) {
+						$node->document_fields()->save(
+							new DocumentField($fieldData)
+						);
+					}
 				}
+
+				$nodes[] = $node;
 			}
-		}
-		dd($request->all());
+		});
+
+		return $nodes;
 	}
 
 	public function updateBatch(Request $request)
 	{
 
+	}
+
+	private function generateAliases(int $count)
+	{
+		$aliases = [];
+		$length = 5;
+
+		do {
+			$aliases = [];
+
+			for ($i = 0; $i < $count; $i++) {
+				do {
+					$alias = mb_strtolower(Str::random($length));
+				} while (in_array($alias, $aliases));
+
+				$aliases[] = $alias;
+			}
+
+			$length++;
+		} while (Node::query()->whereIn('alias', $aliases)->exists());
+
+		return $aliases;
 	}
 }
