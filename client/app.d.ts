@@ -35,6 +35,7 @@ declare namespace App {
 				name: string
 				notes: string|null
 				type: 'document' | 'group' | 'link'
+				client_code: string
 			}
 
 			interface NewDocument extends NewNode {
@@ -54,6 +55,17 @@ declare namespace App {
 			interface NewGroup extends NewNode {
 				type: 'group'
 			}
+
+			interface CreatedNode extends Node {
+				client_code: string
+			}
+
+			interface NodeForUpdate {
+				id: number
+				name: string
+				notes: string | null
+				is_effective: boolean
+			}
 		}
 
 		interface Node {
@@ -64,6 +76,7 @@ declare namespace App {
 			notes: string|null
 			isEffective: boolean
 			clientCode?: string
+			changedOnClient: boolean
 			createdAt: Date
 			deletedAt: Date|null
 		}
@@ -93,6 +106,8 @@ declare namespace App {
 			notes: string|null
 			type: 'document' | 'group' | 'link'
 			clientCode: string
+			parentId: number | null
+			editMode?: boolean
 		}
 
 		interface NewDocument extends NewNode {
@@ -113,6 +128,10 @@ declare namespace App {
 		interface NewGroup extends NewNode {
 			type: 'group'
 			editMode: boolean
+		}
+
+		interface CreatedNode extends Node {
+			clientCode: string
 		}
 	}
 

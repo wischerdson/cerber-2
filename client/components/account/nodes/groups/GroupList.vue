@@ -1,5 +1,5 @@
 <template>
-	<AbstractList name="Группы" :showOnInit="true" add-item-title="Добавить группу" @add="addNew()">
+	<AbstractList name="Группы" :showOnInit="true" add-item-title="Добавить группу" @add="store.create">
 		<TransitionGroup
 			class="-mx-4"
 			tag="ul"
@@ -18,31 +18,18 @@
 <script setup lang="ts">
 
 import { computed } from 'vue'
-import { uid } from '#imports'
-import AbstractList from '~/components/account/nodes/list/AbstractList.vue'
-import SecretGroupItem from '~/components/account/nodes/list/groups/GroupItem.vue'
-import { useNodesStore } from '~/store/nodes'
+import AbstractList from '~/components/account/nodes/AbstractList.vue'
+import SecretGroupItem from '~/components/account/nodes/groups/GroupItem.vue'
+import { useGroupsStore } from '~/store/groups'
 
-const store = useNodesStore()
+const store = useGroupsStore()
 const groups = computed(() => store.groups)
-
-const addNew = () => {
-	store.nodes.unshift({
-		name: 'Новая группа',
-		type: 'group',
-		fields: [],
-		notes: null,
-		clientCode: uid(),
-		editMode: true,
-		parentId: null
-	})
-}
 
 const saveNewName = (group: App.Nodes.Group | App.Nodes.NewGroup, newName: string) => {
 	group.name = newName
 	group.editMode = false
 
-	'id' in group ? store.update(group) : store.create(group)
+	store.update(group)
 }
 
 </script>

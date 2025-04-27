@@ -16,6 +16,8 @@ Route::middleware('auth')->group(function () {
 	Route::get('auth/user', [AuthController::class, 'user']);
 
 	Route::apiResource('nodes', NodeController::class);
+	Route::post('/nodes/batch', [NodeController::class, 'createBatch']);
+	Route::put('/nodes/batch', [NodeController::class, 'updateBatch']);
 
 	Route::get('secrets-breadcrumb', [SecretGroupController::class, 'breadcrumb'])->middleware('encrypt-response');
 

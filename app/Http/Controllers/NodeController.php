@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\NodeNotFoundException;
+use App\Exceptions\NodeTroublesException;
 use App\Models\DocumentField;
 use App\Models\Node;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class NodeController
 			$parentNode = Node::find($parentId);
 
 			if (!$parentNode || $parentNode->type !== 'group') {
-				throw new NodeNotFoundException();
+				throw NodeTroublesException::groupNotFound($parentId);
 			}
 		}
 
@@ -61,5 +62,29 @@ class NodeController
 		}
 
 		return $node;
+	}
+
+	public function createBatch(Request $request)
+	{
+		/** @var \App\Models\Node[] */
+		$nodes = [];
+
+		foreach ($request->all() as $nodeData) {
+			$nodes[] = new Node($nodeData);
+
+			$fields = [];
+
+			if ($nodeData['type'] === 'document') {
+				foreach ($nodeData['fields'] as $fieldData) {
+
+				}
+			}
+		}
+		dd($request->all());
+	}
+
+	public function updateBatch(Request $request)
+	{
+
 	}
 }

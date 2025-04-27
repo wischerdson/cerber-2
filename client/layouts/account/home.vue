@@ -24,11 +24,9 @@
 <script setup lang="ts">
 
 import UiContentTile from '~/components/ui/ContentTile.vue'
-import GroupList from '~/components/account/nodes/list/groups/GroupList.vue'
+import GroupList from '~/components/account/nodes/groups/GroupList.vue'
 import DocumentList from '~/components/account/nodes/list/DocumentList.vue'
 import TheSearch from '~/components/account/Search.vue'
 import DocumentFormCreate from '~/components/account/nodes/documents/form/FormCreate.vue'
-
-const newGroup: Node.Client.NewGroup = { type: 'group', 'editMode': true }
 
 </script>

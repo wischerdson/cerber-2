@@ -1,21 +1,32 @@
 export const transformNodeToClient = (node: App.Nodes.Server.Node): App.Nodes.Node => {
 	return {
-		id:          node.id,
-		type:        node.type,
-		alias:       node.alias,
-		name:        node.name,
-		notes:       node.notes,
-		isEffective: node.is_effective,
-		createdAt:   new Date(node.created_at * 1000),
-		deletedAt:   node.deleted_at === null ? null : new Date(node.deleted_at * 1000)
+		id:              node.id,
+		type:            node.type,
+		alias:           node.alias,
+		name:            node.name,
+		notes:           node.notes,
+		isEffective:     node.is_effective,
+		changedOnClient: false,
+		createdAt:       new Date(node.created_at * 1000),
+		deletedAt:       node.deleted_at === null ? null : new Date(node.deleted_at * 1000)
+	}
+}
+
+export const transformNodeForUpdateToServer = (node: App.Nodes.Node): App.Nodes.Server.NodeForUpdate => {
+	return {
+		id: node.id,
+		name: node.name,
+		notes: node.notes,
+		is_effective: node.isEffective
 	}
 }
 
 export const transformNewNodeToServer = (newNode: App.Nodes.NewNode): App.Nodes.Server.NewNode => {
 	return {
-		name:  newNode.name,
-		notes: newNode.notes,
-		type:  newNode.type
+		name:        newNode.name,
+		notes:       newNode.notes,
+		type:        newNode.type,
+		client_code: newNode.clientCode
 	}
 }
 
@@ -24,6 +35,14 @@ export const transformGroupToClient = (group: App.Nodes.Server.Group): App.Nodes
 		...transformNodeToClient(group),
 		type:     group.type,
 		editMode: false
+	}
+}
+
+export const transformNewDocumentToServer = (newDocument: App.Nodes.NewDocument): App.Nodes.Server.NewDocument => {
+	return {
+		...transformNewNodeToServer(newDocument),
+		type:   newDocument.type,
+		fields: newDocument.fields.map(transformNewDocumentFieldToServer)
 	}
 }
 
@@ -38,19 +57,16 @@ export const transformNewDocumentFieldToServer = (field: App.Nodes.NewDocumentFi
 	}
 }
 
-export const transformNewDocumentToServer = (newDocument: App.Nodes.NewDocument): App.Nodes.Server.NewDocument => {
+export const transformNewGroupToServer = (newGroup: App.Nodes.NewGroup): App.Nodes.Server.NewGroup => {
 	return {
-		name:   newDocument.name,
-		notes:  newDocument.notes,
-		type:   newDocument.type,
-		fields: newDocument.fields.map(transformNewDocumentFieldToServer)
+		...transformNewNodeToServer(newGroup),
+		type: newGroup.type
 	}
 }
 
-export const transformNewGroupToServer = (newGroup: App.Nodes.NewGroup): App.Nodes.Server.NewGroup => {
+export const transformCreatedNodeToClient = (node: App.Nodes.Server.CreatedNode): App.Nodes.CreatedNode => {
 	return {
-		name:  newGroup.name,
-		notes: newGroup.notes,
-		type:  newGroup.type
+		...transformNodeToClient(node),
+		clientCode: node.client_code
 	}
 }
