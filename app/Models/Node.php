@@ -71,13 +71,22 @@ class Node extends Model
 	protected static function booted(): void
 	{
 		static::creating(function (self $node) {
-			$i = 5;
-
-			do {
-				$alias = mb_strtolower(Str::random($i++));
-			} while (self::query()->where('alias', $alias)->exists());
-
-			$node->alias = $alias;
+			$node->setAliasIfMissing();
 		});
+	}
+
+	private function setAliasIfMissing(): void
+	{
+		if ($this->alias) {
+			return;
+		}
+
+		$i = 5;
+
+		do {
+			$alias = mb_strtolower(Str::random($i++));
+		} while (self::query()->where('alias', $alias)->exists());
+
+		$this->alias = $alias;
 	}
 }

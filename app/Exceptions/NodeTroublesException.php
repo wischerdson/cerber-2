@@ -14,4 +14,9 @@ class NodeTroublesException extends BadRequestException
 	{
 		return self::message('Either the ID or alias of the node is required');
 	}
+
+	public static function nodeChainIsIncorrect(): self
+	{
+		return self::message('Node chain is incorrect')->reason('incorrect_node_chain');
+	}
 }
