@@ -1,4 +1,4 @@
-import type { AppRequest, RequestDecorator } from '~/utils/request'
+import type { Utils } from '~/@types/utils/request'
 import { useNuxtApp } from '#app'
 
 /**
@@ -8,11 +8,11 @@ import { useNuxtApp } from '#app'
  * то функция попытается совершить новое рукопожатие с сервером и после этого переотправит
  * исходный запрос снова.
  */
-export const encryptionHandshake: RequestDecorator = (request) => {
+export const encryptionHandshake: Utils.Request.Decorator = (request) => {
 	const { $encryptor } = useNuxtApp()
 	const originalSend = request.send
 
-	const attachHandshakeId = <RequestT extends AppRequest>(request: RequestT) => {
+	const attachHandshakeId = <RequestT extends Utils.Request.AppRequest>(request: RequestT) => {
 		const handshakeId = $encryptor.getHandshake()?.handshake_id
 
 		if (handshakeId) {

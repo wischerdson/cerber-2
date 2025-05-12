@@ -1,27 +1,14 @@
 import { defineStore } from 'pinia'
-import { useNodesStore } from './nodes'
-import { computed, ref } from 'vue'
+import { useNodeStore } from './nodes'
+import { computed } from 'vue'
 import { uid } from '~/utils/helpers'
 
 export const useGroupsStore = defineStore('groups', () => {
-	const nodesStore = useNodesStore()
-	const currentGroupId = ref<number|null>(null)
+	const nodesStore = useNodeStore()
 
 	const groups = computed(() => {
-		return nodesStore.nodes.filter(d => d.type === 'group') as (App.Nodes.Group | App.Nodes.NewGroup)[]
+		return nodesStore.nodes.filter(d => d.type === 'group') as (Dto.Nodes.Group | Dto.Nodes.NewGroup)[]
 	})
-
-	const currentGroup = computed(() => {
-		if (currentGroupId.value) {
-			return nodesStore.nodes.find(n => 'id' in n && n.id === currentGroupId.value)
-		}
-
-		return null
-	})
-
-	const jumpToGroup = (groupAlias: string|null) => {
-
-	}
 
 	const create = () => nodesStore.add({
 		name: 'Новая группа',
@@ -29,16 +16,16 @@ export const useGroupsStore = defineStore('groups', () => {
 		notes: null,
 		clientCode: uid(),
 		editMode: true,
-		parentId: currentGroupId.value
+		parentId: nodesStore.current ? nodesStore.current.id : null
 	})
 
-	const update = async (group: App.Nodes.Group | App.Nodes.NewGroup) => {
+	const update = async (group: Dto.Nodes.Group | Dto.Nodes.NewGroup) => {
 		nodesStore.change(group)
 		await nodesStore.sync()
 	}
 
 	return {
-		groups, currentGroup,
+		groups,
 		create, update
 	}
 })

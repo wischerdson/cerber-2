@@ -9,7 +9,7 @@
 						<TheBreadcrumb />
 					</div>
 					<div class="px-6 mt-4">
-						<h1 class="font-medium text-xl">Реклама и маркетинг</h1>
+						<h1 class="font-medium text-xl">{{ nodeStore.current?.name }}</h1>
 
 						<hr class="w-full border-gray-100 dark:border-gray-850 mt-6 mb-6">
 
@@ -34,5 +34,8 @@ import GroupList from '~/components/account/nodes/groups/GroupList.vue'
 import DocumentList from '~/components/account/nodes/list/DocumentList.vue'
 import TheSearch from '~/components/account/Search.vue'
 import SecretFormCreate from '~/components/account/nodes/documents/form/FormCreate.vue'
+import { useNodeStore } from '~/store/nodes'
+
+const nodeStore = useNodeStore()
 
 </script>

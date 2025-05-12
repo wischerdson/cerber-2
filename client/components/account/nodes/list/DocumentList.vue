@@ -17,9 +17,9 @@
 import { computed } from 'vue'
 import AbstractList from '~/components/account/nodes/AbstractList.vue'
 import DocumentItem from '~/components/account/nodes/list/SecretItem.vue'
-import { useNodesStore } from '~/store/nodes'
+import { useNodeStore } from '~/store/nodes'
 
-const store = useNodesStore()
+const store = useNodeStore()
 
 // const documents = computed(() => store.documents)
 

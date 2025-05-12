@@ -1,4 +1,4 @@
-import type { RequestDecorator } from '~/utils/request'
+import type { Utils } from '~/@types/utils/request'
 import { useNuxtApp } from '#app'
 import { defaults } from 'lodash-es'
 
@@ -7,7 +7,7 @@ type AuthDecoratorParameters = {
 	ignoreErrors?: boolean
 }
 
-export const auth: RequestDecorator = (
+export const auth: Utils.Request.Decorator = (
 	request,
 	parameters?: AuthDecoratorParameters
 ) => {

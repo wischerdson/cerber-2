@@ -1,4 +1,4 @@
-import { serverToClientUser, type ServerUser } from './adapters/user-adapter'
+import { serverToClientUser } from './adapters/user-adapter'
 import { useGetReq } from '~/composables/use-request'
 import { auth } from '~/utils/decorators/request/auth.decorator'
 import { encrypt } from '~/utils/decorators/request/encryption.decorator'
@@ -6,7 +6,7 @@ import { makeRequest } from '~/utils/request'
 
 export const fetchUser = async () => {
 	return serverToClientUser(
-		await useGetReq<ServerUser>('/auth/user').apply(auth, encrypt).send()
+		await useGetReq<Dto.Auth.Server.User>('/auth/user').apply(auth, encrypt).send()
 	)
 }
 

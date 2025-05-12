@@ -29,8 +29,9 @@ import { computed, ref, type VNode } from 'vue'
 import UiClickable from '~/components/ui/Clickable.vue'
 import UiInput from '~/components/ui/Input.vue'
 import UiPressNHold from '~/components/ui/PressNHold.vue'
+import { useNodeStore } from '~/store/nodes'
 
-type Group = App.Nodes.Group | App.Nodes.NewGroup
+type Group = Dto.Nodes.Group | Dto.Nodes.NewGroup
 
 const props = defineProps<{ group: Group }>()
 const emit = defineEmits<{
@@ -39,11 +40,27 @@ const emit = defineEmits<{
 
 const newName = ref<string>(props.group.name)
 
+const nodeStore = useNodeStore()
+
 const onHold = () => props.group.editMode = true
 
 const link = computed(() => {
+	const chain: string[] = []
+
+	if (nodeStore.parents.length) {
+		nodeStore.parents.forEach(n => chain.push(n.alias))
+	}
+
+	if (nodeStore.current) {
+		chain.push(nodeStore.current.alias)
+	}
+
+	if ('alias' in props.group) {
+		chain.push(props.group.alias)
+	}
+
 	return 'id' in props.group ? {
-		to: { name: 'group-alias', params: { alias: props.group.alias } }
+		to: { name: 'nodes-chain', params: { chain } }
 	} : void 0
 })
 

@@ -1,19 +1,29 @@
 import { defineStore } from 'pinia'
-import { createNodesBatch, getRootNodes, updateNodesBatch } from '~/repositories/nodes'
+import { createNodesBatch, getNodesByChain, getRootNodes, updateNodesBatch } from '~/repositories/nodes'
 import { computed, ref } from 'vue'
 
-export const useNodesStore = defineStore('nodes', () => {
-	const nodes = ref<(App.Nodes.Node | App.Nodes.NewNode)[]>([])
-
-	// const documents = computed(() => {
-	// 	return nodes.value.filter(n => n.type === 'document') as (Document | NewDocument)[]
-	// })
+export const useNodeStore = defineStore('nodes', () => {
+	const nodes = ref<(Dto.Nodes.Node | Dto.Nodes.NewNode)[]>([])
+	const parents = ref<Dto.Nodes.Node[]>([])
+	const current = ref<Dto.Nodes.Node | null>(null)
 
 	const fetchRootNodes = async () => {
-		nodes.value = await getRootNodes()
+		const { descendants } = await getRootNodes()
+
+		parents.value = []
+		nodes.value = descendants
+		current.value = null
 	}
 
-	const create = async (nodesForCreate: App.Nodes.NewNode[]) => {
+	const fetchNodesByChain = async (chain: string[]) => {
+		const resource = await getNodesByChain(chain)
+
+		parents.value = resource.parents
+		nodes.value = resource.descendants
+		current.value = resource.current
+	}
+
+	const create = async (nodesForCreate: Dto.Nodes.NewNode[]) => {
 		const createdNodes = await createNodesBatch(nodesForCreate)
 
 		nodes.value = nodes.value.map(n => {
@@ -29,11 +39,11 @@ export const useNodesStore = defineStore('nodes', () => {
 		})
 	}
 
-	const add = (newNode: App.Nodes.NewNode) => {
+	const add = (newNode: Dto.Nodes.NewNode) => {
 		nodes.value.unshift(newNode)
 	}
 
-	const update = async (nodesForUpdate: App.Nodes.Node[]) => {
+	const update = async (nodesForUpdate: Dto.Nodes.Node[]) => {
 		await updateNodesBatch(nodesForUpdate)
 
 		nodes.value = nodes.value.map(n => {
@@ -51,7 +61,7 @@ export const useNodesStore = defineStore('nodes', () => {
 		})
 	}
 
-	const change = (nodeForChange: App.Nodes.Node | App.Nodes.NewNode) => {
+	const change = (nodeForChange: Dto.Nodes.Node | Dto.Nodes.NewNode) => {
 		if ('id' in nodeForChange) {
 			nodeForChange.changedOnClient = true
 		}
@@ -70,8 +80,8 @@ export const useNodesStore = defineStore('nodes', () => {
 	}
 
 	const sync = async () => {
-		const nodesForCreate: App.Nodes.NewNode[] = []
-		const nodesForUpdate: App.Nodes.Node[] = []
+		const nodesForCreate: Dto.Nodes.NewNode[] = []
+		const nodesForUpdate: Dto.Nodes.Node[] = []
 
 		nodes.value.forEach(n => {
 			if ('id' in n && n.changedOnClient) {
@@ -89,6 +99,8 @@ export const useNodesStore = defineStore('nodes', () => {
 
 	return {
 		nodes: computed(() => nodes.value),
-		fetchRootNodes, add, create, change, update, sync
+		current: computed(() => current.value),
+		parents: computed(() => parents.value),
+		fetchRootNodes, fetchNodesByChain, add, create, change, update, sync
 	}
 })

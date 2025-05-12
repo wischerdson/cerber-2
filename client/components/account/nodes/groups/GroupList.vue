@@ -25,7 +25,7 @@ import { useGroupsStore } from '~/store/groups'
 const store = useGroupsStore()
 const groups = computed(() => store.groups)
 
-const saveNewName = (group: App.Nodes.Group | App.Nodes.NewGroup, newName: string) => {
+const saveNewName = (group: Dto.Nodes.Group | Dto.Nodes.NewGroup, newName: string) => {
 	group.name = newName
 	group.editMode = false
 

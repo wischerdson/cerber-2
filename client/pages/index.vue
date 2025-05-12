@@ -5,7 +5,7 @@
 import { definePageMeta, useHead } from '#imports'
 import { useAccountLayoutLoaderStore } from '~/store/loaders'
 import { useBreadcrumbStore } from '~/store/breadcrumb'
-import { useNodesStore } from '~/store/nodes'
+import { useNodeStore } from '~/store/nodes'
 
 definePageMeta({ middleware: 'auth', layout: 'account-home' })
 
@@ -17,7 +17,7 @@ const breadcrumbStore = useBreadcrumbStore()
 breadcrumbStore.clearChain()
 
 loaderStore.addPromise(
-	useNodesStore().fetchRootNodes()
+	useNodeStore().fetchRootNodes()
 )
 
 </script>

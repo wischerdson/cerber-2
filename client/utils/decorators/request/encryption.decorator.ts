@@ -1,9 +1,9 @@
-import type { RequestDecorator } from '~/utils/request'
+import type { Utils } from '~/@types/utils/request'
 import { useNuxtApp } from '#app'
 import { util as forgeUtil } from 'node-forge'
 import { useConfig } from '#imports'
 
-export const encrypt: RequestDecorator = request => {
+export const encrypt: Utils.Request.Decorator = request => {
 	const { $encryptor } = useNuxtApp()
 
 	if (useConfig('public.disableHttpEncryption')) {

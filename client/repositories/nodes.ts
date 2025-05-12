@@ -1,10 +1,10 @@
 import { useGetReq, usePostReq, usePutReq } from '#imports'
 import { auth } from '~/utils/decorators/request/auth.decorator'
 import { encrypt } from '~/utils/decorators/request/encryption.decorator'
-import { transformCreatedNodeToClient, transformNewNodeToServer, transformNodeForUpdateToServer, transformNodeToClient } from './adapters/node-adapter'
+import { transformCreatedNodeToClient, transformNewNodeToServer, transformNodeForUpdateToServer, transformNodeResourceToClient, transformNodeToClient } from './adapters/node-adapter'
 
-export const createNode = async (newNode: App.Nodes.NewNode) => {
-	const node = await usePostReq<App.Nodes.Server.Node>()
+export const createNode = async (newNode: Dto.Nodes.NewNode) => {
+	const node = await usePostReq<Dto.Nodes.Server.Node>()
 		.url('/nodes')
 		.body(transformNewNodeToServer(newNode))
 		.apply(auth, encrypt)
@@ -13,10 +13,10 @@ export const createNode = async (newNode: App.Nodes.NewNode) => {
 	return transformNodeToClient(node)
 }
 
-export const createNodesBatch = async (newNodes: App.Nodes.NewNode[]) => {
+export const createNodesBatch = async (newNodes: Dto.Nodes.NewNode[]) => {
 	const newNodesForServer = newNodes.map(transformNewNodeToServer)
 
-	const nodes = await usePostReq<App.Nodes.Server.CreatedNode[]>()
+	const nodes = await usePostReq<Dto.Nodes.Server.CreatedNode[]>()
 		.url('/nodes/batch')
 		.body(newNodesForServer)
 		.apply(auth, encrypt)
@@ -25,7 +25,7 @@ export const createNodesBatch = async (newNodes: App.Nodes.NewNode[]) => {
 	return nodes.map(transformCreatedNodeToClient)
 }
 
-export const updateNodesBatch = async (nodesForUpdate: App.Nodes.Node[]) => {
+export const updateNodesBatch = async (nodesForUpdate: Dto.Nodes.Node[]) => {
 	const nodesToUpdateForServer = nodesForUpdate.map(transformNodeForUpdateToServer)
 
 	await usePutReq('/nodes/batch')
@@ -35,14 +35,20 @@ export const updateNodesBatch = async (nodesForUpdate: App.Nodes.Node[]) => {
 }
 
 export const getRootNodes = async () => {
-	const nodes = await useGetReq<App.Nodes.Server.Node[]>()
+	const resource = await useGetReq<Dto.Nodes.Server.NodeResource>()
 		.url('/nodes')
 		.apply(auth, encrypt)
 		.send()
 
-	return nodes.map(transformNodeToClient)
+	return transformNodeResourceToClient(resource)
 }
 
-export const getNodes = async () => {
-	const nodes = await useGetReq<App.Nodes.Server.Node[]>()
+export const getNodesByChain = async (chain: string[]) => {
+	const resource = await useGetReq<Dto.Nodes.Server.NodeResource>()
+		.url('/nodes')
+		.query({ chain: chain.join(',') })
+		.apply(auth, encrypt)
+		.send()
+
+	return transformNodeResourceToClient(resource)
 }

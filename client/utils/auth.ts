@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { AppRequest } from './request'
+import type { Utils } from '~/@types/utils/request'
 import { isJwtExpired } from './helpers'
 import { issueTokensPairViaPasswordGrant, issueTokensPairViaRefreshToken, revokeSession } from '~/repositories/auth'
 import { pick } from 'lodash-es'
@@ -10,7 +10,7 @@ export type JwtTokensPair = {
 }
 
 export interface AuthProvider {
-	sign(request: AppRequest): Promise<boolean>
+	sign(request: Utils.Request.AppRequest): Promise<boolean>
 	canSign(): boolean
 	signIn(login: string, password: string): Promise<unknown>
 	logout(needRevoke?: boolean): void
